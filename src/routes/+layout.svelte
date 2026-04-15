@@ -9,9 +9,8 @@
 	let { children } = $props();
 
 	onMount(() => {
-		// Sync session antar tab
 		const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-			if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+			if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
 				invalidate('supabase:auth');
 			}
 		});
