@@ -1,0 +1,24 @@
+<script lang="ts">
+	import { enhance } from '$app/forms';
+	import { Button } from '$lib/components/ui/button';
+	import { LogOut } from 'lucide-svelte';
+
+	let { data, children } = $props();
+</script>
+
+<div class="min-h-screen bg-background">
+	<!-- Temporary top bar — akan diganti dengan sidebar di FRONTEND-06 -->
+	<header class="border-b px-6 py-3 flex items-center justify-between">
+		<span class="font-semibold">Dashboard</span>
+		<form method="POST" action="/logout" use:enhance>
+			<Button variant="ghost" size="sm" type="submit">
+				<LogOut class="size-4 mr-2" />
+				Logout
+			</Button>
+		</form>
+	</header>
+
+	<main class="p-6">
+		{@render children()}
+	</main>
+</div>
