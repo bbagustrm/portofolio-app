@@ -1,5 +1,5 @@
 <script lang="ts">
-	import './layout.css';
+	import '../app.css';
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from 'svelte-sonner';
 	import { invalidate } from '$app/navigation';
