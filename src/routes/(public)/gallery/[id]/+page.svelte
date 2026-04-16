@@ -4,7 +4,7 @@
 	import type { Media } from '$lib/types';
 
 	let { data } = $props();
-	let { post } = data;
+	let post = $derived(data.post);
 
 	let activeIndex = $state(0);
 	let media = $derived(post.media ?? []);

@@ -51,21 +51,31 @@
 				{/if}
 			</div>
 
-			<div class="flex gap-2 mt-auto" onclick={(e) => e.preventDefault()}>
+			<div class="flex gap-2 mt-auto">
 				{#if project.demo_url}
-					<a href={project.demo_url} target="_blank" rel="noopener noreferrer">
-						<Button variant="outline" size="sm" class="gap-1.5">
-							<ArrowSquareOut size={12} />
-							Demo
-						</Button>
+
+					<a href={project.demo_url}
+					target="_blank"
+					rel="noopener noreferrer"
+					onclick={(e) => e.stopPropagation()}
+					>
+					<Button variant="outline" size="sm" class="gap-1.5">
+						<ArrowSquareOut size={12} />
+						Demo
+					</Button>
 					</a>
 				{/if}
 				{#if project.repo_url}
-					<a href={project.repo_url} target="_blank" rel="noopener noreferrer">
-						<Button variant="ghost" size="sm" class="gap-1.5">
-							<GithubLogo size={12} />
-							Code
-						</Button>
+
+					<a href={project.repo_url}
+					target="_blank"
+					rel="noopener noreferrer"
+					onclick={(e) => e.stopPropagation()}
+					>
+					<Button variant="ghost" size="sm" class="gap-1.5">
+						<GithubLogo size={12} />
+						Code
+					</Button>
 					</a>
 				{/if}
 			</div>

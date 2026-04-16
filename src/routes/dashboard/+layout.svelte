@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { LogOut } from 'lucide-svelte';
+	import { SignOut } from 'phosphor-svelte';
 
 	let { children } = $props();
 </script>
@@ -11,7 +11,7 @@
 
 		<form method="POST" action="/logout">
 			<Button variant="ghost" size="sm" type="submit">
-				<LogOut class="size-4 mr-2" />
+				<SignOut size={16} class="mr-2" />
 				Logout
 			</Button>
 		</form>
