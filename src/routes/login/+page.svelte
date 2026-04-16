@@ -5,7 +5,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '$lib/components/ui/card';
-	import { Eye, EyeOff, LogIn } from 'lucide-svelte';
+	import { Eye, EyeSlash, SignIn } from 'phosphor-svelte';
 
 	let { form } = $props();
 
@@ -25,7 +25,6 @@
 
 <div class="min-h-screen flex items-center justify-center px-4 bg-background">
 	<div class="w-full max-w-md">
-		<!-- Logo / Title -->
 		<div class="text-center mb-8">
 			<h1 class="text-3xl font-bold tracking-tight">Welcome back</h1>
 			<p class="text-muted-foreground mt-2">Sign in to access your dashboard</p>
@@ -49,7 +48,6 @@
 					}}
 					class="space-y-4"
 				>
-					<!-- Email -->
 					<div class="space-y-2">
 						<Label for="email">Email</Label>
 						<Input
@@ -62,7 +60,6 @@
 						/>
 					</div>
 
-					<!-- Password -->
 					<div class="space-y-2">
 						<Label for="password">Password</Label>
 						<div class="relative">
@@ -82,20 +79,19 @@
 								aria-label="Toggle password visibility"
 							>
 								{#if showPassword}
-									<EyeOff class="size-4" />
+									<EyeSlash size={16} />
 								{:else}
-									<Eye class="size-4" />
+									<Eye size={16} />
 								{/if}
 							</button>
 						</div>
 					</div>
 
-					<!-- Submit -->
-					<Button type="submit" class="w-full" disabled={loading}>
+					<Button type="submit" class="w-full gap-2" disabled={loading}>
 						{#if loading}
-							<span class="animate-spin mr-2">⏳</span> Signing in...
+							<span class="animate-spin">⏳</span> Signing in...
 						{:else}
-							<LogIn class="size-4 mr-2" />
+							<SignIn size={16} />
 							Sign In
 						{/if}
 					</Button>

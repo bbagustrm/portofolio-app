@@ -2,12 +2,11 @@
 	import FeedPost from '$lib/components/gallery/FeedPost.svelte';
 	import InfiniteScroll from '$lib/components/gallery/InfiniteScroll.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import type { Post } from '$lib/types';
 
 	let { data } = $props();
 
-	let posts = $state<Post[]>(data.posts);
-	let nextCursor = $state<string | null>(data.nextCursor);
+	let posts = $derived(data.posts);
+	let nextCursor = $derived(data.nextCursor);
 	let loading = $state(false);
 
 	async function loadMore() {

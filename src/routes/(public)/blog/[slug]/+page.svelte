@@ -4,7 +4,7 @@
 	import { formatDate, estimateReadingTime } from '$lib/utils';
 
 	let { data } = $props();
-	let { post } = data;
+	let post = $derived(data.post);
 </script>
 
 <svelte:head>

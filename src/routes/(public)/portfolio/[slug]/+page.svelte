@@ -5,7 +5,7 @@
 	import { formatDate } from '$lib/utils';
 
 	let { data } = $props();
-	let { project } = data;
+	let project = $derived(data.project);
 </script>
 
 <svelte:head>
