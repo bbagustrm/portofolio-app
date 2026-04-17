@@ -5,12 +5,14 @@
 	import Image from '@tiptap/extension-image';
 	import Link from '@tiptap/extension-link';
 	import Placeholder from '@tiptap/extension-placeholder';
+
 	import {
 		Bold, Italic, Heading2, Heading3,
-		List, ListOrdered, Quote, Code, Link as LinkIcon,
-		Image as ImageIcon, Minus
+		List, ListOrdered, Quote, Code,
+		Link as LinkIcon, Image as ImageIcon, Minus
 	} from '@lucide/svelte';
 
+	// Props
 	let {
 		content = '',
 		onchange
@@ -19,9 +21,20 @@
 		onchange?: (html: string) => void;
 	}>();
 
+	// Local state (tidak tergantung langsung dari props)
+	let currentContent = $state('');
 	let element = $state<HTMLDivElement | null>(null);
 	let editor = $state<Editor | null>(null);
 	let isFocused = $state(false);
+
+	// Sync dari parent → local state + editor
+	$effect(() => {
+		currentContent = content;
+
+		if (editor && content !== editor.getHTML()) {
+			editor.commands.setContent(content);
+		}
+	});
 
 	onMount(() => {
 		if (!element) return;
@@ -32,23 +45,38 @@
 				StarterKit,
 				Image.configure({ inline: false }),
 				Link.configure({ openOnClick: false }),
-				Placeholder.configure({ placeholder: 'Start writing your article...' })
+				Placeholder.configure({
+					placeholder: 'Start writing your article...'
+				})
 			],
-			content,
+			content: content,
+
 			onUpdate({ editor }) {
-				onchange?.(editor.getHTML());
+				const html = editor.getHTML();
+				currentContent = html;
+				onchange?.(html);
 			},
-			onFocus() { isFocused = true; },
-			onBlur() { isFocused = false; }
+
+			onFocus() {
+				isFocused = true;
+			},
+
+			onBlur() {
+				isFocused = false;
+			}
 		});
 	});
 
-	onDestroy(() => editor?.destroy());
+	onDestroy(() => {
+		editor?.destroy();
+	});
 
 	function toggleLink() {
 		if (!editor) return;
+
 		const url = window.prompt('Enter URL:');
 		if (!url) return;
+
 		editor.chain().focus().setLink({ href: url }).run();
 	}
 
@@ -58,6 +86,7 @@
 
 	function getToolbar(): ToolbarItem[] {
 		if (!editor) return [];
+
 		return [
 			{
 				type: 'button',
@@ -130,7 +159,9 @@
 				type: 'button',
 				action: () => {
 					const url = window.prompt('Image URL:');
-					if (url) editor!.chain().focus().setImage({ src: url }).run();
+					if (url) {
+						editor!.chain().focus().setImage({ src: url }).run();
+					}
 				},
 				active: () => false,
 				icon: ImageIcon,
@@ -156,16 +187,16 @@
 			{#each toolbar as item}
 				{#if item.type === 'separator'}
 					<div class="w-px h-5 bg-border mx-1"></div>
-				{:else if item.type === 'button'}
+				{:else}
 					{@const Icon = item.icon}
 					<button
 						type="button"
 						onclick={item.action}
 						title={item.title}
 						class="p-1.5 rounded-md transition-colors text-sm
-							{item.active()
-								? 'bg-primary text-primary-foreground'
-								: 'hover:bg-muted text-muted-foreground hover:text-foreground'}"
+						{item.active()
+							? 'bg-primary text-primary-foreground'
+							: 'hover:bg-muted text-muted-foreground hover:text-foreground'}"
 					>
 						<Icon class="size-4" />
 					</button>
@@ -174,18 +205,18 @@
 		</div>
 	{/if}
 
-	<!-- Editor area -->
+	<!-- Editor -->
 	<div
 		bind:this={element}
 		class="prose prose-neutral dark:prose-invert max-w-none min-h-64 p-4
-			prose-headings:font-bold prose-a:text-primary
-			focus-within:outline-none [&_.ProseMirror]:outline-none
-			[&_.ProseMirror]:min-h-64"
+		prose-headings:font-bold prose-a:text-primary
+		focus-within:outline-none [&_.ProseMirror]:outline-none
+		[&_.ProseMirror]:min-h-64"
 	></div>
 </div>
 
-<!-- Hidden input to submit HTML content -->
-<input type="hidden" name="content" value={editor?.getHTML() ?? content} />
+<!-- Hidden input -->
+<input type="hidden" name="content" bind:value={currentContent} />
 
 <style>
     :global(.ProseMirror p.is-editor-empty:first-child::before) {

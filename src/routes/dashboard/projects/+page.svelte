@@ -68,9 +68,11 @@
 
 						<!-- Published -->
 						<td class="px-4 py-3 text-center">
-							<form method="POST" action="?/toggle_published" use:enhance={() => async ({ update }) => {
-									await update();
-									toast.success('Updated!');
+							<form method="POST" action="?/toggle_published" use:enhance={() => {
+										return async ({ update }) => {
+												await update();
+												toast.success('Updated!');
+										};
 								}}>
 								<input type="hidden" name="id" value={project.id} />
 								<input type="hidden" name="current" value={project.is_published} />
@@ -91,9 +93,11 @@
 
 						<!-- Featured -->
 						<td class="px-4 py-3 text-center">
-							<form method="POST" action="?/toggle_featured" use:enhance={() => async ({ update }) => {
-									await update();
-									toast.success('Updated!');
+							<form method="POST" action="?/toggle_featured" use:enhance={() => {
+										return async ({ update }) => {
+												await update();
+												toast.success('Updated!');
+										};
 								}}>
 								<input type="hidden" name="id" value={project.id} />
 								<input type="hidden" name="current" value={project.is_featured} />
@@ -160,11 +164,11 @@
 				action="?/delete"
 				use:enhance={() => {
 					return async ({ update }) => {
-						await update();
-						dialogOpen = false;
-						toast.success('Project deleted.');
+							await update();
+							dialogOpen = false;
+							toast.success('Project deleted.');
 					};
-				}}
+			}}
 			>
 				<input type="hidden" name="id" value={deleteId} />
 				<Button type="submit" variant="destructive">Delete</Button>

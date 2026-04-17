@@ -8,9 +8,15 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { ArrowLeft, Upload } from '@lucide/svelte';
 	import RichTextEditor from '$lib/components/blog/RichTextEditor.svelte';
+	import type { Tag } from '$lib/types';
 
 	let { data, form } = $props();
 	let post = $derived(data.post);
+
+	// Pindah ke script — hindari type annotation di template
+	let tagsValue = $derived(
+		(post.tags ?? []).map((t: Tag) => t.name).join(', ')
+	);
 
 	let loading = $state(false);
 	let coverPreview = $state<string | null>(null);
@@ -94,10 +100,11 @@
 			<CardContent class="space-y-4">
 				<div class="space-y-2">
 					<Label for="tags">Tags (comma separated)</Label>
+					<!-- Pakai variable dari script, bukan inline type annotation -->
 					<Input
 						id="tags"
 						name="tags"
-						value={(post.tags ?? []).map((t) => t.name).join(', ')}
+						value={tagsValue}
 						placeholder="svelte, webdev, tutorial"
 					/>
 				</div>

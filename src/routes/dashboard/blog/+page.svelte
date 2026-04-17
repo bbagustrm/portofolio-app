@@ -69,7 +69,12 @@
 							<form
 								method="POST"
 								action="?/toggle_published"
-								use:enhance={() => ({ async update() { await update(); toast.success('Updated!'); } })}
+								use:enhance={() => {
+											return async ({ update }) => {
+													await update();
+													toast.success('Updated!');
+											};
+									}}
 							>
 								<input type="hidden" name="id" value={post.id} />
 								<input type="hidden" name="current" value={post.is_published} />
@@ -112,7 +117,17 @@
 		</Dialog.Header>
 		<Dialog.Footer>
 			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<form method="POST" action="?/delete" use:enhance={() => ({ async update() { await update(); dialogOpen = false; toast.success('Post deleted.'); } })}>
+			<form
+				method="POST"
+				action="?/delete"
+				use:enhance={() => {
+        return async ({ update }) => {
+								await update();
+								dialogOpen = false;
+								toast.success('Post deleted.');
+						};
+				}}
+			>
 				<input type="hidden" name="id" value={deleteId} />
 				<Button type="submit" variant="destructive">Delete</Button>
 			</form>
