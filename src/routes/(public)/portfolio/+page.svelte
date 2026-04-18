@@ -1,14 +1,13 @@
 <script lang="ts">
 	import ProjectCard from '$lib/components/portfolio/ProjectCard.svelte';
-	import { Badge } from '$lib/components/ui/badge';
 
 	let { data } = $props();
 
 	let selectedTech = $state<string | null>(null);
 
-	const allTechs = $derived([
-		...new Set(data.projects.flatMap((p) => p.tech_stack))
-	].sort());
+	const allTechs = $derived(
+		[...new Set(data.projects.flatMap((p) => p.tech_stack))].sort()
+	);
 
 	const filtered = $derived(
 		selectedTech
@@ -18,16 +17,16 @@
 </script>
 
 <svelte:head>
-	<title>Portfolio — Bagus</title>
+	<title>Portfolio — Atmojo</title>
 	<meta name="description" content="Projects and work I've built." />
 </svelte:head>
 
-<div class="container mx-auto max-w-5xl px-4 py-16">
+<div class="container mx-auto max-w-6xl px-4 py-16">
 	<!-- Header -->
 	<div class="mb-12">
-		<p class="text-sm text-primary font-medium mb-2">MY WORK</p>
-		<h1 class="text-4xl font-bold mb-4">Portfolio</h1>
-		<p class="text-muted-foreground max-w-xl">
+		<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">My Work</p>
+		<h1 class="text-5xl font-bold mb-4">Portfolio</h1>
+		<p class="text-muted-foreground max-w-xl text-lg">
 			A collection of projects I've built — from web apps to open source tools.
 		</p>
 	</div>
@@ -40,7 +39,7 @@
 				class="text-xs px-3 py-1.5 rounded-full border transition-colors
 					{selectedTech === null
 						? 'bg-primary text-primary-foreground border-primary'
-						: 'border-border hover:bg-muted'}"
+						: 'border-border hover:bg-muted text-muted-foreground'}"
 			>
 				All
 			</button>
@@ -50,7 +49,7 @@
 					class="text-xs px-3 py-1.5 rounded-full border transition-colors
 						{selectedTech === tech
 							? 'bg-primary text-primary-foreground border-primary'
-							: 'border-border hover:bg-muted'}"
+							: 'border-border hover:bg-muted text-muted-foreground'}"
 				>
 					{tech}
 				</button>
