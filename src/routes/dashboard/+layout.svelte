@@ -1,23 +1,15 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { SignOut } from 'phosphor-svelte';
+	import DashboardSidebar from '$lib/components/layout/DashboardSidebar.svelte';
 
-	let { children } = $props();
+	let { data, children } = $props();
 </script>
 
-<div class="min-h-screen bg-background">
-	<header class="border-b px-6 py-3 flex items-center justify-between">
-		<span class="font-semibold">Dashboard</span>
+<div class="flex flex-col md:flex-row min-h-screen bg-background">
+	<DashboardSidebar user={data.user} />
 
-		<form method="POST" action="/logout">
-			<Button variant="ghost" size="sm" type="submit">
-				<SignOut size={16} class="mr-2" />
-				Logout
-			</Button>
-		</form>
-	</header>
-
-	<main class="p-6">
-		{@render children()}
+	<main class="flex-1 overflow-y-auto">
+		<div class="container max-w-6xl mx-auto px-6 py-8">
+			{@render children()}
+		</div>
 	</main>
 </div>

@@ -36,7 +36,7 @@
 <!-- Mobile top bar -->
 <header class="flex items-center justify-between border-b px-4 py-3 md:hidden bg-background">
 	<a href="/" class="text-lg font-bold">
-		bagus<span class="text-primary">.</span>dev
+		atmojo<span class="text-primary font-bold">.</span>pro
 	</a>
 	<button
 		onclick={() => (mobileOpen = !mobileOpen)}
@@ -62,7 +62,7 @@
 	<!-- Logo (desktop) -->
 	<div class="hidden md:flex items-center px-6 h-16 border-b shrink-0">
 		<a href="/" class="text-lg font-bold">
-			bagus<span class="text-primary">.</span>dev
+			atmojo<span class="text-primary font-bold">.</span>pro
 			<span class="ml-2 text-xs font-normal text-muted-foreground">dashboard</span>
 		</a>
 	</div>
