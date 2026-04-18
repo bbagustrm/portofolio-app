@@ -32,7 +32,7 @@
 	<meta name="description" content="A personal photo and video gallery." />
 </svelte:head>
 
-<div class="container mx-auto max-w-5xl px-4 py-16">
+<div class="container mx-auto max-w-6xl px-4 py-16">
 	<div class="mb-12">
 		<p class="text-sm text-primary font-medium mb-2">MEMORIES</p>
 		<h1 class="text-4xl font-bold mb-4">Gallery</h1>

@@ -30,18 +30,18 @@
 		<div class="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
 	</div>
 
-	<div class="container mx-auto max-w-5xl px-4 py-24 md:py-32">
+	<div class="container mx-auto max-w-6xl px-4 py-24 md:py-16">
 		<div class="max-w-2xl">
 
-			<div class="mb-4 inline-flex items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
-				<span class="size-2 rounded-full bg-green-500 animate-pulse"></span>
+			<div class="mb-6 inline-flex items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
+				<span class="size-2 rounded-full bg-yellow-500 animate-pulse"></span>
 				Available for opportunities
 			</div>
 
-			<h1 class="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl mb-4">
-				Hi, I'm
-				<span class="text-primary">
-					{data.profile?.full_name ?? 'Bagus'}
+			<h1 class="text-4xl font-medium tracking-tight sm:text-8xl md:text-8xl mb-4">
+				Bagus Tri
+				<span class="text-primary text-9xl">
+					Atmojo
 				</span>
 			</h1>
 
@@ -68,32 +68,28 @@
 			<!-- Social Links -->
 			<div class="flex items-center gap-3">
 
-				{#if data.profile?.github_url}
-					<a
-						href={data.profile.github_url}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-						aria-label="GitHub"
-					>
-						<GithubLogo size={20} weight="regular" />
-					</a>
-				{/if}
-
-				{#if data.profile?.linkedin_url}
-					<a
-						href={data.profile.linkedin_url}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-						aria-label="LinkedIn"
-					>
-						<LinkedinLogo size={20} weight="regular" />
-					</a>
-				{/if}
+				<a
+					href="https://github.com/bbagustrm"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+					aria-label="GitHub"
+				>
+					<GithubLogo size={20} weight="regular" />
+				</a>
 
 				<a
-					href={`mailto:${data.profile?.website_url ?? 'you@email.com'}`}
+					href="https://www.linkedin.com/in/bbagustrm/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+					aria-label="LinkedIn"
+				>
+					<LinkedinLogo size={20} weight="regular" />
+				</a>
+
+				<a
+					href={`mailto: bbagustrm@gmail.com`}
 					class="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 					aria-label="Email"
 				>
@@ -107,7 +103,7 @@
 
 <!-- TECH STACK -->
 <section class="border-y bg-muted/30">
-	<div class="container mx-auto max-w-5xl px-4 py-6">
+	<div class="container mx-auto max-w-6xl px-4 py-6">
 		<div class="flex flex-wrap items-center gap-2">
 			<span class="text-sm text-muted-foreground mr-2">
 				Tech I work with:
@@ -124,7 +120,7 @@
 
 <!-- FEATURED PROJECTS -->
 {#if data.featuredProjects.length > 0}
-	<section class="container mx-auto max-w-5xl px-4 py-20">
+	<section class="container mx-auto max-w-6xl px-4 py-20">
 
 		<div class="flex items-end justify-between mb-10">
 			<div>
@@ -201,7 +197,7 @@
 <!-- BLOG -->
 {#if data.latestPosts.length > 0}
 	<section class="bg-muted/30 border-t">
-		<div class="container mx-auto max-w-5xl px-4 py-20">
+		<div class="container mx-auto max-w-6xl px-4 py-20">
 
 			<div class="flex items-end justify-between mb-10">
 				<div>
@@ -264,7 +260,7 @@
 {/if}
 
 <!-- CTA -->
-<section class="container mx-auto max-w-5xl px-4 py-20 text-center">
+<section class="container mx-auto max-w-6xl px-4 py-20 text-center">
 
 	<h2 class="text-3xl font-bold mb-4">
 		Let's work together

@@ -13,7 +13,7 @@
 	<meta name="description" content={project.description ?? ''} />
 </svelte:head>
 
-<article class="container mx-auto max-w-5xl px-4 py-16">
+<article class="container mx-auto max-w-6xl px-4 py-16">
 	<!-- Back -->
 
 	<a href="/portfolio"
