@@ -11,10 +11,10 @@
 </script>
 
 <footer class="border-t bg-background">
-	<div class="container mx-auto max-w-5xl px-4 py-8">
+	<div class="container mx-auto max-w-6xl px-4 py-8">
 		<div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
 			<p class="text-sm text-muted-foreground">
-				© {year} bagus<span class="text-primary font-medium">.</span>dev — All rights reserved.
+				© {year} atmojo<span class="text-primary font-medium">.</span>pro — All rights reserved.
 			</p>
 
 			<div class="flex items-center gap-2">

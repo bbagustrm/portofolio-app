@@ -5,6 +5,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import ModeToggle from './ModeToggle.svelte';
 	import { List } from 'phosphor-svelte';
+
 	let { user = null } = $props<{ user?: any }>();
 
 	let mobileOpen = $state(false);
@@ -27,11 +28,11 @@
 </script>
 
 <header class="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
-	<div class="container mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
+	<div class="container mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
 
 		<!-- Logo -->
-		<a href="/" class="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
-			bagus<span class="text-primary">.</span>dev
+		<a href="/" class="text-xl font-semibold tracking-tight hover:opacity-80 transition-opacity font-sans">
+			atmojo<span class="text-primary font-bold">.</span>pro
 		</a>
 
 		<!-- Desktop Nav -->
@@ -67,22 +68,21 @@
 				<Sheet.Trigger>
 					{#snippet child({ props })}
 						<Button {...props} variant="ghost" size="icon" aria-label="Open menu">
-							<List color="white" weight="fill" size="20px" mirrored={false} />
+							<List class="size-5" />
 						</Button>
 					{/snippet}
 				</Sheet.Trigger>
 
 				<Sheet.Content side="right" class="w-64">
 					<Sheet.Header>
-						<Sheet.Title>
-							bagus<span class="text-primary">.</span>dev
+						<Sheet.Title class="font-sans text-left">
+							atmojo<span class="text-primary font-bold">.</span>pro
 						</Sheet.Title>
 					</Sheet.Header>
 
 					<Separator class="my-4" />
 
 					<nav class="flex flex-col gap-1">
-
 						{#each links as link}
 
 							<a href={link.href}

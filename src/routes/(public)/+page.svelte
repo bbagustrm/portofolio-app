@@ -32,7 +32,7 @@
 		<div class="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
 	</div>
 
-	<div class="container mx-auto max-w-5xl px-4 py-24 md:py-32">
+	<div class="container mx-auto max-w-6xl px-4 py-24 md:py-32">
 		<div class="max-w-2xl">
 			<div class="mb-4 inline-flex items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
 				<span class="size-2 rounded-full bg-green-500 animate-pulse"></span>
@@ -99,7 +99,7 @@
 
 <!-- ─── Tech Stack ────────────────────────────────────── -->
 <section class="border-y bg-muted/30">
-	<div class="container mx-auto max-w-5xl px-4 py-6">
+	<div class="container mx-auto max-w-6xl px-4 py-6">
 		<div class="flex flex-wrap items-center gap-2">
 			<span class="text-sm text-muted-foreground mr-2">Tech I work with:</span>
 			{#each techStack as tech}
@@ -111,7 +111,7 @@
 
 <!-- ─── Featured Projects ─────────────────────────────── -->
 {#if data.featuredProjects.length > 0}
-	<section class="container mx-auto max-w-5xl px-4 py-20">
+	<section class="container mx-auto max-w-6xl px-4 py-20">
 		<div class="flex items-end justify-between mb-10">
 			<div>
 				<p class="text-sm text-primary font-medium mb-1">PORTFOLIO</p>
@@ -164,7 +164,7 @@
 <!-- ─── Latest Blog Posts ─────────────────────────────── -->
 {#if data.latestPosts.length > 0}
 	<section class="bg-muted/30 border-t">
-		<div class="container mx-auto max-w-5xl px-4 py-20">
+		<div class="container mx-auto max-w-6xl px-4 py-20">
 			<div class="flex items-end justify-between mb-10">
 				<div>
 					<p class="text-sm text-primary font-medium mb-1">BLOG</p>
@@ -211,7 +211,7 @@
 {/if}
 
 <!-- ─── CTA ───────────────────────────────────────────── -->
-<section class="container mx-auto max-w-5xl px-4 py-20 text-center">
+<section class="container mx-auto max-w-6xl px-4 py-20 text-center">
 	<h2 class="text-3xl font-bold mb-4">Let's work together</h2>
 	<p class="text-muted-foreground mb-8 max-w-md mx-auto">
 		I'm open to freelance projects, collaborations, and full-time opportunities.
