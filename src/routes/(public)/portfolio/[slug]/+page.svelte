@@ -13,7 +13,7 @@
 	<meta name="description" content={project.description ?? ''} />
 </svelte:head>
 
-<article class="container mx-auto max-w-6xl px-4 py-16">
+<article class="container mx-auto max-w-6xl px-4 py-8">
 	<!-- Back -->
 
 	<a href="/portfolio"
@@ -37,7 +37,7 @@
 	<!-- Meta -->
 	<div class="mb-10">
 		<div class="flex flex-wrap items-start justify-between gap-4 mb-4">
-			<h1 class="text-4xl font-bold leading-tight">{project.title}</h1>
+			<h1 class="text-4xl font-semibold  leading-tight">{project.title}</h1>
 
 			<!-- Action buttons -->
 			<div class="flex gap-2 shrink-0">

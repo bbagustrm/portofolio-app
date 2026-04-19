@@ -15,7 +15,7 @@
 	<title>{post.caption ? post.caption.slice(0, 50) : 'Gallery'} — Bagus</title>
 </svelte:head>
 
-<div class="container mx-auto max-w-4xl px-4 py-16">
+<div class="container mx-auto max-w-4xl px-4 py-8">
 	<a href="/gallery" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
 		<ArrowLeft size={16} weight="regular" />
 		Back to Gallery
