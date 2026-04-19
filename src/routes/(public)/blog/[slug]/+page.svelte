@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Badge } from '$lib/components/ui/badge';
-	import { ArrowLeft } from 'phosphor-svelte';
+	import { ArrowLeft } from '@lucide/svelte';
 	import { formatDate, estimateReadingTime } from '$lib/utils';
 
 	let { data } = $props();
@@ -12,43 +12,64 @@
 	<meta name="description" content={post.excerpt ?? ''} />
 </svelte:head>
 
-<article class="container mx-auto max-w-3xl px-4 py-16">
-	<a href="/blog" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
-		<ArrowLeft size={16} />
-		Back to Blog
+<article class="container mx-auto max-w-4xl px-4 py-8">
+	<!-- Back -->
+
+	<a href="/blog"
+	class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10 transition-colors"
+	>
+	<ArrowLeft class="size-4" />
+	Back to Blog
 	</a>
 
+	<!-- Cover -->
 	{#if post.cover_url}
-		<div class="aspect-video rounded-xl overflow-hidden mb-8">
+		<div class="aspect-21/6 rounded-2xl overflow-hidden mb-10 border">
 			<img src={post.cover_url} alt={post.title} class="w-full h-full object-cover" />
 		</div>
 	{/if}
 
+	<!-- Header -->
 	<header class="mb-10">
+		<!-- Tags -->
 		{#if post.tags && post.tags.length > 0}
-			<div class="flex flex-wrap gap-1.5 mb-4">
+			<div class="flex flex-wrap gap-1.5 mb-5">
 				{#each post.tags as tag}
-					<Badge variant="secondary">{tag.name}</Badge>
+					<a href="/blog?tag={tag.slug}">
+						<Badge variant="secondary" class="hover:bg-primary/10 transition-colors cursor-pointer">
+							{tag.name}
+						</Badge>
+					</a>
 				{/each}
 			</div>
 		{/if}
 
-		<h1 class="text-3xl font-bold mb-4 leading-tight sm:text-4xl">
+		<!-- Title — h1 auto serif -->
+		<h1 class="text-4xl font-semibold mb-5 leading-tight sm:text-5xl">
 			{post.title}
 		</h1>
 
-		<div class="flex items-center gap-2 text-sm text-muted-foreground">
+		<!-- Meta row -->
+		<div class="flex items-center gap-3 text-sm text-muted-foreground pb-8 border-b">
 			<span>{formatDate(post.published_at ?? post.created_at)}</span>
-			<span>·</span>
+			<span class="size-1 rounded-full bg-muted-foreground/40"></span>
 			<span>{estimateReadingTime(post.content ?? '')}</span>
 		</div>
 	</header>
 
-	<div class="prose prose-neutral dark:prose-invert max-w-none
-		prose-headings:font-bold prose-headings:tracking-tight
-		prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-		prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded
-		prose-pre:bg-muted prose-img:rounded-lg">
+	<!-- Content -->
+	<div class="prose-custom">
 		{@html post.content ?? ''}
 	</div>
+
+	<!-- Footer -->
+	<footer class="mt-16 pt-8 border-t">
+
+		<a href="/blog"
+		class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+		>
+		<ArrowLeft class="size-4" />
+		Back to Blog
+		</a>
+	</footer>
 </article>
