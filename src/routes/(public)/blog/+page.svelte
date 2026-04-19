@@ -17,7 +17,7 @@
 	<meta name="description" content="Articles about web development, programming, and tech." />
 </svelte:head>
 
-<div class="container mx-auto max-w-6xl px-4 py-16">
+<div class="container mx-auto max-w-6xl px-4 sm:px-6 md:px-8 lg:px-4 py-20">
 	<div class="mb-12">
 		<p class="text-sm text-primary font-medium mb-2">WRITING</p>
 		<h1 class="text-4xl font-bold mb-4">Blog</h1>

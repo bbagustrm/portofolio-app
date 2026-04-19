@@ -21,7 +21,7 @@
 	<meta name="description" content="Projects and work I've built." />
 </svelte:head>
 
-<div class="container mx-auto max-w-6xl px-4 py-16">
+<div class="container mx-auto max-w-6xl px-4 sm:px-6 md:px-8 lg:px-4 py-20">
 	<!-- Header -->
 	<div class="mb-12">
 		<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">My Work</p>

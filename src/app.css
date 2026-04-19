@@ -260,3 +260,23 @@
 		@apply prose-blockquote:border-primary prose-blockquote:text-muted-foreground;
 	}
 }
+
+/* ─── Custom Animations ─────────────────────────────────── */
+@layer utilities {
+	.animate-marquee {
+		animation: marquee 25s linear infinite;
+	}
+
+	.animate-marquee:hover {
+		animation-play-state: paused;
+	}
+}
+
+@keyframes marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
