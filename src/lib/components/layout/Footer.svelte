@@ -21,7 +21,6 @@
 				{#each socials as social (social.href)}
 					{@const Icon = social.icon}
 
-					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 					<a
 						href={social.href}
 						target="_blank"
@@ -29,7 +28,7 @@
 						aria-label={social.label}
 						class="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 					>
-						<Icon size={18} weight="regular" />
+						<Icon size={18} weight="fill" />
 					</a>
 				{/each}
 			</div>
