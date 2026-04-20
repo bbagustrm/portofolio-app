@@ -25,7 +25,7 @@
 	<!-- Header -->
 	<div class="mb-12">
 		<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">My Work</p>
-		<h1 class="text-5xl font-bold mb-4">Portfolio</h1>
+		<h1 class="text-5xl font-semibold mb-4">Portfolio</h1>
 		<p class="text-muted-foreground max-w-xl text-lg">
 			A collection of projects I've built — from web apps to open source tools.
 		</p>
@@ -59,7 +59,7 @@
 
 	<!-- Grid -->
 	{#if filtered.length > 0}
-		<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			{#each filtered as project (project.id)}
 				<ProjectCard {project} />
 			{/each}

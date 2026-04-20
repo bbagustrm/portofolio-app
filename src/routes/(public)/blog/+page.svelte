@@ -57,7 +57,7 @@
 			<!-- Header -->
 			<div class="mb-10">
 				<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Writing</p>
-				<h1 class="text-5xl font-bold mb-4">Blog</h1>
+				<h1 class="text-5xl font-semibold mb-4">Blog</h1>
 				<p class="text-muted-foreground max-w-xl text-lg">
 					Thoughts on web development, engineering, and things I find interesting.
 				</p>
@@ -188,7 +188,7 @@
 			<!-- Article count -->
 			<div class="rounded-xl border bg-muted/30 p-4">
 				<p class="text-sm text-muted-foreground mb-1">Total Articles</p>
-				<p class="text-3xl font-bold text-primary">{data.posts.length}</p>
+				<p class="text-3xl font-semibold text-primary">{data.posts.length}</p>
 			</div>
 		</div>
 	</div>
