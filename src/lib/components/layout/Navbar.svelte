@@ -75,8 +75,8 @@
 
 				<Sheet.Content side="right" class="w-64">
 					<Sheet.Header>
-						<Sheet.Title class="font-sans text-left">
-							atmojo<span class="text-primary font-bold">.</span>pro
+						<Sheet.Title class="font-sans text-left text-lg">
+							<p>atmojo<span class="text-primary font-bold">.</span>pro</p>
 						</Sheet.Title>
 					</Sheet.Header>
 
@@ -87,7 +87,7 @@
 
 							<a href={link.href}
 							onclick={closeMenu}
-							class="px-3 py-2 text-sm rounded-md transition-colors
+							class="px-8 py-4 text-lg rounded-none transition-colors
 							{isActive(link.href)
 								? 'text-foreground font-medium bg-muted'
 								: 'text-muted-foreground hover:text-foreground hover:bg-muted'}"

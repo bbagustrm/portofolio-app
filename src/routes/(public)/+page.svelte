@@ -181,15 +181,15 @@
 
 <!-- FEATURED PROJECTS -->
 {#if data.featuredProjects.length > 0}
-	<section class="container mx-auto max-w-6xl px-4 sm:px-6 md:px-8 lg:px-4 py-20">
+	<section class="container mx-auto max-w-6xl px-2 sm:px-4 md:px-8 lg:px-4 py-20">
 
 		<div class="flex items-end justify-between mb-10">
 			<div>
 				<p class="text-sm text-primary font-medium mb-1">
 					PORTFOLIO
 				</p>
-				<h2 class="text-3xl font-bold">
-					Featured Projects
+				<h2 class="text-3xl font-semibold">
+					My Projects
 				</h2>
 			</div>
 
@@ -202,12 +202,12 @@
 			</a>
 		</div>
 
-		<div class="grid gap-6 1 grid-cols-2 md:grid-cols-3">
+		<div class="grid gap-3 1 grid-cols-2 md:grid-cols-3">
 
 			{#each data.featuredProjects as project}
 				<a href="/portfolio/{project.slug}" class="group block">
 
-					<Card class="h-full overflow-hidden p-0 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+					<Card class="rounded-md h-full overflow-hidden p-0 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 gap-4 md:gap-6">
 
 						{#if project.cover_url}
 							<div class="aspect-video overflow-hidden transition-transform duration-300 group-hover:scale-105">
@@ -220,7 +220,7 @@
 							</div>
 						{/if}
 
-						<CardContent class="pb-4">
+						<CardContent class="pb-4 px-4">
 
 							<h3 class="font-semibold text-xl mb-1 group-hover:text-primary transition-colors line-clamp-1">
 								{project.title}
@@ -259,7 +259,6 @@
 {#if data.latestPosts.length > 0}
 	<section class="bg-muted/20 border-t">
 		<div class="container mx-auto max-w-6xl p-4">
-
 			<Carousel.Root
 				opts={{ align: 'start', loop: false }}
 				class="w-full"
@@ -339,22 +338,22 @@
 <!-- ─── Gallery Preview ───────────────────────────────── -->
 {#if data.galleryPosts.length > 0}
 	<section class="border-t">
-		<div class="container mx-auto max-w-6xl px-4 sm:px-6 md:px-8 lg:px-4 py-20">
+		<div class="container mx-auto max-w-6xl px-2 sm:px-4 md:px-8 lg:px-4 py-20">
 			<div class="flex items-end justify-between mb-10">
 				<div>
 					<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Memories</p>
-					<h2 class="text-3xl font-bold">Gallery</h2>
+					<h2 class="text-3xl font-semibold">Gallery</h2>
 				</div>
 				<a href="/gallery" class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
 					View all <ArrowRight class="size-3" />
 				</a>
 			</div>
 
-			<div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+			<div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-0">
 				{#each data.galleryPosts.slice(0, 6) as post}
 					{@const firstMedia = post.media?.[0]}
 					<a href="/gallery/{post.id}" class="group block">
-						<div class="relative aspect-square rounded-xl overflow-hidden bg-muted">
+						<div class="relative aspect-square rounded-none overflow-hidden bg-muted border">
 							{#if firstMedia?.type === 'image'}
 								<img
 									src={firstMedia.url}
