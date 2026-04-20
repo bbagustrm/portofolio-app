@@ -33,7 +33,7 @@
 		<div class="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
 	</div>
 
-	<div class="container mx-auto max-w-6xl px-4 py-24 md:py-32">
+	<div class="container mx-auto max-w-6xl px-4 py-36 md:py-32">
 		<div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between lg:items-start">
 
 			<div class="w-full lg:w-1/2 flex flex-col items-center">
@@ -181,26 +181,14 @@
 
 <!-- FEATURED PROJECTS -->
 {#if data.featuredProjects.length > 0}
-	<section class="container mx-auto max-w-6xl px-2 sm:px-4 md:px-8 lg:px-4 py-20">
+	<section class="container mx-auto max-w-6xl flex flex-col justify-center items-center px-2 sm:px-4 md:px-8 lg:px-4 py-20 space-y-16">
 
-		<div class="flex items-end justify-between mb-10">
-			<div>
-				<p class="text-sm text-primary font-medium mb-1">
-					PORTFOLIO
-				</p>
-				<h2 class="text-3xl font-semibold">
-					My Projects
-				</h2>
-			</div>
-
-			<a
-				href="/portfolio"
-				class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
-			>
-				View all
-				<ArrowRight size={12} weight="regular" />
-			</a>
-		</div>
+			<p class="text-sm text-primary font-medium mb-1">
+				PORTFOLIO
+			</p>
+			<h2 class="text-3xl font-semibold">
+				My Projects
+			</h2>
 
 		<div class="grid gap-3 1 grid-cols-2 md:grid-cols-3">
 
@@ -252,36 +240,58 @@
 			{/each}
 
 		</div>
+
+		<a
+			href="/portfolio"
+			class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+		>
+			<Button variant="outline" size="lg">
+				View all
+				<ArrowRight size={12} weight="regular" />
+			</Button>
+		</a>
 	</section>
 {/if}
 
 <!-- BLOG -->
 {#if data.latestPosts.length > 0}
 	<section class="bg-muted/20 border-t">
-		<div class="container mx-auto max-w-6xl p-4">
+		<div class="container mx-auto max-w-6xl px-4 pt-8 pb-16">
+
+			<!-- Header -->
+			<div class="flex items-end justify-between mb-8">
+				<div>
+					<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Blog</p>
+					<h2 class="text-3xl font-semibold">Latest Articles</h2>
+				</div>
+				<a href="/blog" class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+					View all <ArrowRight class="size-3" />
+				</a>
+			</div>
+
+			<!-- Carousel -->
 			<Carousel.Root
 				opts={{ align: 'start', loop: false }}
-				class="w-full"
+				class="group/carousel w-full "
 			>
-				<div class="flex items-center gap-4">
+				<div class="relative">
+					<!-- Prev -->
+					<div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10
+						opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200">
+						<Carousel.Previous class="static translate-y-0 rounded-full shadow-md cursor-pointer" />
+					</div>
 
-					<!-- Prev Button -->
-					<Carousel.Previous class="static translate-y-0 shrink-0 rounded-full" />
-
-					<!-- Viewport -->
-					<div class="flex-1 overflow-hidden py-2">
+					<div class="overflow-hidden">
 						<Carousel.Content class="-ml-4">
-
 							{#each data.latestPosts as post}
-								<Carousel.Item class="pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
+								<Carousel.Item class="pl-4 basis-[78%] md:basis-[43%] lg:basis-[30%]">
 									<a href="/blog/{post.slug}" class="group block h-full">
-										<div
-											class="flex gap-4 rounded-xl border bg-card h-full
-										hover:border-primary/40 hover:bg-muted/30
-										transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+										<div class="flex gap-4 rounded-xl border bg-card h-full
+											hover:border-primary/40 hover:bg-muted/30
+											transition-all duration-200 hover:shadow-sm"
 										>
 											<!-- Thumbnail -->
-											<div class="shrink-0 w-20 h-20 rounded-tl-lg rounded-bl-lg overflow-hidden bg-muted">
+											<div class="shrink-0 w-28 h-28 md:w-24 md:h-24 rounded-tl-lg rounded-bl-lg overflow-hidden bg-muted">
 												{#if post.cover_url}
 													<img
 														src={post.cover_url}
@@ -297,21 +307,15 @@
 											</div>
 
 											<!-- Content -->
-											<div class="flex-1 min-w-0 flex flex-col justify-center">
-												<div>
-													<h3
-														class="font-medium text-sm sm:text-base leading-snug mb-1
-													group-hover:text-primary transition-colors line-clamp-1"
-													>
-														{post.title}
-													</h3>
-
-													<p class="text-xs text-muted-foreground line-clamp-2 hidden sm:block">
-														{post.excerpt ?? ''}
-													</p>
-												</div>
-
-												<div class="flex items-center gap-2 text-xs text-muted-foreground mt-2">
+											<div class="flex-1 min-w-0 flex flex-col justify-center py-3 pr-3">
+												<h3 class="font-medium text-xl md:text-lg leading-snug mb-1
+													group-hover:text-primary transition-colors line-clamp-1">
+													{post.title}
+												</h3>
+												<p class="text-xs text-muted-foreground line-clamp-2 hidden sm:block mb-2">
+													{post.excerpt ?? ''}
+												</p>
+												<div class="flex items-center gap-2 text-xs text-muted-foreground">
 													<span>{formatDateShort(post.published_at ?? post.created_at)}</span>
 													<span>·</span>
 													<span>{estimateReadingTime(post.content ?? '')}</span>
@@ -321,78 +325,22 @@
 									</a>
 								</Carousel.Item>
 							{/each}
-
 						</Carousel.Content>
 					</div>
 
-					<!-- Next Button -->
-					<Carousel.Next class="static translate-y-0 shrink-0 rounded-full" />
-
+					<!-- Next -->
+					<div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10
+						opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200">
+						<Carousel.Next class="static translate-y-0 rounded-full shadow-md cursor-pointer" />
+					</div>
 				</div>
 			</Carousel.Root>
-
-		</div>
-	</section>
-{/if}
-
-<!-- ─── Gallery Preview ───────────────────────────────── -->
-{#if data.galleryPosts.length > 0}
-	<section class="border-t">
-		<div class="container mx-auto max-w-6xl px-2 sm:px-4 md:px-8 lg:px-4 py-20">
-			<div class="flex items-end justify-between mb-10">
-				<div>
-					<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Memories</p>
-					<h2 class="text-3xl font-semibold">Gallery</h2>
-				</div>
-				<a href="/gallery" class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-					View all <ArrowRight class="size-3" />
-				</a>
-			</div>
-
-			<div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-0">
-				{#each data.galleryPosts.slice(0, 6) as post}
-					{@const firstMedia = post.media?.[0]}
-					<a href="/gallery/{post.id}" class="group block">
-						<div class="relative aspect-square rounded-none overflow-hidden bg-muted border">
-							{#if firstMedia?.type === 'image'}
-								<img
-									src={firstMedia.url}
-									alt={post.caption ?? ''}
-									class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-									loading="lazy"
-								/>
-							{:else if firstMedia?.type === 'video'}
-								<video src={firstMedia.url} class="w-full h-full object-cover" muted playsinline preload="metadata">
-									<track kind="captions" />
-								</video>
-							{:else}
-								<div class="w-full h-full flex items-center justify-center text-4xl">🖼️</div>
-							{/if}
-
-							<!-- Hover overlay -->
-							<div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-200">
-								{#if post.caption}
-									<div class="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
-										<p class="text-white text-xs line-clamp-2">{post.caption}</p>
-									</div>
-								{/if}
-							</div>
-
-							{#if (post.media?.length ?? 0) > 1}
-								<div class="absolute top-2 right-2 bg-black/60 text-white text-xs px-1.5 py-0.5 rounded-full">
-									⊞ {post.media?.length}
-								</div>
-							{/if}
-						</div>
-					</a>
-				{/each}
-			</div>
 		</div>
 	</section>
 {/if}
 
 <!-- CTA -->
-<section class="px-4 py-20 text-center bg-muted/30 border">
+<section class="px-4 py-20 text-center bg-primary text-background border">
 
 	<h2 class="text-3xl font-semibold mb-4">
 		Let's work together
@@ -402,11 +350,14 @@
 		I'm open to freelance projects, collaborations, and full-time opportunities.
 	</p>
 
-	<a href="mailto:you@email.com">
-		<Button size="lg" class="gap-2" >
-			<Envelope size={16} weight="regular" />
-			Get in touch
-		</Button>
-	</a>
+	<Button
+		href="mailto:bbagustrm@gmail.com"
+		size="lg"
+		class="gap-2"
+		variant="secondary"
+	>
+		<Envelope size={16} weight="regular" />
+		Get in touch
+	</Button>
 
 </section>
