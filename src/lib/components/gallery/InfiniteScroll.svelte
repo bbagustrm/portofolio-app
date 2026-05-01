@@ -16,12 +16,11 @@
 
 		const observer = new IntersectionObserver(
 			(entries) => {
-				const entry = entries[0];
-				if (entry.isIntersecting && hasMore && !loading) {
+				if (entries[0].isIntersecting && hasMore && !loading) {
 					onLoadMore();
 				}
 			},
-			{ rootMargin: '200px' } // trigger 200px sebelum batas bawah
+			{ rootMargin: '300px' }
 		);
 
 		observer.observe(sentinel);
@@ -29,13 +28,18 @@
 	});
 </script>
 
-<div bind:this={sentinel} class="py-8 flex justify-center">
+<div bind:this={sentinel} class="py-6 flex justify-center">
 	{#if loading}
 		<div class="flex items-center gap-2 text-sm text-muted-foreground">
 			<span class="size-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
 			Loading more...
 		</div>
-	{:else if !hasMore}
-		<p class="text-sm text-muted-foreground">You've seen everything ✨</p>
+	{:else if !hasMore && !loading}
+		<div class="flex flex-col items-center gap-1">
+			<div class="size-8 rounded-full bg-muted flex items-center justify-center">
+				<span class="text-sm">✓</span>
+			</div>
+			<p class="text-xs text-muted-foreground">You've seen everything</p>
+		</div>
 	{/if}
 </div>
