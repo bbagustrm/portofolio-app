@@ -1,38 +1,39 @@
 <script lang="ts">
-	import { ArrowLeft } from 'phosphor-svelte';
+	import { ArrowLeft } from '@lucide/svelte';
 	import { formatDate } from '$lib/utils';
-	import type { Media } from '$lib/types';
 
 	let { data } = $props();
 	let post = $derived(data.post);
-
-	let activeIndex = $state(0);
 	let media = $derived(post.media ?? []);
+	let activeIndex = $state(0);
 	let active = $derived(media[activeIndex]);
 </script>
 
 <svelte:head>
-	<title>{post.caption ? post.caption.slice(0, 50) : 'Gallery'} — Bagus</title>
+	<title>{post.caption ? post.caption.slice(0, 50) + '...' : 'Photo'} — Gallery</title>
 </svelte:head>
 
-<div class="container mx-auto max-w-4xl px-4 py-8">
-	<a href="/gallery" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
-		<ArrowLeft size={16} weight="regular" />
-		Back to Gallery
+<div class="container mx-auto max-w-3xl px-4 py-16">
+
+	<a href="/gallery"
+	class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
+	>
+	<ArrowLeft class="size-4" />
+	Back to Gallery
 	</a>
 
-	<!-- Main media viewer -->
-	<div class="rounded-2xl overflow-hidden bg-muted mb-4 aspect-square sm:aspect-video">
+	<!-- Main viewer -->
+	<div class="rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5 mb-4 border">
 		{#if active?.type === 'image'}
 			<img
 				src={active.url}
 				alt={post.caption ?? ''}
-				class="w-full h-full object-contain"
+				class="w-full max-h-[70vh] object-contain"
 			/>
 		{:else if active?.type === 'video'}
 			<video
 				src={active.url}
-				class="w-full h-full object-contain"
+				class="w-full max-h-[70vh]"
 				controls
 				playsinline
 			>
@@ -41,14 +42,14 @@
 		{/if}
 	</div>
 
-	<!-- Thumbnails (if multiple) -->
+	<!-- Thumbnails -->
 	{#if media.length > 1}
 		<div class="flex gap-2 overflow-x-auto pb-2 mb-6">
 			{#each media as item, i}
 				<button
 					onclick={() => (activeIndex = i)}
 					class="shrink-0 size-16 rounded-lg overflow-hidden border-2 transition-colors
-						{i === activeIndex ? 'border-primary' : 'border-transparent'}"
+						{i === activeIndex ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'}"
 				>
 					{#if item.type === 'image'}
 						<img src={item.url} alt="" class="w-full h-full object-cover" />
@@ -61,9 +62,9 @@
 	{/if}
 
 	<!-- Caption & meta -->
-	<div class="space-y-2">
+	<div class="space-y-2 mt-4">
 		{#if post.caption}
-			<p class="text-lg">{post.caption}</p>
+			<p class="text-base">{post.caption}</p>
 		{/if}
 		<p class="text-sm text-muted-foreground">{formatDate(post.created_at)}</p>
 	</div>

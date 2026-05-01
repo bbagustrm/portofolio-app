@@ -4,12 +4,12 @@ import { getPublishedPosts } from '$lib/server/db/gallery';
 
 export const GET: RequestHandler = async ({ url, locals }) => {
 	const cursor = url.searchParams.get('cursor') ?? undefined;
-	const limit = Number(url.searchParams.get('limit') ?? 12);
+	const limit = Number(url.searchParams.get('limit') ?? 8);
 
 	try {
 		const result = await getPublishedPosts(locals.supabase, cursor, limit);
 		return json(result);
-	} catch (e) {
+	} catch {
 		return json({ posts: [], nextCursor: null }, { status: 500 });
 	}
 };
