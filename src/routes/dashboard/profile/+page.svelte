@@ -6,7 +6,8 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import { Camera } from '@lucide/svelte';
+	import { Camera, ArrowLeft } from '@lucide/svelte';
+
 
 	let { data, form } = $props();
 	let profile = $derived(data.profile);
@@ -28,9 +29,16 @@
 <svelte:head><title>Profile — Dashboard</title></svelte:head>
 
 <div class="max-w-2xl space-y-6">
-	<div>
-		<h1 class="text-2xl font-bold">Profile</h1>
-		<p class="text-muted-foreground mt-1">Update your public profile information.</p>
+	<div class="flex items-center gap-3 mb-6">
+		<a href="/dashboard">
+			<Button variant="ghost" size="icon">
+				<ArrowLeft class="size-4" />
+			</Button>
+		</a>
+		<div>
+			<h1 class="text-2xl font-bold">Profile</h1>
+			<p class="text-muted-foreground text-sm mt-0.5">Update your public profile information.</p>
+		</div>
 	</div>
 
 	<form

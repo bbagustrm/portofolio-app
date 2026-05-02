@@ -1,24 +1,18 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import * as Sidebar from '$lib/components/ui/sidebar';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import {
-		SquaresFour,
-		Kanban,
-		Article,
-		Images,
-		User,
-		SignOut,
-		List,
-		X
-	} from 'phosphor-svelte';
+		LayoutDashboard, FolderKanban, BookText,
+		Images, User, LogOut, ExternalLink
+	} from '@lucide/svelte';
 
 	let { user = null } = $props<{ user?: any }>();
 
-	let mobileOpen = $state(false);
-
 	const navLinks = [
-		{ href: '/dashboard', label: 'Overview', icon: SquaresFour, exact: true },
-		{ href: '/dashboard/projects', label: 'Projects', icon: Kanban, exact: false },
-		{ href: '/dashboard/blog', label: 'Blog', icon: Article, exact: false },
+		{ href: '/dashboard', label: 'Overview', icon: LayoutDashboard, exact: true },
+		{ href: '/dashboard/projects', label: 'Projects', icon: FolderKanban, exact: false },
+		{ href: '/dashboard/blog', label: 'Blog', icon: BookText, exact: false },
 		{ href: '/dashboard/gallery', label: 'Gallery', icon: Images, exact: false },
 		{ href: '/dashboard/profile', label: 'Profile', icon: User, exact: false }
 	];
@@ -27,83 +21,94 @@
 		if (exact) return page.url.pathname === href;
 		return page.url.pathname.startsWith(href);
 	}
-
-	function closeMobile() {
-		mobileOpen = false;
-	}
 </script>
 
-<!-- Mobile top bar -->
-<header class="flex items-center justify-between border-b px-4 py-3 md:hidden bg-background">
-	<a href="/" class="text-lg font-bold">
-		atmojo<span class="text-primary font-bold">.</span>pro
-	</a>
-	<button
-		onclick={() => (mobileOpen = !mobileOpen)}
-		class="p-2 rounded-md hover:bg-muted transition-colors"
-		aria-label="Toggle sidebar"
-	>
-		{#if mobileOpen}
-			<X size={20} />
-		{:else}
-			<List size={20} />
-		{/if}
-	</button>
-</header>
+<!-- Tidak ada Sidebar.Provider di sini -->
+<Sidebar.Root collapsible="icon">
+	<Sidebar.Header>
+		<Sidebar.Menu>
+			<Sidebar.MenuItem>
+				<Sidebar.MenuButton size="lg">
+					{#snippet child({ props })}
+						<a href="/" {...props}>
+							<div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-bold shrink-0">
+								A
+							</div>
+							<div class="flex flex-col gap-0.5 leading-none">
+								<span class="font-semibold font-sans text-sm">atmojo.pro</span>
+								<span class="text-xs text-muted-foreground">dashboard</span>
+							</div>
+						</a>
+					{/snippet}
+				</Sidebar.MenuButton>
+			</Sidebar.MenuItem>
+		</Sidebar.Menu>
+	</Sidebar.Header>
 
-<!-- Sidebar -->
-<aside
-	class="
-		bg-sidebar text-sidebar-foreground border-r
-		md:flex md:flex-col md:w-60 md:min-h-screen md:sticky md:top-0 md:max-h-screen
-		{mobileOpen ? 'flex flex-col' : 'hidden'}
-	"
->
-	<!-- Logo (desktop) -->
-	<div class="hidden md:flex items-center px-6 h-16 border-b shrink-0">
-		<a href="/" class="text-lg font-bold">
-			atmojo<span class="text-primary font-bold">.</span>pro
-			<span class="ml-2 text-xs font-normal text-muted-foreground">dashboard</span>
-		</a>
-	</div>
+	<Sidebar.Content>
+		<Sidebar.Group>
+			<Sidebar.GroupLabel>Navigation</Sidebar.GroupLabel>
+			<Sidebar.GroupContent>
+				<Sidebar.Menu>
+					{#each navLinks as link}
+						{@const Icon = link.icon}
+						{@const active = isActive(link.href, link.exact)}
+						<Sidebar.MenuItem>
+							<Tooltip.Provider>
+								<Tooltip.Root>
+									<Tooltip.Trigger>
+										{#snippet child({ props })}
+											<Sidebar.MenuButton {...props} isActive={active}>
+												{#snippet child({ props: btnProps })}
+													<a href={link.href} {...btnProps}>
+														<Icon class="size-4" />
+														<span>{link.label}</span>
+													</a>
+												{/snippet}
+											</Sidebar.MenuButton>
+										{/snippet}
+									</Tooltip.Trigger>
+									<Tooltip.Content side="right">{link.label}</Tooltip.Content>
+								</Tooltip.Root>
+							</Tooltip.Provider>
+						</Sidebar.MenuItem>
+					{/each}
+				</Sidebar.Menu>
+			</Sidebar.GroupContent>
+		</Sidebar.Group>
+	</Sidebar.Content>
 
-	<!-- Navigation -->
-	<nav class="flex-1 overflow-y-auto p-3 space-y-1">
-		{#each navLinks as link}
-			{@const Icon = link.icon}
-			{@const active = isActive(link.href, link.exact)}
+	<Sidebar.Footer>
+		<Sidebar.Menu>
+			<Sidebar.MenuItem>
+				<Sidebar.MenuButton>
+					{#snippet child({ props })}
+						<a href="/" target="_blank" rel="noopener noreferrer" {...props}>
+							<ExternalLink class="size-4" />
+							<span>View Site</span>
+						</a>
+					{/snippet}
+				</Sidebar.MenuButton>
+			</Sidebar.MenuItem>
 
-			<a
-				href={link.href}
-				onclick={closeMobile}
-				class="group flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors
-				{active
-					? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-					: 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'}"
-			>
-				<Icon size={16} class="shrink-0 transition-transform group-hover:scale-110" />
-				{link.label}
-			</a>
-		{/each}
-	</nav>
+			<Sidebar.MenuItem>
+				<Sidebar.MenuButton>
+					{#snippet child({ props })}
+						<form method="POST" action="/logout" class="w-full">
+							<button
+								type="submit"
+								class="flex w-full items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors"
+								{...props}
+							>
+								<LogOut class="size-4 shrink-0" />
+								<span class="truncate">{user?.email ?? 'Logout'}</span>
+							</button>
+						</form>
+					{/snippet}
+				</Sidebar.MenuButton>
+			</Sidebar.MenuItem>
+		</Sidebar.Menu>
+	</Sidebar.Footer>
 
-	<!-- Bottom section -->
-	<div class="p-3 border-t shrink-0">
-		{#if user?.email}
-			<div class="px-3 py-2 mb-1">
-				<p class="text-xs text-muted-foreground truncate">{user.email}</p>
-			</div>
-		{/if}
-
-		<form method="POST" action="/logout">
-			<button
-				type="submit"
-				class="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-sm
-				text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive transition-colors"
-			>
-				<SignOut size={16} class="shrink-0" />
-				Logout
-			</button>
-		</form>
-	</div>
-</aside>
+	<Sidebar.Rail />
+</Sidebar.Root>
