@@ -13,134 +13,214 @@
 	import { techStack } from '$lib/data/tech-stack';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Carousel from '$lib/components/ui/carousel';
+	import { onMount } from 'svelte';
+	import { shouldAnimate, EASING, DURATION } from '$lib/utils/animation';
 
 	let { data } = $props();
+
+	// ── Hero element refs ────────────────────────────────
+	let heroBadge = $state<HTMLElement | null>(null);
+	let heroLine1 = $state<HTMLElement | null>(null);
+	let heroLine2 = $state<HTMLElement | null>(null);
+	let heroBio = $state<HTMLElement | null>(null);
+	let heroButtons = $state<HTMLElement | null>(null);
+	let heroSocials = $state<HTMLElement | null>(null);
+
+	onMount(async () => {
+		if (!shouldAnimate()) return;
+
+		const { animate, stagger } = await import('motion');
+
+		// Set initial state — semua invisible
+		const elements = [heroBadge, heroLine1, heroLine2, heroBio, heroButtons, heroSocials].filter(Boolean);
+		elements.forEach((el) => {
+			if (el) {
+				el.style.opacity = '0';
+				el.style.transform = 'translateY(32px)';
+			}
+		});
+
+		// Staggered entrance
+		const sequence: [HTMLElement, object, object][] = [
+			[heroBadge!, { opacity: [0, 1], y: [20, 0] }, { duration: DURATION.normal, easing: EASING.out }],
+			[heroLine1!, { opacity: [0, 1], y: [40, 0] }, { duration: DURATION.slow, easing: EASING.out }],
+			[heroLine2!, { opacity: [0, 1], y: [40, 0] }, { duration: DURATION.slow, easing: EASING.spring }],
+			[heroBio!, { opacity: [0, 1], y: [24, 0] }, { duration: DURATION.normal, easing: EASING.out }],
+			[heroButtons!, { opacity: [0, 1], y: [20, 0] }, { duration: DURATION.normal, easing: EASING.out }],
+			[heroSocials!, { opacity: [0, 1], y: [16, 0] }, { duration: DURATION.normal, easing: EASING.out }]
+		];
+
+		// Play dengan delay bertahap
+		const delays = [0, 0.1, 0.22, 0.42, 0.56, 0.68];
+
+		sequence.forEach(([el, keyframes, options], i) => {
+			if (!el) return;
+			setTimeout(() => {
+				animate(el, keyframes, options as any);
+			}, delays[i] * 1000);
+		});
+	});
+
+	let heroBadgeMobile = $state<HTMLElement | null>(null);
+	let heroBadgeDesktop = $state<HTMLElement | null>(null);
+
+	onMount(async () => {
+		if (!shouldAnimate()) return;
+		const { animate } = await import('motion');
+
+		// Set initial
+		const allEls = [
+			heroBadgeMobile, heroBadgeDesktop,
+			heroLine1, heroLine2,
+			heroBio, heroButtons, heroSocials
+		].filter(Boolean) as HTMLElement[];
+
+		allEls.forEach((el) => {
+			el.style.opacity = '0';
+			el.style.transform = 'translateY(32px)';
+		});
+
+		const animateEl = (
+			el: HTMLElement | null,
+			delay: number,
+			y = 24,
+			easing: number[] = EASING.out
+		) => {
+			if (!el) return;
+			setTimeout(() => {
+				animate(
+					el,
+					{ opacity: [0, 1], y: [y, 0] },
+					{ duration: DURATION.slow, easing }
+				);
+			}, delay);
+		};
+
+		// Badge (mobile + desktop)
+		animateEl(heroBadgeMobile, 0, 16);
+		animateEl(heroBadgeDesktop, 0, 16);
+
+		// Name lines
+		animateEl(heroLine1, 120, 40);
+		animateEl(heroLine2, 240, 40, EASING.spring);
+
+		// Bio, buttons, socials
+		animateEl(heroBio, 420, 24);
+		animateEl(heroButtons, 540, 20);
+		animateEl(heroSocials, 660, 16);
+	});
 </script>
 
 <svelte:head>
-	<title>Bagus — Full Stack Developer</title>
-	<meta
-		name="description"
-		content={data.profile?.bio ?? 'Personal portfolio and blog'}
-	/>
+	<title>Atmojo — Full Stack Developer</title>
+	<meta name="description" content={data.profile?.bio ?? 'Personal portfolio and blog'} />
 </svelte:head>
 
-<!-- HERO -->
+<!-- ─── Hero ──────────────────────────────────────────── -->
 <section class="relative overflow-hidden">
-	<!-- Gradient background -->
 	<div class="absolute inset-0 -z-10 pointer-events-none">
-		<div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
-		<div class="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+		<div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-3xl"></div>
+		<div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl"></div>
 	</div>
 
-	<div class="container mx-auto max-w-6xl px-4 py-36 md:py-32">
-		<div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between lg:items-start">
+	<div class="container mx-auto max-w-6xl px-4 py-24 md:py-36">
+		<div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between lg:items-start gap-12">
 
-			<div class="w-full lg:w-1/2 flex flex-col items-center">
-				<div class="inline-flex lg:hidden w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
-					<span class="size-2 rounded-full bg-yellow-500 animate-pulse"></span>
+			<!-- Left — Name -->
+			<div class="w-full lg:w-1/2">
+				<!-- Badge — mobile only -->
+				<div bind:this={heroBadgeMobile} class="inline-flex lg:hidden w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
+					<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
 					Available for opportunities
 				</div>
-				<h1 class="text-5xl font-medium tracking-tight sm:text-6xl md:text-7xl lg:text-8xl mb-4">
-					Bagus Tri
-					<span class="text-primary lg:text-9xl">
-					Atmojo
-				</span>
+
+				<h1 class="text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05]">
+					<span bind:this={heroLine1} class="block">Bagus Tri</span>
+					<span bind:this={heroLine2} class="block text-primary lg:text-9xl">Atmojo</span>
 				</h1>
 			</div>
 
-			<div class="w-full lg:w-1/2 flex flex-col items-center lg:items-start">
-				<div class="hidden lg:inline-flex w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
-					<span class="size-2 rounded-full bg-yellow-500 animate-pulse"></span>
+			<!-- Right — Bio + CTA + Socials -->
+			<div class="w-full lg:w-1/2 flex flex-col items-start">
+				<!-- Badge — desktop only -->
+				<div bind:this={heroBadgeDesktop} class="hidden lg:inline-flex w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
+					<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
 					Available for opportunities
 				</div>
-				<p class="text-center md:text-lg sm:px-8 md:px-16 lg:px-0 lg:text-left lg:text-xl text-muted-foreground mb-8 leading-relaxed">
-					{data.profile?.bio ??
-					'Full Stack Developer passionate about building modern web applications with clean code and great user experiences.'}
+
+				<p bind:this={heroBio} class="text-lg text-muted-foreground mb-8 leading-relaxed">
+					{data.profile?.bio ?? 'Full Stack Developer passionate about building modern web applications with clean code and great user experiences.'}
 				</p>
 
-				<div class="flex flex-wrap gap-3 mb-10">
+				<div bind:this={heroButtons} class="flex flex-wrap gap-3 mb-10">
 					<a href="/portfolio">
-						<Button size="lg" class="gap-2">
+						<Button size="lg" class="gap-2 rounded-full px-6">
 							View Portfolio
-							<ArrowRight size={16} weight="regular" />
+							<ArrowRight class="size-4" />
 						</Button>
 					</a>
-
 					<a href="/blog">
-						<Button size="lg" variant="outline" class="gap-2">
+						<Button size="lg" variant="outline" class="gap-2 rounded-full px-6">
 							Read Blog
 						</Button>
 					</a>
 				</div>
 
+				<!-- Social links -->
+				<div bind:this={heroSocials}>
+					<Tooltip.Provider>
+						<div class="flex items-center gap-1">
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									{#snippet child({ props })}
 
-				<Tooltip.Provider>
-					<div class="flex items-center gap-3">
-
-						<!-- GitHub -->
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								{#snippet child({ props })}
-									<a
-										{...props}
-										href="https://github.com/bbagustrm"
+										<a {...props}
+										href={data.profile?.github_url ?? 'https://github.com'}
 										target="_blank"
 										rel="noopener noreferrer"
-										class="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-									>
-										<GithubLogo size={28} weight="fill" />
-									</a>
-								{/snippet}
-							</Tooltip.Trigger>
+										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+										>
+										<GithubLogo class="size-5 md:size-7" />
+										</a>
+									{/snippet}
+								</Tooltip.Trigger>
+								<Tooltip.Content side="bottom">GitHub</Tooltip.Content>
+							</Tooltip.Root>
 
-							<Tooltip.Content>
-								GitHub
-							</Tooltip.Content>
-						</Tooltip.Root>
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									{#snippet child({ props })}
 
-						<!-- LinkedIn -->
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								{#snippet child({ props })}
-									<a
-										{...props}
-										href="https://linkedin.com/in/bbagustrm"
+										<a {...props}
+										href={data.profile?.linkedin_url ?? 'https://linkedin.com'}
 										target="_blank"
-										class="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-									>
-										<LinkedinLogo size={28} weight="fill" />
-									</a>
-								{/snippet}
-							</Tooltip.Trigger>
+										rel="noopener noreferrer"
+										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+										>
+										<LinkedinLogo class="size-5 md:size-7" />
+										</a>
+									{/snippet}
+								</Tooltip.Trigger>
+								<Tooltip.Content side="bottom">LinkedIn</Tooltip.Content>
+							</Tooltip.Root>
 
-							<Tooltip.Content>
-								LinkedIn
-							</Tooltip.Content>
-						</Tooltip.Root>
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									{#snippet child({ props })}
 
-						<!-- Email -->
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								{#snippet child({ props })}
-									<a
-										{...props}
-										href="mailto:bbagustrm@gmail.com"
-										class="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-									>
-										<Envelope size={28} weight="fill" />
-									</a>
-								{/snippet}
-							</Tooltip.Trigger>
-
-							<Tooltip.Content>
-								Contact Me
-							</Tooltip.Content>
-						</Tooltip.Root>
-
-					</div>
-				</Tooltip.Provider>
-
+										<a {...props}
+										href="mailto:hello@atmojo.pro"
+										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+										>
+										<Envelope class="size-5 md:size-7" />
+										</a>
+									{/snippet}
+								</Tooltip.Trigger>
+								<Tooltip.Content side="bottom">Email</Tooltip.Content>
+							</Tooltip.Root>
+						</div>
+					</Tooltip.Provider>
+				</div>
 			</div>
 		</div>
 	</div>
