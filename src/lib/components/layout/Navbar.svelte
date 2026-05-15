@@ -31,7 +31,9 @@
 	<div class="container mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
 
 		<!-- Logo -->
-		<a href="/" class="text-xl font-semibold tracking-tight hover:opacity-80 transition-opacity font-sans">
+		<a 	href="/"
+		    class="text-xl font-semibold tracking-tight hover:opacity-80 transition-opacity font-sans"
+		    style="view-transition-name: site-logo">
 			atmojo<span class="text-primary font-bold">.</span>pro
 		</a>
 
