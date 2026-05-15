@@ -4,11 +4,15 @@
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { Separator } from '$lib/components/ui/separator';
 	import ModeToggle from './ModeToggle.svelte';
-	import { List } from 'phosphor-svelte';
+	import { List } from '@lucide/svelte';
+	import { onMount } from 'svelte';
+	import { shouldAnimate } from '$lib/utils/animation';
 
 	let { user = null } = $props<{ user?: any }>();
 
 	let mobileOpen = $state(false);
+	let scrolled = $state(false);
+	let scrollY = $state(0);
 
 	const links = [
 		{ href: '/', label: 'Home' },
@@ -25,16 +29,45 @@
 	function closeMenu() {
 		mobileOpen = false;
 	}
+
+	onMount(() => {
+		if (!shouldAnimate()) return;
+
+		function handleScroll() {
+			scrollY = window.scrollY;
+			scrolled = window.scrollY > 20;
+		}
+
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		return () => window.removeEventListener('scroll', handleScroll);
+	});
+
+	// Opacity untuk background — makin scroll makin solid
+	let bgOpacity = $derived(
+		Math.min(scrollY / 80, 1)
+	);
 </script>
 
-<header class="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
-	<div class="container mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+<header
+	class="sticky top-0 z-50 w-full transition-all duration-300
+		{scrolled ? 'border-b shadow-sm' : 'border-b border-transparent'}"
+	style="
+		background: oklch(from var(--background) l c h / {scrolled ? Math.min(bgOpacity * 0.95, 0.95) : 0.8});
+		backdrop-filter: blur({scrolled ? 16 : 8}px);
+	"
+>
+	<div
+		class="container mx-auto flex max-w-6xl items-center justify-between px-4 transition-all duration-300
+			{scrolled ? 'h-12' : 'h-16'}"
+	>
+		<!-- Logo — shrink saat scroll -->
 
-		<!-- Logo -->
-		<a 	href="/"
-		    class="text-xl font-semibold tracking-tight hover:opacity-80 transition-opacity font-sans"
-		    style="view-transition-name: site-logo">
-			atmojo<span class="text-primary font-bold">.</span>pro
+		<a href="/"
+		style="view-transition-name: site-logo"
+		class="font-semibold tracking-tight hover:opacity-80 transition-all duration-300 font-sans
+		{scrolled ? 'text-base' : 'text-xl'}"
+		>
+		atmojo<span class="text-primary font-bold">.</span>pro
 		</a>
 
 		<!-- Desktop Nav -->
@@ -77,8 +110,8 @@
 
 				<Sheet.Content side="right" class="w-64">
 					<Sheet.Header>
-						<Sheet.Title class="font-sans text-left text-lg">
-							<p>atmojo<span class="text-primary font-bold">.</span>pro</p>
+						<Sheet.Title class="font-sans text-left">
+							atmojo<span class="text-primary font-bold">.</span>pro
 						</Sheet.Title>
 					</Sheet.Header>
 
@@ -89,7 +122,7 @@
 
 							<a href={link.href}
 							onclick={closeMenu}
-							class="px-8 py-4 text-lg rounded-none transition-colors
+							class="px-3 py-2 text-sm rounded-md transition-colors
 							{isActive(link.href)
 								? 'text-foreground font-medium bg-muted'
 								: 'text-muted-foreground hover:text-foreground hover:bg-muted'}"
@@ -108,6 +141,12 @@
 				</Sheet.Content>
 			</Sheet.Root>
 		</div>
-
 	</div>
+
+	<!-- Scroll progress bar -->
+	{#if scrolled}
+		<div class="absolute bottom-0 left-0 h-[1.5px] bg-primary/50 transition-all duration-100"
+		     style="width: {Math.min((scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100, 100)}%"
+		></div>
+	{/if}
 </header>
