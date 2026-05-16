@@ -8,6 +8,9 @@
 		BarChart2, ExternalLink
 	} from '@lucide/svelte';
 	import { formatDateShort } from '$lib/utils';
+	import { counter } from '$lib/actions/counter';
+	import { animateBars, animateProgress } from '$lib/actions/chart';
+	import { reveal, revealStagger } from '$lib/actions/reveal';
 
 	let { data } = $props();
 	let { stats, recentProjects, recentBlogPosts, analytics } = $derived(data);
@@ -30,32 +33,32 @@
 <div class="space-y-8">
 
 	<!-- Header -->
-	<div class="flex items-center justify-between">
+	<div use:reveal={{ y: 16 }} class="flex items-center justify-between">
 		<div>
 			<h1 class="text-2xl font-bold">Overview</h1>
 			<p class="text-muted-foreground mt-1 text-sm">Welcome back! Here's what's going on.</p>
 		</div>
-
-		<a href="https://vercel.com/dashboard"
-		target="_blank"
-		rel="noopener noreferrer"
-		>
-		<Button variant="outline" size="sm" class="gap-2">
-			<ExternalLink class="size-3.5" />
-			Vercel Analytics
-		</Button>
+		<a href="https://vercel.com/dashboard" target="_blank" rel="noopener noreferrer">
+			<Button variant="outline" size="sm" class="gap-2">
+				<ExternalLink class="size-3.5" />
+				Vercel Analytics
+			</Button>
 		</a>
 	</div>
 
-	<!-- Analytics stat cards -->
-	<div class="grid gap-4 grid-cols-2 lg:grid-cols-4">
+	<!-- Analytics stat cards — counter animation -->
+	<div use:revealStagger={{ stagger: 0.08, y: 20 }} class="grid gap-4 grid-cols-2 lg:grid-cols-4">
+
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between pb-2">
 				<CardTitle class="text-sm font-medium text-muted-foreground">Total Views</CardTitle>
 				<Eye class="size-4 text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
-				<p class="text-2xl font-bold">{analytics.totalViews.toLocaleString()}</p>
+				<p
+					class="text-2xl font-bold"
+					use:counter={{ target: analytics.totalViews, duration: 1500 }}
+				></p>
 				<p class="text-xs text-muted-foreground mt-1">all time</p>
 			</CardContent>
 		</Card>
@@ -66,7 +69,10 @@
 				<TrendingUp class="size-4 text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
-				<p class="text-2xl font-bold">{analytics.todayViews.toLocaleString()}</p>
+				<p
+					class="text-2xl font-bold"
+					use:counter={{ target: analytics.todayViews, duration: 1000, delay: 80 }}
+				></p>
 				<p class="text-xs text-muted-foreground mt-1">page views</p>
 			</CardContent>
 		</Card>
@@ -77,7 +83,10 @@
 				<BarChart2 class="size-4 text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
-				<p class="text-2xl font-bold">{analytics.weekViews.toLocaleString()}</p>
+				<p
+					class="text-2xl font-bold"
+					use:counter={{ target: analytics.weekViews, duration: 1200, delay: 160 }}
+				></p>
 				<p class="text-xs text-muted-foreground mt-1">last 7 days</p>
 			</CardContent>
 		</Card>
@@ -88,16 +97,19 @@
 				<BarChart2 class="size-4 text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
-				<p class="text-2xl font-bold">{analytics.monthViews.toLocaleString()}</p>
+				<p
+					class="text-2xl font-bold"
+					use:counter={{ target: analytics.monthViews, duration: 1400, delay: 240 }}
+				></p>
 				<p class="text-xs text-muted-foreground mt-1">last 30 days</p>
 			</CardContent>
 		</Card>
 	</div>
 
 	<!-- Chart + Top pages -->
-	<div class="grid gap-6 lg:grid-cols-3">
+	<div use:reveal={{ y: 24, delay: 100 }} class="grid gap-6 lg:grid-cols-3">
 
-		<!-- Traffic chart — 14 hari -->
+		<!-- Bar chart -->
 		<Card class="lg:col-span-2">
 			<CardHeader>
 				<CardTitle class="text-base">Traffic — Last 14 Days</CardTitle>
@@ -108,19 +120,25 @@
 						No data yet. Visit your site to start tracking.
 					</div>
 				{:else}
-					<!-- Bar chart SVG -->
-					<div class="flex items-end gap-1 h-40">
+					<!-- Bar chart dengan animasi -->
+					<div
+						use:animateBars={{ delay: 200, duration: 700, stagger: 40 }}
+						class="flex items-end gap-1 h-40"
+					>
 						{#each chartData as day}
 							<div class="flex-1 flex flex-col items-center gap-1 group">
 								<div
-									class="w-full bg-primary/20 hover:bg-primary/40 rounded-sm transition-colors relative"
+									data-bar
+									class="w-full bg-primary/20 hover:bg-primary/60 rounded-sm
+										transition-colors duration-200 cursor-default relative"
 									style="height: {Math.max((day.views / maxViews) * 100, 2)}%"
-									title="{day.views} views on {formatShortDate(day.date)}"
+									title="{day.views} views"
 								>
-									<!-- Tooltip on hover -->
+									<!-- Tooltip -->
 									<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-popover border
-										text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100
-										transition-opacity pointer-events-none z-10">
+										text-xs px-2 py-1 rounded whitespace-nowrap
+										opacity-0 group-hover:opacity-100 transition-opacity
+										pointer-events-none z-10 shadow-sm">
 										{day.views}
 									</div>
 								</div>
@@ -128,7 +146,7 @@
 						{/each}
 					</div>
 
-					<!-- X axis labels — show every 2nd -->
+					<!-- X axis -->
 					<div class="flex gap-1 mt-2">
 						{#each chartData as day, i}
 							<div class="flex-1 text-center">
@@ -154,20 +172,25 @@
 					<p class="text-sm text-muted-foreground text-center py-8">No data yet.</p>
 				{:else}
 					<div class="space-y-3">
-						{#each analytics.topPages as page}
-							{@const pct = Math.round((page.views / analytics.monthViews) * 100)}
-							<div class="space-y-1">
+						{#each analytics.topPages as page, i}
+							{@const pct = Math.round((page.views / (analytics.monthViews || 1)) * 100)}
+							<div class="space-y-1.5">
 								<div class="flex items-center justify-between text-sm">
-									<span class="capitalize font-medium truncate max-w-35">
+									<span class="capitalize font-medium truncate max-w-[140px]">
 										{formatPath(page.path)}
 									</span>
-									<span class="text-muted-foreground shrink-0 ml-2">
-										{page.views.toLocaleString()}
+									<span class="text-muted-foreground shrink-0 ml-2 tabular-nums">
+										<span use:counter={{
+											target: page.views,
+											duration: 1000,
+											delay: i * 80
+										}}></span>
 									</span>
 								</div>
 								<div class="h-1.5 w-full bg-muted rounded-full overflow-hidden">
 									<div
-										class="h-full bg-primary rounded-full transition-all"
+										use:animateProgress={{ delay: 300 + i * 60, duration: 600 }}
+										class="h-full bg-primary rounded-full"
 										style="width: {pct}%"
 									></div>
 								</div>
@@ -179,16 +202,21 @@
 		</Card>
 	</div>
 
-	<!-- Content stats -->
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+	<!-- Content stats — counter juga -->
+	<div use:revealStagger={{ stagger: 0.08, y: 20 }} class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between pb-2">
 				<CardTitle class="text-sm font-medium text-muted-foreground">Projects</CardTitle>
 				<FolderKanban class="size-4 text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
-				<p class="text-2xl font-bold">{stats.totalProjects}</p>
-				<p class="text-xs text-muted-foreground mt-1">{stats.publishedProjects} published</p>
+				<p
+					class="text-2xl font-bold"
+					use:counter={{ target: stats.totalProjects, duration: 800 }}
+				></p>
+				<p class="text-xs text-muted-foreground mt-1">
+					<span use:counter={{ target: stats.publishedProjects, duration: 600 }}></span> published
+				</p>
 			</CardContent>
 		</Card>
 
@@ -198,8 +226,13 @@
 				<BookText class="size-4 text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
-				<p class="text-2xl font-bold">{stats.totalBlogPosts}</p>
-				<p class="text-xs text-muted-foreground mt-1">{stats.publishedBlogPosts} published</p>
+				<p
+					class="text-2xl font-bold"
+					use:counter={{ target: stats.totalBlogPosts, duration: 800 }}
+				></p>
+				<p class="text-xs text-muted-foreground mt-1">
+					<span use:counter={{ target: stats.publishedBlogPosts, duration: 600 }}></span> published
+				</p>
 			</CardContent>
 		</Card>
 
@@ -209,14 +242,17 @@
 				<Images class="size-4 text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
-				<p class="text-2xl font-bold">{stats.totalGalleryPosts}</p>
+				<p
+					class="text-2xl font-bold"
+					use:counter={{ target: stats.totalGalleryPosts, duration: 800 }}
+				></p>
 				<p class="text-xs text-muted-foreground mt-1">photos & videos</p>
 			</CardContent>
 		</Card>
 	</div>
 
 	<!-- Quick actions -->
-	<div>
+	<div use:reveal={{ y: 16 }}>
 		<h2 class="text-sm font-medium text-muted-foreground mb-3">Quick Actions</h2>
 		<div class="flex flex-wrap gap-3">
 			<a href="/dashboard/projects/new">
@@ -232,9 +268,7 @@
 	</div>
 
 	<!-- Recent items -->
-	<div class="grid gap-6 lg:grid-cols-2">
-
-		<!-- Recent Projects -->
+	<div use:reveal={{ y: 20, delay: 100 }} class="grid gap-6 lg:grid-cols-2">
 		{#if recentProjects.length > 0}
 			<div>
 				<div class="flex items-center justify-between mb-3">
@@ -266,7 +300,6 @@
 			</div>
 		{/if}
 
-		<!-- Recent Blog Posts -->
 		{#if recentBlogPosts.length > 0}
 			<div>
 				<div class="flex items-center justify-between mb-3">
