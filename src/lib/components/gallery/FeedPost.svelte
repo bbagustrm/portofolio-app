@@ -100,13 +100,14 @@
 			</div>
 		</button>
 
+		<!-- Ganti bagian media grid multiple -->
 	{:else if media.length > 1}
 		<div class="grid {getGridClass(media.length)} gap-0.5">
 			{#each media.slice(0, 4) as item, i}
 				<button
-					class="relative overflow-hidden bg-muted cursor-pointer
-						{getItemClass(media.length, i)}
-						{media.length === 3 && i === 0 ? 'aspect-video' : 'aspect-square'}"
+					class="relative overflow-hidden bg-muted cursor-pointer group/media
+					{getItemClass(media.length, i)}
+					{media.length === 3 && i === 0 ? 'aspect-video' : 'aspect-square'}"
 					onclick={() => openModal(i)}
 					aria-label="View photo {i + 1}"
 				>
@@ -114,19 +115,27 @@
 						<img
 							src={item.url}
 							alt={post.caption ?? ''}
-							class="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+							class="w-full h-full object-cover transition-transform duration-500
+							group-hover/media:scale-[1.04]"
 							loading="lazy"
 						/>
 					{:else}
 						<video src={item.url} class="w-full h-full object-cover" muted playsinline preload="metadata">
 							<track kind="captions" />
 						</video>
-						<div class="absolute inset-0 flex items-center justify-center">
-							<div class="size-12 rounded-full bg-black/50 flex items-center justify-center">
+						<div class="absolute inset-0 flex items-center justify-center
+						transition-opacity duration-200 group-hover/media:opacity-80">
+							<div class="size-12 rounded-full bg-black/50 flex items-center justify-center
+							scale-90 group-hover/media:scale-100 transition-transform duration-200">
 								<span class="text-white text-lg">▶</span>
 							</div>
 						</div>
 					{/if}
+
+					<!-- Overlay on hover -->
+					<div class="absolute inset-0 bg-black/0 group-hover/media:bg-black/20
+					transition-colors duration-300"></div>
+
 					{#if i === 3 && media.length > 4}
 						<div class="absolute inset-0 bg-black/60 flex items-center justify-center">
 							<span class="text-white text-2xl font-bold">+{media.length - 4}</span>

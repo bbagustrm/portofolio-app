@@ -1,51 +1,57 @@
 <script lang="ts">
-	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatDateShort, estimateReadingTime } from '$lib/utils';
 	import type { BlogPost } from '$lib/types';
+	import { hoverLift } from '$lib/actions/hover';
 
 	let { post, variant = 'default' } = $props<{
 		post: BlogPost;
 		variant?: 'default' | 'featured'
 	}>();
 
+	let tagsValue = $derived(
+		(post.tags ?? []).map((t: { name: string }) => t.name).join(', ')
+	);
 </script>
+
 {#if variant === 'featured'}
 	<a href="/blog/{post.slug}" class="group block">
-		<div class="space-y-3 py-2 border-b">
-			<!-- Title -->
-			<h3 class="font-medium text-md leading-snug line-clamp-3 group-hover:text-primary transition-colors">
+		<div use:hoverLift={{ y: -4 }} class="space-y-3 py-2">
+			<h3 class="font-medium underline text-lg leading-snug line-clamp-3 group-hover:text-primary transition-colors duration-200">
 				{post.title}
 			</h3>
-
-			<!-- Excerpt -->
 			{#if post.excerpt}
-				<p class="text-sm text-muted-foreground line-clamp-3">
-					{post.excerpt}
-				</p>
+				<p class="text-sm text-muted-foreground line-clamp-3">{post.excerpt}</p>
 			{/if}
-
-			<!-- Meta -->
 			<div class="flex items-center gap-2 text-xs text-muted-foreground">
 				<span>{formatDateShort(post.published_at ?? post.created_at)}</span>
 				<span>·</span>
 				<span>{estimateReadingTime(post.content ?? '')}</span>
 			</div>
-
+			{#if post.tags && post.tags.length > 0}
+				<div class="flex flex-wrap gap-1">
+					{#each post.tags.slice(0, 3) as tag}
+						<Badge variant="secondary" class="text-xs">{tag.name}</Badge>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	</a>
 
 {:else}
-	<!-- Default — list item horizontal -->
 	<a href="/blog/{post.slug}" class="group block">
-		<div class="flex gap-4 md:gap-6 py-4 border-b last:border-0 transition-colors hover:bg-muted/30 -mx-3 px-3 rounded-lg">
+		<div
+			use:hoverLift={{ y: -3, duration: 0.18 }}
+			class="flex gap-4 py-4 px-3 -mx-3 rounded-xl border border-transparent
+				transition-colors duration-200 hover:border-border hover:bg-muted/20"
+		>
 			<!-- Thumbnail -->
-			<div class="shrink-0 w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-lg overflow-hidden bg-muted">
+			<div class="shrink-0 w-24 h-24 md:w-42 md:h-42 rounded-lg overflow-hidden bg-muted">
 				{#if post.cover_url}
 					<img
 						src={post.cover_url}
 						alt={post.title}
-						class="w-full h-full object-cover"
+						class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
 						loading="lazy"
 					/>
 				{:else}
@@ -57,7 +63,6 @@
 
 			<!-- Content -->
 			<div class="flex-1 min-w-0">
-				<!-- Tags — pakai Badge seperti featured -->
 				{#if post.tags && post.tags.length > 0}
 					<div class="flex flex-wrap gap-1 mb-2">
 						{#each post.tags.slice(0, 2) as tag}
@@ -66,8 +71,8 @@
 					</div>
 				{/if}
 
-				<h3 class="font-medium text-xl leading-snug mb-1
-					group-hover:text-primary transition-colors line-clamp-2">
+				<h3 class="font-medium md:text-xl leading-snug mb-1
+					group-hover:text-primary transition-colors duration-200 line-clamp-2">
 					{post.title}
 				</h3>
 

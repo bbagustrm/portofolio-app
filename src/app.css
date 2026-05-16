@@ -278,6 +278,18 @@
 			animation: none;
 		}
 	}
+
+	/* Prevent image overflow saat scale */
+	.overflow-hidden img {
+		will-change: transform;
+	}
+
+	/* Card hover — GPU accelerated */
+	[use\:hoverLift],
+	[use\:hoverBorder] {
+		will-change: transform, box-shadow;
+		transform: translateZ(0);
+	}
 }
 
 /* ─── Prose (blog reader) ───────────────────────────────── */
