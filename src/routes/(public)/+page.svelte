@@ -244,7 +244,7 @@
 									{#snippet child({ props })}
 
 										<a {...props}
-										href="mailto:hello@atmojo.pro"
+										href="mailto:bbagustrm@gmail.com"
 										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 										>
 										<Envelope class="size-5 md:size-7" />
