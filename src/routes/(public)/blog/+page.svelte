@@ -3,6 +3,7 @@
 	import { Search } from '@lucide/svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import type { BlogPost } from '$lib/types';
+	import { reveal } from '$lib/actions/reveal';
 
 	let { data } = $props();
 
@@ -55,7 +56,7 @@
 		<div class="lg:col-span-2">
 
 			<!-- Header -->
-			<div class="mb-10">
+			<div use:reveal={{ y: 20 }} class="mb-10">
 				<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Writing</p>
 				<h1 class="text-5xl font-semibold mb-4">Blog</h1>
 				<p class="text-muted-foreground max-w-xl text-lg">
@@ -65,7 +66,7 @@
 
 			<!-- Tag filter -->
 			{#if data.tags.length > 0}
-				<div class="flex flex-wrap gap-2 mb-8">
+				<div use:reveal={{ y: 16, delay: 100 }} class="flex flex-wrap gap-2 mb-8">
 					<button
 						onclick={() => (selectedTag = null)}
 						class="text-xs px-3 py-1.5 rounded-full border transition-colors
@@ -152,7 +153,7 @@
 		</div>
 
 		<!-- RIGHT — Latest Post + Topics + Stats -->
-		<div class="lg:col-span-1 space-y-6 hidden lg:block">
+		<div use:reveal={{ y: 24, delay: 150 }}  class="lg:col-span-1 space-y-6 hidden lg:block">
 
 			<!-- Latest post — sembunyikan saat filter aktif -->
 			{#if latestPost && !isFiltering}

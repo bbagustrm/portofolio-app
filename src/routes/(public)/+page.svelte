@@ -7,7 +7,7 @@
 		GithubLogo,
 		LinkedinLogo,
 		Envelope,
-		ArrowSquareOut,
+		ArrowSquareOut, Star
 	} from 'phosphor-svelte';
 	import { formatDateShort, estimateReadingTime, timeAgo } from '$lib/utils';
 	import { techStack } from '$lib/data/tech-stack';
@@ -15,10 +15,14 @@
 	import * as Carousel from '$lib/components/ui/carousel';
 	import { onMount } from 'svelte';
 	import { shouldAnimate, EASING, DURATION } from '$lib/utils/animation';
+	import { reveal, revealStagger } from '$lib/actions/reveal';
 
 	let { data } = $props();
 
 	// ── Hero element refs ────────────────────────────────
+
+	let heroBadgeMobile = $state<HTMLElement | null>(null);
+	let heroBadgeDesktop = $state<HTMLElement | null>(null);
 	let heroBadge = $state<HTMLElement | null>(null);
 	let heroLine1 = $state<HTMLElement | null>(null);
 	let heroLine2 = $state<HTMLElement | null>(null);
@@ -61,8 +65,6 @@
 		});
 	});
 
-	let heroBadgeMobile = $state<HTMLElement | null>(null);
-	let heroBadgeDesktop = $state<HTMLElement | null>(null);
 
 	onMount(async () => {
 		if (!shouldAnimate()) return;
@@ -105,6 +107,37 @@
 		animateEl(heroLine2, 240, 40, EASING.spring);
 
 		// Bio, buttons, socials
+		animateEl(heroBio, 420, 24);
+		animateEl(heroButtons, 540, 20);
+		animateEl(heroSocials, 660, 16);
+	});
+
+	onMount(async () => {
+		if (!shouldAnimate()) return;
+		const { animate } = await import('motion');
+
+		const allEls = [
+			heroBadgeMobile, heroBadgeDesktop,
+			heroLine1, heroLine2,
+			heroBio, heroButtons, heroSocials
+		].filter(Boolean) as HTMLElement[];
+
+		allEls.forEach((el) => {
+			el.style.opacity = '0';
+			el.style.transform = 'translateY(32px)';
+		});
+
+		const animateEl = (el: HTMLElement | null, delay: number, y = 24, easing = EASING.out) => {
+			if (!el) return;
+			setTimeout(() => {
+				animate(el, { opacity: [0, 1], y: [y, 0] }, { duration: DURATION.slow, easing });
+			}, delay);
+		};
+
+		animateEl(heroBadgeMobile, 0, 16);
+		animateEl(heroBadgeDesktop, 0, 16);
+		animateEl(heroLine1, 120, 40);
+		animateEl(heroLine2, 240, 40, EASING.spring);
 		animateEl(heroBio, 420, 24);
 		animateEl(heroButtons, 540, 20);
 		animateEl(heroSocials, 660, 16);
@@ -259,185 +292,163 @@
 	</div>
 </section>
 
-<!-- FEATURED PROJECTS -->
 {#if data.featuredProjects.length > 0}
-	<section class="container mx-auto max-w-6xl flex flex-col justify-center items-center px-2 sm:px-4 md:px-8 lg:px-4 py-20 space-y-16">
+	<section class="container mx-auto max-w-6xl px-4 py-24 md:py-36 ">
+		<!-- Section header -->
+		<div use:reveal={{ y: 20, duration: 0.5 }} class="flex flex-col justify-between mb-10">
+				<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Portfolio</p>
+				<h2 class="text-3xl font-bold">Featured Projects</h2>
+		</div>
 
-			<p class="text-sm text-primary font-medium mb-1">
-				PORTFOLIO
-			</p>
-			<h2 class="text-3xl font-semibold">
-				My Projects
-			</h2>
-
-		<div class="grid gap-3 1 grid-cols-2 md:grid-cols-3">
-
+		<!-- Cards stagger -->
+		<div
+			use:revealStagger={{ stagger: 0.1, y: 32, delay: 0.1 }}
+			class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+		>
 			{#each data.featuredProjects as project}
 				<a href="/portfolio/{project.slug}" class="group block">
-
-					<Card class="rounded-md h-full overflow-hidden p-0 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 gap-4 md:gap-6">
-
-						{#if project.cover_url}
-							<div class="aspect-video overflow-hidden transition-transform duration-300 group-hover:scale-105">
+					<Card class="h-full overflow-hidden transition-colors hover:border-primary/40 p-0 rounded-md">
+						<div class="relative aspect-video overflow-hidden bg-muted">
+							{#if project.cover_url}
 								<img
 									src={project.cover_url}
 									alt={project.title}
 									class="w-full h-full object-cover"
 									loading="lazy"
 								/>
-							</div>
-						{/if}
-
-						<CardContent class="pb-4 px-4">
-
-							<h3 class="font-semibold text-xl mb-1 group-hover:text-primary transition-colors line-clamp-1">
+							{:else}
+								<div class="w-full h-full flex items-center justify-center">
+									<span class="text-4xl">🗂️</span>
+								</div>
+							{/if}
+							{#if project.is_featured}
+								<Badge variant="default" class="bg-white text-primary text-xs absolute top-2 right-2 px-0.75">
+									<Star size={16} weight="fill" />
+								</Badge>
+							{/if}
+						</div>
+						<CardContent class="p-4">
+							<h3 class="font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-1">
 								{project.title}
 							</h3>
-
-							<p class="text-sm text-muted-foreground line-clamp-2 mb-3">
-								{project.description ?? ''}
-							</p>
-
+							<p class="text-sm text-muted-foreground line-clamp-2 mb-3">{project.description ?? ''}</p>
 							<div class="flex flex-wrap gap-1">
-
 								{#each project.tech_stack.slice(0, 3) as tech}
-									<Badge variant="outline" class="text-xs">
-										{tech}
-									</Badge>
+									<Badge variant="secondary" class="text-xs">{tech}</Badge>
 								{/each}
-
 								{#if project.tech_stack.length > 3}
-									<Badge variant="outline" class="text-xs">
-										+{project.tech_stack.length - 3}
-									</Badge>
+									<Badge variant="outline" class="text-xs">+{project.tech_stack.length - 3}</Badge>
 								{/if}
-
 							</div>
 						</CardContent>
 					</Card>
-
 				</a>
 			{/each}
-
 		</div>
-
-		<a
-			href="/portfolio"
-			class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
-		>
-			<Button variant="outline" size="lg">
-				View all
-				<ArrowRight size={12} weight="regular" />
-			</Button>
-		</a>
+		<div class="flex justify-center items-center mt-16">
+			<a
+				href="/portfolio"
+				class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+			>
+				<Button variant="outline" size="lg">
+					View all
+					<ArrowRight size={12} weight="regular" />
+				</Button>
+			</a>
+		</div>
 	</section>
 {/if}
 
-<!-- BLOG -->
+<!-- ─── Blog Carousel ─────────────────────────────────── -->
 {#if data.latestPosts.length > 0}
 	<section class="bg-muted/20 border-t">
-		<div class="container mx-auto max-w-6xl px-4 pt-8 pb-16">
-
-			<!-- Header -->
-			<div class="flex items-end justify-between mb-8">
+		<div class="container mx-auto max-w-6xl px-4 py-20">
+			<div use:reveal={{ y: 20 }} class="flex items-end justify-between mb-8">
 				<div>
 					<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Blog</p>
-					<h2 class="text-3xl font-semibold">Latest Articles</h2>
+					<h2 class="text-3xl font-bold">Latest Articles</h2>
 				</div>
 				<a href="/blog" class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
 					View all <ArrowRight class="size-3" />
 				</a>
 			</div>
 
-			<!-- Carousel -->
-			<Carousel.Root
-				opts={{ align: 'start', loop: false }}
-				class="group/carousel w-full "
-			>
-				<div class="relative">
+			<!-- Carousel reveal dari bawah -->
+			<div use:reveal={{ y: 40, duration: 0.6, delay: 150 }}>
+				<Carousel.Root opts={{ align: 'start', loop: false }} class="group/carousel w-full">
 					<!-- Prev -->
 					<div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10
 						opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200">
 						<Carousel.Previous class="static translate-y-0 rounded-full shadow-md cursor-pointer" />
 					</div>
-
-					<div class="overflow-hidden">
-						<Carousel.Content class="-ml-4">
-							{#each data.latestPosts as post}
-								<Carousel.Item class="pl-4 basis-[78%] md:basis-[43%] lg:basis-[30%]">
-									<a href="/blog/{post.slug}" class="group block h-full">
-										<div class="flex gap-4 rounded-xl border bg-card h-full
+					<Carousel.Content class="-ml-4">
+						{#each data.latestPosts as post}
+							<Carousel.Item class="pl-4 basis-[78%] md:basis-[43%] lg:basis-[30%]">
+								<a href="/blog/{post.slug}" class="group block h-full">
+									<div class="flex gap-4 rounded-xl border bg-card h-full
 											hover:border-primary/40 hover:bg-muted/30
 											transition-all duration-200 hover:shadow-sm"
-										>
-											<!-- Thumbnail -->
-											<div class="shrink-0 w-28 h-28 md:w-24 md:h-24 rounded-tl-lg rounded-bl-lg overflow-hidden bg-muted">
-												{#if post.cover_url}
-													<img
-														src={post.cover_url}
-														alt={post.title}
-														class="w-full h-full object-cover"
-														loading="lazy"
-													/>
-												{:else}
-													<div class="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-														<span class="text-2xl">📝</span>
-													</div>
-												{/if}
-											</div>
-
-											<!-- Content -->
-											<div class="flex-1 min-w-0 flex flex-col justify-center py-3 pr-3">
-												<h3 class="font-medium text-xl md:text-lg leading-snug mb-1
-													group-hover:text-primary transition-colors line-clamp-1">
-													{post.title}
-												</h3>
-												<p class="text-xs text-muted-foreground line-clamp-2 hidden sm:block mb-2">
-													{post.excerpt ?? ''}
-												</p>
-												<div class="flex items-center gap-2 text-xs text-muted-foreground">
-													<span>{formatDateShort(post.published_at ?? post.created_at)}</span>
-													<span>·</span>
-													<span>{estimateReadingTime(post.content ?? '')}</span>
+									>
+										<!-- Thumbnail -->
+										<div class="shrink-0 w-28 h-28 md:w-24 md:h-24 rounded-tl-lg rounded-bl-lg overflow-hidden bg-muted">
+											{#if post.cover_url}
+												<img
+													src={post.cover_url}
+													alt={post.title}
+													class="w-full h-full object-cover"
+													loading="lazy"
+												/>
+											{:else}
+												<div class="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+													<span class="text-2xl">📝</span>
 												</div>
+											{/if}
+										</div>
+
+										<!-- Content -->
+										<div class="flex-1 min-w-0 flex flex-col justify-center py-3 pr-3">
+											<h3 class="font-medium text-xl md:text-lg leading-snug mb-1
+													group-hover:text-primary transition-colors line-clamp-1">
+												{post.title}
+											</h3>
+											<p class="text-xs text-muted-foreground line-clamp-2 hidden sm:block mb-2">
+												{post.excerpt ?? ''}
+											</p>
+											<div class="flex items-center gap-2 text-xs text-muted-foreground">
+												<span>{formatDateShort(post.published_at ?? post.created_at)}</span>
+												<span>·</span>
+												<span>{estimateReadingTime(post.content ?? '')}</span>
 											</div>
 										</div>
-									</a>
-								</Carousel.Item>
-							{/each}
-						</Carousel.Content>
-					</div>
-
+									</div>
+								</a>
+							</Carousel.Item>
+						{/each}
+					</Carousel.Content>
 					<!-- Next -->
 					<div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10
 						opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200">
 						<Carousel.Next class="static translate-y-0 rounded-full shadow-md cursor-pointer" />
 					</div>
-				</div>
-			</Carousel.Root>
+				</Carousel.Root>
+			</div>
 		</div>
 	</section>
 {/if}
 
-<!-- CTA -->
-<section class="px-4 py-20 text-center bg-primary text-background border">
-
-	<h2 class="text-3xl font-semibold mb-4">
-		Let's work together
-	</h2>
-
-	<p class=" mb-8 max-w-md mx-auto">
-		I'm open to freelance projects, collaborations, and full-time opportunities.
-	</p>
-
-	<Button
-		href="mailto:bbagustrm@gmail.com"
-		size="lg"
-		class="gap-2"
-		variant="secondary"
+<!-- ─── CTA ───────────────────────────────────────────── -->
+<section class="border-t bg-muted/20">
+	<div
+		use:reveal={{ y: 30, duration: 0.6 }}
+		class="container mx-auto max-w-6xl px-4 py-24 text-center"
 	>
-		<Envelope size={16} weight="regular" />
-		Get in touch
-	</Button>
-
+		<h2 class="text-4xl font-bold mb-4">Let's work together</h2>
+		<p class="text-muted-foreground mb-8 max-w-md mx-auto text-lg">
+			Open to freelance projects, collaborations, and full-time opportunities.
+		</p>
+		<Button href="mailto:bbagustrm@gmail.com" size="lg" class="gap-2 rounded-full px-8">
+			<Envelope class="size-4" />
+			Get in touch
+		</Button>
+	</div>
 </section>

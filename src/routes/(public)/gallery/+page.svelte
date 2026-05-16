@@ -3,6 +3,7 @@
 	import InfiniteScroll from '$lib/components/gallery/InfiniteScroll.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import type { Post } from '$lib/types';
+	import { reveal } from '$lib/actions/reveal';
 
 	let { data } = $props();
 
@@ -34,7 +35,7 @@
 <div class="container mx-auto max-w-2xl px-4 py-16">
 
 	<!-- Header -->
-	<div class="mb-10">
+	<div use:reveal={{ y: 20 }} class="mb-10">
 		<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Memories</p>
 		<h1 class="text-5xl font-bold mb-4">Gallery</h1>
 		<p class="text-muted-foreground text-lg">
@@ -52,7 +53,9 @@
 	{:else}
 		<div class="space-y-4">
 			{#each posts as post (post.id)}
-				<FeedPost {post} />
+				<div use:reveal={{ y: 32, amount: 0.05 }}>
+					<FeedPost {post} />
+				</div>
 			{/each}
 
 			<!-- Loading skeleton saat fetch berikutnya -->
