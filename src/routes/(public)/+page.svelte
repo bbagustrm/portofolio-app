@@ -16,6 +16,8 @@
 	import { onMount } from 'svelte';
 	import { shouldAnimate, EASING, DURATION } from '$lib/utils/animation';
 	import { reveal, revealStagger } from '$lib/actions/reveal';
+	import ProjectCard from '$lib/components/portfolio/ProjectCard.svelte';
+	import { hoverLift } from '$lib/actions/hover';
 
 	let { data } = $props();
 
@@ -293,11 +295,19 @@
 </section>
 
 {#if data.featuredProjects.length > 0}
-	<section class="container mx-auto max-w-6xl px-4 py-24 md:py-36 ">
+	<section class="container mx-auto max-w-6xl px-4 py-24 md:py-36">
 		<!-- Section header -->
-		<div use:reveal={{ y: 20, duration: 0.5 }} class="flex flex-col justify-between mb-10">
-				<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Portfolio</p>
-				<h2 class="text-3xl font-bold">Featured Projects</h2>
+		<div
+			use:reveal={{ y: 20, duration: 0.5 }}
+			class="flex flex-col justify-between mb-10"
+		>
+			<p
+				class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider"
+			>
+				Portfolio
+			</p>
+
+			<h2 class="text-3xl font-bold">Featured Projects</h2>
 		</div>
 
 		<!-- Cards stagger -->
@@ -306,45 +316,10 @@
 			class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
 		>
 			{#each data.featuredProjects as project}
-				<a href="/portfolio/{project.slug}" class="group block">
-					<Card class="h-full overflow-hidden transition-colors hover:border-primary/40 p-0 rounded-md">
-						<div class="relative aspect-video overflow-hidden bg-muted">
-							{#if project.cover_url}
-								<img
-									src={project.cover_url}
-									alt={project.title}
-									class="w-full h-full object-cover"
-									loading="lazy"
-								/>
-							{:else}
-								<div class="w-full h-full flex items-center justify-center">
-									<span class="text-4xl">🗂️</span>
-								</div>
-							{/if}
-							{#if project.is_featured}
-								<Badge variant="default" class="bg-white text-primary text-xs absolute top-2 right-2 px-0.75">
-									<Star size={16} weight="fill" />
-								</Badge>
-							{/if}
-						</div>
-						<CardContent class="p-4">
-							<h3 class="font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-1">
-								{project.title}
-							</h3>
-							<p class="text-sm text-muted-foreground line-clamp-2 mb-3">{project.description ?? ''}</p>
-							<div class="flex flex-wrap gap-1">
-								{#each project.tech_stack.slice(0, 3) as tech}
-									<Badge variant="secondary" class="text-xs">{tech}</Badge>
-								{/each}
-								{#if project.tech_stack.length > 3}
-									<Badge variant="outline" class="text-xs">+{project.tech_stack.length - 3}</Badge>
-								{/if}
-							</div>
-						</CardContent>
-					</Card>
-				</a>
+				<ProjectCard {project} />
 			{/each}
 		</div>
+
 		<div class="flex justify-center items-center mt-16">
 			<a
 				href="/portfolio"
@@ -385,7 +360,7 @@
 						{#each data.latestPosts as post}
 							<Carousel.Item class="pl-4 basis-[78%] md:basis-[43%] lg:basis-[30%]">
 								<a href="/blog/{post.slug}" class="group block h-full">
-									<div class="flex gap-4 rounded-xl border bg-card h-full
+									<div use:hoverLift={{ y: -4, duration: 0.18 }} class="flex gap-4 rounded-xl border bg-card h-full
 											hover:border-primary/40 hover:bg-muted/30
 											transition-all duration-200 hover:shadow-sm"
 									>
