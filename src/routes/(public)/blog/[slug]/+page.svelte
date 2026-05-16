@@ -2,6 +2,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { ArrowLeft } from '@lucide/svelte';
 	import { formatDate, estimateReadingTime } from '$lib/utils';
+	import { reveal } from '$lib/actions/reveal';
 
 	let { data } = $props();
 	let post = $derived(data.post);
@@ -14,23 +15,24 @@
 
 <article class="container mx-auto max-w-4xl px-4 py-8">
 	<!-- Back -->
-
-	<a href="/blog"
-	class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10 transition-colors"
-	>
-	<ArrowLeft class="size-4" />
-	Back to Blog
-	</a>
+	<div use:reveal={{ x: -16, y: 0, duration: 0.4 }}>
+		<a href="/blog"
+		   class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10 transition-colors"
+		>
+			<ArrowLeft class="size-4" />
+			Back to Blog
+		</a>
+	</div>
 
 	<!-- Cover -->
 	{#if post.cover_url}
-		<div class="aspect-21/6 rounded-2xl overflow-hidden mb-10 border">
+		<div use:reveal={{ y: 24, delay: 100, duration: 0.6 }} class="aspect-21/6 rounded-2xl overflow-hidden mb-10 border">
 			<img src={post.cover_url} alt={post.title} class="w-full h-full object-cover" />
 		</div>
 	{/if}
 
 	<!-- Header -->
-	<header class="mb-10">
+	<header use:reveal={{ y: 20, delay: 150 }} class="mb-10">
 		<!-- Tags -->
 		{#if post.tags && post.tags.length > 0}
 			<div class="flex flex-wrap gap-1.5 mb-5">
@@ -58,7 +60,7 @@
 	</header>
 
 	<!-- Content -->
-	<div class="prose-custom">
+	<div use:reveal={{ y: 16, delay: 250 }} class="prose-custom">
 		{@html post.content ?? ''}
 	</div>
 

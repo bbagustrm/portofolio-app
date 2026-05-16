@@ -3,6 +3,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { ArrowLeft, ArrowSquareOut, GithubLogo } from 'phosphor-svelte';
 	import { formatDate } from '$lib/utils';
+	import { reveal } from '$lib/actions/reveal';
 
 	let { data } = $props();
 	let project = $derived(data.project);
@@ -15,17 +16,18 @@
 
 <article class="container mx-auto max-w-6xl px-4 py-8">
 	<!-- Back -->
-
-	<a href="/portfolio"
-	class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10 transition-colors"
-	>
-	<ArrowLeft class="size-4" />
-	Back to Portfolio
-	</a>
+	<div use:reveal={{ x: -16, y: 0, duration: 0.4 }}>
+		<a href="/portfolio"
+		   class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10 transition-colors"
+		>
+			<ArrowLeft class="size-4" />
+			Back to Portfolio
+		</a>
+	</div>
 
 	<!-- Cover -->
 	{#if project.cover_url}
-		<div class="aspect-video rounded-2xl overflow-hidden mb-10 border">
+		<div use:reveal={{ y: 24, delay: 100 }} class="aspect-video rounded-2xl overflow-hidden mb-10 border">
 			<img
 				src={project.cover_url}
 				alt={project.title}
@@ -35,7 +37,7 @@
 	{/if}
 
 	<!-- Meta -->
-	<div class="mb-10">
+	<div use:reveal={{ y: 20, delay: 200 }} class="mb-10">
 		<div class="flex flex-wrap items-start justify-between gap-4 mb-4">
 			<h1 class="text-4xl font-semibold  leading-tight">{project.title}</h1>
 
@@ -74,7 +76,7 @@
 
 	<!-- Content -->
 	{#if project.content}
-		<div class="prose-custom">
+		<div use:reveal={{ y: 16, delay: 300 }} class="prose-custom">
 			{@html project.content}
 		</div>
 	{/if}
