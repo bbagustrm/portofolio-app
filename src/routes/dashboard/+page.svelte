@@ -57,7 +57,7 @@
 			<CardContent>
 				<p
 					class="text-2xl font-bold"
-					use:counter={{ target: analytics.totalViews, duration: 1500 }}
+					use:counter={{ target: analytics.totalViews, duration: 1.5 }}
 				></p>
 				<p class="text-xs text-muted-foreground mt-1">all time</p>
 			</CardContent>
@@ -71,7 +71,7 @@
 			<CardContent>
 				<p
 					class="text-2xl font-bold"
-					use:counter={{ target: analytics.todayViews, duration: 1000, delay: 80 }}
+					use:counter={{ target: analytics.todayViews, duration: 1, delay: 0.08 }}
 				></p>
 				<p class="text-xs text-muted-foreground mt-1">page views</p>
 			</CardContent>
@@ -85,7 +85,7 @@
 			<CardContent>
 				<p
 					class="text-2xl font-bold"
-					use:counter={{ target: analytics.weekViews, duration: 1200, delay: 160 }}
+					use:counter={{ target: analytics.weekViews, duration: 1.2, delay: 0.16 }}
 				></p>
 				<p class="text-xs text-muted-foreground mt-1">last 7 days</p>
 			</CardContent>
@@ -99,7 +99,7 @@
 			<CardContent>
 				<p
 					class="text-2xl font-bold"
-					use:counter={{ target: analytics.monthViews, duration: 1400, delay: 240 }}
+					use:counter={{ target: analytics.monthViews, duration: 1.4, delay: 0.24 }}
 				></p>
 				<p class="text-xs text-muted-foreground mt-1">last 30 days</p>
 			</CardContent>
@@ -107,7 +107,7 @@
 	</div>
 
 	<!-- Chart + Top pages -->
-	<div use:reveal={{ y: 24, delay: 100 }} class="grid gap-6 lg:grid-cols-3">
+	<div use:reveal={{ y: 24, delay: 0.1 }} class="grid gap-6 lg:grid-cols-3">
 
 		<!-- Bar chart -->
 		<Card class="lg:col-span-2">
@@ -122,7 +122,7 @@
 				{:else}
 					<!-- Bar chart dengan animasi -->
 					<div
-						use:animateBars={{ delay: 200, duration: 700, stagger: 40 }}
+						use:animateBars={{ delay: 0.2, duration: 0.7, stagger: 0.04 }}
 						class="flex items-end gap-1 h-40"
 					>
 						{#each chartData as day}
@@ -182,14 +182,14 @@
 									<span class="text-muted-foreground shrink-0 ml-2 tabular-nums">
 										<span use:counter={{
 											target: page.views,
-											duration: 1000,
-											delay: i * 80
+											duration: 1,
+											delay: i * 0.08
 										}}></span>
 									</span>
 								</div>
 								<div class="h-1.5 w-full bg-muted rounded-full overflow-hidden">
 									<div
-										use:animateProgress={{ delay: 300 + i * 60, duration: 600 }}
+										use:animateProgress={{ delay: 0.3 + i * 0.06, duration: 0.6 }}
 										class="h-full bg-primary rounded-full"
 										style="width: {pct}%"
 									></div>
@@ -212,10 +212,10 @@
 			<CardContent>
 				<p
 					class="text-2xl font-bold"
-					use:counter={{ target: stats.totalProjects, duration: 800 }}
+					use:counter={{ target: stats.totalProjects, duration: 0.8 }}
 				></p>
 				<p class="text-xs text-muted-foreground mt-1">
-					<span use:counter={{ target: stats.publishedProjects, duration: 600 }}></span> published
+					<span use:counter={{ target: stats.publishedProjects, duration: 0.6 }}></span> published
 				</p>
 			</CardContent>
 		</Card>
@@ -228,10 +228,10 @@
 			<CardContent>
 				<p
 					class="text-2xl font-bold"
-					use:counter={{ target: stats.totalBlogPosts, duration: 800 }}
+					use:counter={{ target: stats.totalBlogPosts, duration: 0.8 }}
 				></p>
 				<p class="text-xs text-muted-foreground mt-1">
-					<span use:counter={{ target: stats.publishedBlogPosts, duration: 600 }}></span> published
+					<span use:counter={{ target: stats.publishedBlogPosts, duration: 0.6 }}></span> published
 				</p>
 			</CardContent>
 		</Card>
@@ -244,7 +244,7 @@
 			<CardContent>
 				<p
 					class="text-2xl font-bold"
-					use:counter={{ target: stats.totalGalleryPosts, duration: 800 }}
+					use:counter={{ target: stats.totalGalleryPosts, duration: 0.8 }}
 				></p>
 				<p class="text-xs text-muted-foreground mt-1">photos & videos</p>
 			</CardContent>
@@ -268,7 +268,7 @@
 	</div>
 
 	<!-- Recent items -->
-	<div use:reveal={{ y: 20, delay: 100 }} class="grid gap-6 lg:grid-cols-2">
+	<div use:reveal={{ y: 20, delay: 0.1 }} class="grid gap-6 lg:grid-cols-2">
 		{#if recentProjects.length > 0}
 			<div>
 				<div class="flex items-center justify-between mb-3">
