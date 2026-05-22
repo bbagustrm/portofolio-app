@@ -66,7 +66,7 @@
 
 			<!-- Tag filter -->
 			{#if data.tags.length > 0}
-				<div use:reveal={{ y: 16, delay: 100 }} class="flex flex-wrap gap-2 mb-8">
+				<div use:reveal={{ y: 16, delay: 0.1 }} class="flex flex-wrap gap-2 mb-8">
 					<button
 						onclick={() => (selectedTag = null)}
 						class="text-xs px-3 py-1.5 rounded-full border transition-colors
@@ -153,7 +153,7 @@
 		</div>
 
 		<!-- RIGHT — Latest Post + Topics + Stats -->
-		<div use:reveal={{ y: 24, delay: 150 }}  class="lg:col-span-1 space-y-6 hidden lg:block">
+		<div use:reveal={{ y: 24, delay: 0.15 }}  class="lg:col-span-1 space-y-6 hidden lg:block">
 
 			<!-- Latest post — sembunyikan saat filter aktif -->
 			{#if latestPost && !isFiltering}
