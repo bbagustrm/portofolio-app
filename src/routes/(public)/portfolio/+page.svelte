@@ -40,7 +40,7 @@
 
 	<!-- Tech filter -->
 	{#if allTechs.length > 0}
-		<div use:reveal={{ y: 16, delay: 100 }} class="flex flex-wrap gap-2 mb-10">
+		<div use:reveal={{ y: 16, delay: 0.1 }} class="flex flex-wrap gap-2 mb-10">
 			<button
 				onclick={() => (selectedTech = null)}
 				class="text-xs px-3 py-1.5 rounded-full border transition-colors

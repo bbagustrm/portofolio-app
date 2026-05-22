@@ -27,13 +27,13 @@
 
 	<!-- Cover -->
 	{#if post.cover_url}
-		<div use:reveal={{ y: 24, delay: 100, duration: 0.6 }} class="aspect-21/6 rounded-2xl overflow-hidden mb-10 border">
+		<div use:reveal={{ y: 24, delay: 0.1, duration: 0.6 }} class="aspect-21/6 rounded-2xl overflow-hidden mb-10 border">
 			<img src={post.cover_url} alt={post.title} class="w-full h-full object-cover" />
 		</div>
 	{/if}
 
 	<!-- Header -->
-	<header use:reveal={{ y: 20, delay: 150 }} class="mb-10">
+	<header use:reveal={{ y: 20, delay: 0.15 }} class="mb-10">
 		<!-- Tags -->
 		{#if post.tags && post.tags.length > 0}
 			<div class="flex flex-wrap gap-1.5 mb-5">
@@ -61,7 +61,7 @@
 	</header>
 
 	<!-- Content -->
-	<div use:reveal={{ y: 16, delay: 250 }} class="prose-custom">
+	<div use:reveal={{ y: 16, delay: 0.25 }} class="prose-custom">
 		{@html post.content ?? ''}
 	</div>
 

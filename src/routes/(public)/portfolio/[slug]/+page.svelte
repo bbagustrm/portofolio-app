@@ -28,7 +28,7 @@
 
 	<!-- Cover -->
 	{#if project.cover_url}
-		<div use:reveal={{ y: 24, delay: 100 }} class="aspect-video rounded-2xl overflow-hidden mb-10 border">
+		<div use:reveal={{ y: 24, delay: 0.1 }} class="aspect-video rounded-2xl overflow-hidden mb-10 border">
 			<img
 				src={project.cover_url}
 				alt={project.title}
@@ -38,7 +38,7 @@
 	{/if}
 
 	<!-- Meta -->
-	<div use:reveal={{ y: 20, delay: 200 }} class="mb-10">
+	<div use:reveal={{ y: 20, delay: 0.2 }} class="mb-10">
 		<div class="flex flex-wrap items-start justify-between gap-4 mb-4">
 			<h1 class="text-4xl font-semibold  leading-tight">{project.title}</h1>
 
@@ -77,7 +77,7 @@
 
 	<!-- Content -->
 	{#if project.content}
-		<div use:reveal={{ y: 16, delay: 300 }} class="prose-custom">
+		<div use:reveal={{ y: 16, delay: 0.3 }} class="prose-custom">
 			{@html project.content}
 		</div>
 	{/if}

@@ -18,25 +18,137 @@
 	import { reveal, revealStagger } from '$lib/actions/reveal';
 	import ProjectCard from '$lib/components/portfolio/ProjectCard.svelte';
 	import { hoverLift } from '$lib/actions/hover';
-	import { useHeroAnimation } from '$lib/hooks/useHeroAnimation.svelte';
-	import * as m from '$paraglide/messages';
 
 	let { data } = $props();
 
-	const { elements } = useHeroAnimation();
-	
-	// Detect mobile vs desktop
-	let isMobile = $state(false);
-	
-	onMount(() => {
-		// Check if device has touch capability (mobile/tablet)
-		isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+	// ── Hero element refs ────────────────────────────────
+
+	let heroBadgeMobile = $state<HTMLElement | null>(null);
+	let heroBadgeDesktop = $state<HTMLElement | null>(null);
+	let heroBadge = $state<HTMLElement | null>(null);
+	let heroLine1 = $state<HTMLElement | null>(null);
+	let heroLine2 = $state<HTMLElement | null>(null);
+	let heroBio = $state<HTMLElement | null>(null);
+	let heroButtons = $state<HTMLElement | null>(null);
+	let heroSocials = $state<HTMLElement | null>(null);
+
+	onMount(async () => {
+		if (!shouldAnimate()) return;
+
+		const { animate, stagger } = await import('motion');
+
+		// Set initial state — semua invisible
+		const elements = [heroBadge, heroLine1, heroLine2, heroBio, heroButtons, heroSocials].filter(Boolean);
+		elements.forEach((el) => {
+			if (el) {
+				el.style.opacity = '0';
+				el.style.transform = 'translateY(32px)';
+			}
+		});
+
+		// Staggered entrance
+		const sequence: [HTMLElement, object, object][] = [
+			[heroBadge!, { opacity: [0, 1], y: [20, 0] }, { duration: DURATION.normal, easing: EASING.out }],
+			[heroLine1!, { opacity: [0, 1], y: [40, 0] }, { duration: DURATION.slow, easing: EASING.out }],
+			[heroLine2!, { opacity: [0, 1], y: [40, 0] }, { duration: DURATION.slow, easing: EASING.spring }],
+			[heroBio!, { opacity: [0, 1], y: [24, 0] }, { duration: DURATION.normal, easing: EASING.out }],
+			[heroButtons!, { opacity: [0, 1], y: [20, 0] }, { duration: DURATION.normal, easing: EASING.out }],
+			[heroSocials!, { opacity: [0, 1], y: [16, 0] }, { duration: DURATION.normal, easing: EASING.out }]
+		];
+
+		// Play dengan delay bertahap
+		const delays = [0, 0.1, 0.22, 0.42, 0.56, 0.68];
+
+		sequence.forEach(([el, keyframes, options], i) => {
+			if (!el) return;
+			setTimeout(() => {
+				animate(el, keyframes, options as any);
+			}, delays[i] * 1000);
+		});
+	});
+
+
+	onMount(async () => {
+		if (!shouldAnimate()) return;
+		const { animate } = await import('motion');
+
+		// Set initial
+		const allEls = [
+			heroBadgeMobile, heroBadgeDesktop,
+			heroLine1, heroLine2,
+			heroBio, heroButtons, heroSocials
+		].filter(Boolean) as HTMLElement[];
+
+		allEls.forEach((el) => {
+			el.style.opacity = '0';
+			el.style.transform = 'translateY(32px)';
+		});
+
+		const animateEl = (
+			el: HTMLElement | null,
+			delay: number,
+			y = 24,
+			easing: number[] = EASING.out
+		) => {
+			if (!el) return;
+			setTimeout(() => {
+				animate(
+					el,
+					{ opacity: [0, 1], y: [y, 0] },
+					{ duration: DURATION.slow, easing }
+				);
+			}, delay);
+		};
+
+		// Badge (mobile + desktop)
+		animateEl(heroBadgeMobile, 0, 16);
+		animateEl(heroBadgeDesktop, 0, 16);
+
+		// Name lines
+		animateEl(heroLine1, 120, 40);
+		animateEl(heroLine2, 240, 40, EASING.spring);
+
+		// Bio, buttons, socials
+		animateEl(heroBio, 420, 24);
+		animateEl(heroButtons, 540, 20);
+		animateEl(heroSocials, 660, 16);
+	});
+
+	onMount(async () => {
+		if (!shouldAnimate()) return;
+		const { animate } = await import('motion');
+
+		const allEls = [
+			heroBadgeMobile, heroBadgeDesktop,
+			heroLine1, heroLine2,
+			heroBio, heroButtons, heroSocials
+		].filter(Boolean) as HTMLElement[];
+
+		allEls.forEach((el) => {
+			el.style.opacity = '0';
+			el.style.transform = 'translateY(32px)';
+		});
+
+		const animateEl = (el: HTMLElement | null, delay: number, y = 24, easing = EASING.out) => {
+			if (!el) return;
+			setTimeout(() => {
+				animate(el, { opacity: [0, 1], y: [y, 0] }, { duration: DURATION.slow, easing });
+			}, delay);
+		};
+
+		animateEl(heroBadgeMobile, 0, 16);
+		animateEl(heroBadgeDesktop, 0, 16);
+		animateEl(heroLine1, 120, 40);
+		animateEl(heroLine2, 240, 40, EASING.spring);
+		animateEl(heroBio, 420, 24);
+		animateEl(heroButtons, 540, 20);
+		animateEl(heroSocials, 660, 16);
 	});
 </script>
 
 <svelte:head>
 	<title>Atmojo — Full Stack Developer</title>
-	<meta name="description" content={data.profile?.bio ?? m.meta_fallback_description()} />
+	<meta name="description" content={data.profile?.bio ?? 'Personal portfolio and blog'} />
 </svelte:head>
 
 <!-- ─── Hero ──────────────────────────────────────────── -->
@@ -52,45 +164,45 @@
 			<!-- Left — Name -->
 			<div class="w-full lg:w-1/2">
 				<!-- Badge — mobile only -->
-				<div bind:this={elements.heroBadgeMobile} class="inline-flex lg:hidden w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
+				<div bind:this={heroBadgeMobile} class="inline-flex lg:hidden w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
 					<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
-					{m.hero_badge()}
+					Available for opportunities
 				</div>
 
 				<h1 class="text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05]">
-					<span bind:this={elements.heroLine1} class="block">Bagus Tri</span>
-					<span bind:this={elements.heroLine2} class="block text-primary lg:text-9xl">Atmojo</span>
+					<span bind:this={heroLine1} class="block">Bagus Tri</span>
+					<span bind:this={heroLine2} class="block text-primary lg:text-9xl">Atmojo</span>
 				</h1>
 			</div>
 
 			<!-- Right — Bio + CTA + Socials -->
 			<div class="w-full lg:w-1/2 flex flex-col items-start">
 				<!-- Badge — desktop only -->
-				<div bind:this={elements.heroBadgeDesktop} class="hidden lg:inline-flex w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
+				<div bind:this={heroBadgeDesktop} class="hidden lg:inline-flex w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
 					<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
-					{m.hero_badge()}
+					Available for opportunities
 				</div>
 
-				<p bind:this={elements.heroBio} class="text-lg text-muted-foreground mb-8 leading-relaxed">
-					{data.profile?.bio ?? m.hero_bio_fallback()}
+				<p bind:this={heroBio} class="text-lg text-muted-foreground mb-8 leading-relaxed">
+					{data.profile?.bio ?? 'Full Stack Developer passionate about building modern web applications with clean code and great user experiences.'}
 				</p>
 
-				<div bind:this={elements.heroButtons} class="flex flex-wrap gap-3 mb-10">
+				<div bind:this={heroButtons} class="flex flex-wrap gap-3 mb-10">
 					<a href="/portfolio">
 						<Button size="lg" class="gap-2 rounded-full px-6">
-							{m.hero_cta_portfolio()}
+							View Portfolio
 							<ArrowRight class="size-4" />
 						</Button>
 					</a>
 					<a href="/blog">
 						<Button size="lg" variant="outline" class="gap-2 rounded-full px-6">
-							{m.hero_cta_blog()}
+							Read Blog
 						</Button>
 					</a>
 				</div>
 
 				<!-- Social links -->
-				<div bind:this={elements.heroSocials}>
+				<div bind:this={heroSocials}>
 					<Tooltip.Provider>
 						<div class="flex items-center gap-1">
 							<Tooltip.Root>
@@ -127,33 +239,20 @@
 								<Tooltip.Content side="bottom">LinkedIn</Tooltip.Content>
 							</Tooltip.Root>
 
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								{#snippet child({ props })}
-									<button 
-										{...props}
-										onclick={() => {
-											if (isMobile) {
-												window.location.href = 'mailto:bbagustrm@gmail.com';
-											} else {
-												navigator.clipboard.writeText('bbagustrm@gmail.com');
-												alert('✓ Email copied to clipboard!\n\nbbagustrm@gmail.com');
-											}
-										}}
-										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
-										aria-label="Email contact"
-									>
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									{#snippet child({ props })}
+
+										<a {...props}
+										href="mailto:bbagustrm@gmail.com"
+										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+										>
 										<Envelope class="size-5 md:size-7" />
-									</button>
-								{/snippet}
-							</Tooltip.Trigger>
-							<Tooltip.Content side="bottom">
-								<div class="text-center">
-									<div class="font-medium">{isMobile ? m.hero_email_send() : m.hero_email_copy()}</div>
-									<div class="text-xs text-muted-foreground">bbagustrm@gmail.com</div>
-								</div>
-							</Tooltip.Content>
-						</Tooltip.Root>
+										</a>
+									{/snippet}
+								</Tooltip.Trigger>
+								<Tooltip.Content side="bottom">Email</Tooltip.Content>
+							</Tooltip.Root>
 						</div>
 					</Tooltip.Provider>
 				</div>
@@ -169,7 +268,7 @@
 		<!-- Label — static, tidak ikut scroll -->
 		<div class="hidden md:flex shrink-0 items-center gap-2 px-6 py-4 border-r bg-muted/50 z-10">
 			<span class="text-sm font-medium text-muted-foreground whitespace-nowrap">
-				{m.section_tech_stack()}
+				Tech I work with
 			</span>
 		</div>
 
@@ -205,10 +304,10 @@
 			<p
 				class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider"
 			>
-				{m.portfolio_title()}
+				Portfolio
 			</p>
 
-			<h2 class="text-3xl font-bold">{m.section_featured_projects()}</h2>
+			<h2 class="text-3xl font-bold">Featured Projects</h2>
 		</div>
 
 		<!-- Cards stagger -->
@@ -227,7 +326,7 @@
 				class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
 			>
 				<Button variant="outline" size="lg">
-					{m.section_view_all()}
+					View all
 					<ArrowRight size={12} weight="regular" />
 				</Button>
 			</a>
@@ -241,11 +340,11 @@
 		<div class="container mx-auto max-w-6xl px-4 py-20">
 			<div use:reveal={{ y: 20 }} class="flex items-end justify-between mb-8">
 				<div>
-					<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">{m.blog_title()}</p>
-					<h2 class="text-3xl font-bold">{m.section_latest_articles()}</h2>
+					<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Blog</p>
+					<h2 class="text-3xl font-bold">Latest Articles</h2>
 				</div>
 				<a href="/blog" class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-					{m.section_view_all()} <ArrowRight class="size-3" />
+					View all <ArrowRight class="size-3" />
 				</a>
 			</div>
 
@@ -318,25 +417,13 @@
 		use:reveal={{ y: 30, duration: 0.6 }}
 		class="container mx-auto max-w-6xl px-4 py-24 text-center"
 	>
-		<h2 class="text-4xl font-bold mb-4">{m.cta_work_together()}</h2>
+		<h2 class="text-4xl font-bold mb-4">Let's work together</h2>
 		<p class="text-muted-foreground mb-8 max-w-md mx-auto text-lg">
-			{m.cta_work_description()}
+			Open to freelance projects, collaborations, and full-time opportunities.
 		</p>
-		
-		<Button 
-			size="lg" 
-			class="gap-2 rounded-full px-8"
-			onclick={() => {
-				if (isMobile) {
-					window.location.href = 'mailto:bbagustrm@gmail.com';
-				} else {
-					navigator.clipboard.writeText('bbagustrm@gmail.com');
-					alert('✓ Email copied to clipboard!\n\nbbagustrm@gmail.com');
-				}
-			}}
-		>
+		<Button href="mailto:bbagustrm@gmail.com" size="lg" class="gap-2 rounded-full px-8">
 			<Envelope class="size-4" />
-			{m.hero_cta_contact()}
+			Get in touch
 		</Button>
 	</div>
 </section>
