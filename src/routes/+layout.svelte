@@ -6,7 +6,6 @@
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabase';
 	import { shouldAnimate } from '$lib/utils/animation';
-	import { loadGsap } from '$lib/utils/gsap-client';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 
 	let { data, children } = $props();
@@ -60,89 +59,9 @@
 			});
 		}
 
-		// Branch 2 — GSAP fade fallback for browsers without View
-		// Transitions (Firefox stable at the time of writing). We
-		// lazy-load GSAP via the singleton loader so the tween bundle
-		// is only fetched when actually needed.
-		return new Promise<void>((resolve) => {
-			loadGsap()
-				.then((bundle) => {
-					// `bundle === null` happens in two cases:
-					//   - SSR (impossible inside `onNavigate`, but the
-					//     loader still guards for it);
-					//   - any future code path where the loader chooses
-					//     to opt out.
-					// Either way we must not block navigation: resolve
-					// immediately and let SvelteKit proceed without a
-					// transition (Task 9.5 / Requirement 9.4).
-					if (!bundle) {
-						resolve();
-						return;
-					}
-					const { gsap } = bundle;
-
-					// Target the current route container. `main` covers
-					// the public layout (`(public)/+layout.svelte` wraps
-					// children in `<main class="flex-1">`); the
-					// `[data-route-root]` selector is reserved for
-					// non-`<main>` layouts (e.g. dashboard) that may opt
-					// in by tagging their root element.
-					const main = document.querySelector<HTMLElement>('main, [data-route-root]');
-					if (!main) {
-						// No element to animate — fall through cleanly so
-						// the navigation still completes (Requirement
-						// 9.4: graceful degradation).
-						resolve();
-						return;
-					}
-
-					// Fade-out → swap → fade-in. The exact tokens
-					// (durations / eases / offsets) are pinned by Task
-					// 9.4 so the visual rhythm matches the spec across
-					// every fallback browser.
-					gsap.to(main, {
-						opacity: 0,
-						y: -8,
-						duration: 0.18,
-						ease: 'power2.in',
-						onComplete: async () => {
-							// Resolve the navigation promise FIRST so
-							// SvelteKit can swap the DOM, then await
-							// `navigation.complete` to be sure the new
-							// route has rendered before we play the
-							// fade-in. Awaiting `navigation.complete`
-							// inside `onComplete` mirrors the View
-							// Transitions branch and keeps both paths
-							// observationally equivalent for callers.
-							resolve();
-							await navigation.complete;
-							// `fromTo` guarantees the start state is
-							// applied even when the previous tween's
-							// final values (`opacity: 0, y: -8`) have
-							// just landed on the (now-replaced) DOM
-							// node. `power2.out` complements the
-							// `power2.in` exit for symmetric pacing.
-							gsap.fromTo(
-								main,
-								{ opacity: 0, y: 8 },
-								{
-									opacity: 1,
-									y: 0,
-									duration: 0.24,
-									ease: 'power2.out'
-								}
-							);
-						}
-					});
-				})
-				.catch(() => {
-					// Loader rejection (chunk load failure, etc.) is
-					// non-fatal: skip the animation and let the
-					// navigation finish without ceremony (Requirement
-					// 9.4: graceful degradation).
-					resolve();
-				});
-		});
+		// Branch 2 — Instant transition fallback for browsers without View
+		// Transitions (Firefox). No animation, just let SvelteKit swap instantly.
+		// This ensures navigation never blocks and provides instant response.
 	});
 
 	// ── Auth sync antar tab ──────────────────────────────
