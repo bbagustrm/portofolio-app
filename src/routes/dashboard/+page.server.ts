@@ -3,14 +3,17 @@ import { getAllProjects } from '$lib/server/db/projects';
 import { getAllPosts as getAllBlogPosts } from '$lib/server/db/blog';
 import { getAllPostsForDashboard } from '$lib/server/db/gallery';
 import { getAnalyticsSummary } from '$lib/server/db/analytics';
+import { unwrapOr } from '$lib/utils/result';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	const [projects, blogPosts, galleryPosts, analytics] = await Promise.all([
+	const [projectsResult, blogPosts, galleryPosts, analytics] = await Promise.all([
 		getAllProjects(locals.supabase),
 		getAllBlogPosts(locals.supabase),
 		getAllPostsForDashboard(locals.supabase),
 		getAnalyticsSummary(locals.supabase, 30)
 	]);
+
+	const projects = unwrapOr(projectsResult, []);
 
 	return {
 		stats: {

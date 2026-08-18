@@ -3,6 +3,7 @@
 	import { ArrowLeft } from '@lucide/svelte';
 	import { formatDate, estimateReadingTime } from '$lib/utils';
 	import { reveal } from '$lib/actions/reveal';
+	import * as m from '$paraglide/messages';
 
 	let { data } = $props();
 	let post = $derived(data.post);
@@ -20,7 +21,7 @@
 		   class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10 transition-colors"
 		>
 			<ArrowLeft class="size-4" />
-			Back to Blog
+			{m.common_back_to_blog()}
 		</a>
 	</div>
 
@@ -71,7 +72,7 @@
 		class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
 		>
 		<ArrowLeft class="size-4" />
-		Back to Blog
+		{m.common_back_to_blog()}
 		</a>
 	</footer>
 </article>

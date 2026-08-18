@@ -33,14 +33,14 @@
 
 <svelte:head><title>Upload — Dashboard</title></svelte:head>
 
-<div class="max-w-2xl space-y-6">
+<div class="max-w-7xl mx-auto space-y-6">
 	<div class="flex items-center gap-3">
 		<a href="/dashboard/gallery">
 			<Button variant="ghost" size="icon"><ArrowLeft class="size-4" /></Button>
 		</a>
 		<div>
-			<h1 class="text-2xl font-bold">Upload Photos / Videos</h1>
-			<p class="text-muted-foreground text-sm">Add new content to your gallery.</p>
+			<h1 class="text-2xl font-bold">Upload (Bilingual Captions)</h1>
+			<p class="text-muted-foreground text-sm">Add media with EN & ID captions simultaneously.</p>
 		</div>
 	</div>
 
@@ -108,18 +108,40 @@
 			</CardContent>
 		</Card>
 
-		<!-- Caption & mood -->
+		<!-- Captions (Split Screen) -->
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<Card>
+				<CardHeader><CardTitle>🇬🇧 English Details</CardTitle></CardHeader>
+				<CardContent class="space-y-4">
+					<div class="space-y-2">
+						<Label for="caption_en">Caption (EN)</Label>
+						<Textarea id="caption_en" name="caption_en" placeholder="What's this about?" rows={3} />
+					</div>
+					<div class="space-y-2">
+						<Label for="mood_en">Mood (EN)</Label>
+						<Input id="mood_en" name="mood_en" placeholder="e.g. happy, calm, nostalgic" />
+					</div>
+				</CardContent>
+			</Card>
+			<Card>
+				<CardHeader><CardTitle>🇮🇩 Detail Indonesia</CardTitle></CardHeader>
+				<CardContent class="space-y-4">
+					<div class="space-y-2">
+						<Label for="caption_id">Keterangan (ID)</Label>
+						<Textarea id="caption_id" name="caption_id" placeholder="Tentang apa ini?" rows={3} />
+					</div>
+					<div class="space-y-2">
+						<Label for="mood_id">Mood (ID)</Label>
+						<Input id="mood_id" name="mood_id" placeholder="misal: senang, tenang, nostalgia" />
+					</div>
+				</CardContent>
+			</Card>
+		</div>
+
+		<!-- Visibility (Shared) -->
 		<Card>
-			<CardHeader><CardTitle>Details</CardTitle></CardHeader>
-			<CardContent class="space-y-4">
-				<div class="space-y-2">
-					<Label for="caption">Caption (optional)</Label>
-					<Textarea id="caption" name="caption" placeholder="What's this about?" rows={3} />
-				</div>
-				<div class="space-y-2">
-					<Label for="mood">Mood (optional)</Label>
-					<Input id="mood" name="mood" placeholder="e.g. happy, calm, nostalgic" />
-				</div>
+			<CardHeader><CardTitle>Visibility</CardTitle></CardHeader>
+			<CardContent>
 				<label class="flex items-center gap-3 cursor-pointer">
 					<input type="checkbox" name="is_published" class="size-4 rounded" checked />
 					<div>
@@ -132,7 +154,7 @@
 
 		<div class="flex gap-3">
 			<Button type="submit" disabled={loading || previews.length === 0}>
-				{loading ? 'Uploading...' : `Upload ${previews.length > 0 ? previews.length + ' file(s)' : ''}`}
+				{loading ? 'Uploading...' : `Upload (creates EN & ID posts)`}
 			</Button>
 			<a href="/dashboard/gallery">
 				<Button variant="outline" type="button">Cancel</Button>

@@ -64,41 +64,41 @@
 				{/if}
 			</div>
 
-			<!-- Links -->
-			{#if project.demo_url || project.repo_url}
-				<div class="flex gap-2 mt-auto pt-1">
-					{#if project.demo_url}
-
-						<a href={project.demo_url}
-						target="_blank"
-						rel="noopener noreferrer"
-						onclick={(e) => e.stopPropagation()}
-						>
-						<Button variant="outline" size="sm" class="gap-1.5 h-8 text-xs
-								opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0
-								transition-all duration-200">
-							<ExternalLink class="size-3" />
-							Demo
-						</Button>
-						</a>
-					{/if}
-					{#if project.repo_url}
-
-						<a href={project.repo_url}
-						target="_blank"
-						rel="noopener noreferrer"
-						onclick={(e) => e.stopPropagation()}
-						>
-						<Button variant="ghost" size="sm" class="gap-1.5 h-8 text-xs
-								opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0
-								transition-all duration-200 delay-75">
-							<GithubLogo class="size-3" />
-							Code
-						</Button>
-						</a>
-					{/if}
-				</div>
-			{/if}
+		<!-- Links -->
+		{#if project.demo_url || project.repo_url}
+			<div class="flex gap-2 mt-auto pt-1">
+				{#if project.demo_url}
+					<Button 
+						variant="outline" 
+						size="sm" 
+						class="gap-1.5 h-8 text-xs opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-200"
+						onclick={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							window.open(project.demo_url, '_blank', 'noopener,noreferrer');
+						}}
+					>
+						<ExternalLink class="size-3" />
+						Demo
+					</Button>
+				{/if}
+				{#if project.repo_url}
+					<Button 
+						variant="ghost" 
+						size="sm" 
+						class="gap-1.5 h-8 text-xs opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-200 delay-75"
+						onclick={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							window.open(project.repo_url, '_blank', 'noopener,noreferrer');
+						}}
+					>
+						<GithubLogo class="size-3" />
+						Code
+					</Button>
+				{/if}
+			</div>
+		{/if}
 		</div>
 	</div>
 </a>

@@ -12,17 +12,24 @@
 	let { form } = $props();
 
 	let loading = $state(false);
-	let title = $state('');
-	let slug = $state('');
+	let titleEn = $state('');
+	let slugEn = $state('');
+	let titleId = $state('');
+	let slugId = $state('');
 	let coverPreview = $state<string | null>(null);
 
 	$effect(() => {
 		if (form?.error) toast.error(form.error);
 	});
 
-	function onTitleInput(e: Event) {
-		title = (e.target as HTMLInputElement).value;
-		slug = generateSlug(title);
+	function onTitleInputEn(e: Event) {
+		titleEn = (e.target as HTMLInputElement).value;
+		slugEn = generateSlug(titleEn);
+	}
+
+	function onTitleInputId(e: Event) {
+		titleId = (e.target as HTMLInputElement).value;
+		slugId = generateSlug(titleId) + '-id';
 	}
 
 	function onCoverChange(e: Event) {
@@ -36,7 +43,7 @@
 	<title>New Project — Dashboard</title>
 </svelte:head>
 
-<div class="max-w-2xl space-y-6">
+<div class="max-w-7xl mx-auto space-y-6">
 	<div class="flex items-center gap-3">
 		<a href="/dashboard/projects">
 			<Button variant="ghost" size="icon">
@@ -44,8 +51,8 @@
 			</Button>
 		</a>
 		<div>
-			<h1 class="text-2xl font-bold">New Project</h1>
-			<p class="text-muted-foreground text-sm">Add a new portfolio project.</p>
+			<h1 class="text-2xl font-bold">New Project (Bilingual)</h1>
+			<p class="text-muted-foreground text-sm">Create English and Indonesian versions simultaneously.</p>
 		</div>
 	</div>
 
@@ -61,56 +68,118 @@
 		}}
 		class="space-y-6"
 	>
+		<!-- Split Screen Layout: EN (Left) | ID (Right) -->
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<!-- ENGLISH VERSION -->
+			<Card>
+				<CardHeader>
+					<CardTitle class="flex items-center gap-2">
+						🇬🇧 English Version
+					</CardTitle>
+				</CardHeader>
+				<CardContent class="space-y-4">
+					<div class="space-y-2">
+						<Label for="title_en">Title (EN) *</Label>
+						<Input
+							id="title_en"
+							name="title_en"
+							placeholder="My Awesome Project"
+							required
+							oninput={onTitleInputEn}
+						/>
+					</div>
+
+					<div class="space-y-2">
+						<Label for="slug_en">Slug (auto-generated)</Label>
+						<Input
+							id="slug_en"
+							name="slug_en"
+							value={slugEn}
+							placeholder="my-awesome-project"
+							class="text-muted-foreground"
+							readonly
+						/>
+					</div>
+
+					<div class="space-y-2">
+						<Label for="description_en">Short Description (EN)</Label>
+						<Textarea
+							id="description_en"
+							name="description_en"
+							placeholder="A brief description of the project..."
+							rows={2}
+						/>
+					</div>
+
+					<div class="space-y-2">
+						<Label for="content_en">Detail Content (EN)</Label>
+						<Textarea
+							id="content_en"
+							name="content_en"
+							placeholder="Full description, features, challenges..."
+							rows={6}
+						/>
+					</div>
+				</CardContent>
+			</Card>
+
+			<!-- INDONESIAN VERSION -->
+			<Card>
+				<CardHeader>
+					<CardTitle class="flex items-center gap-2">
+						🇮🇩 Indonesian Version
+					</CardTitle>
+				</CardHeader>
+				<CardContent class="space-y-4">
+					<div class="space-y-2">
+						<Label for="title_id">Judul (ID) *</Label>
+						<Input
+							id="title_id"
+							name="title_id"
+							placeholder="Proyek Keren Saya"
+							required
+							oninput={onTitleInputId}
+						/>
+					</div>
+
+					<div class="space-y-2">
+						<Label for="slug_id">Slug (auto-generated)</Label>
+						<Input
+							id="slug_id"
+							name="slug_id"
+							value={slugId}
+							placeholder="proyek-keren-saya-id"
+							class="text-muted-foreground"
+							readonly
+						/>
+					</div>
+
+					<div class="space-y-2">
+						<Label for="description_id">Deskripsi Singkat (ID)</Label>
+						<Textarea
+							id="description_id"
+							name="description_id"
+							placeholder="Deskripsi singkat tentang proyek..."
+							rows={2}
+						/>
+					</div>
+
+					<div class="space-y-2">
+						<Label for="content_id">Konten Detail (ID)</Label>
+						<Textarea
+							id="content_id"
+							name="content_id"
+							placeholder="Deskripsi lengkap, fitur, tantangan..."
+							rows={6}
+						/>
+					</div>
+				</CardContent>
+			</Card>
+		</div>
+
+		<!-- Cover Image (Shared) -->
 		<Card>
-			<CardHeader><CardTitle>Basic Info</CardTitle></CardHeader>
-			<CardContent class="space-y-4">
-				<div class="space-y-2">
-					<Label for="title">Title *</Label>
-					<Input
-						id="title"
-						name="title"
-						placeholder="My Awesome Project"
-						required
-						oninput={onTitleInput}
-					/>
-				</div>
-
-				<div class="space-y-2">
-					<Label for="slug">Slug (auto-generated)</Label>
-					<Input
-						id="slug"
-						name="slug"
-						value={slug}
-						placeholder="my-awesome-project"
-						class="text-muted-foreground"
-						readonly
-					/>
-				</div>
-
-				<div class="space-y-2">
-					<Label for="description">Short Description</Label>
-					<Textarea
-						id="description"
-						name="description"
-						placeholder="A brief description of the project..."
-						rows={2}
-					/>
-				</div>
-
-				<div class="space-y-2">
-					<Label for="content">Detail Content</Label>
-					<Textarea
-						id="content"
-						name="content"
-						placeholder="Full description, features, challenges..."
-						rows={6}
-					/>
-				</div>
-			</CardContent>
-		</Card>
-
-		<Card>
-			<CardHeader><CardTitle>Cover Image</CardTitle></CardHeader>
+			<CardHeader><CardTitle>Cover Image (Shared for both languages)</CardTitle></CardHeader>
 			<CardContent class="space-y-4">
 				{#if coverPreview}
 					<div class="aspect-video rounded-lg overflow-hidden border">
@@ -137,8 +206,9 @@
 			</CardContent>
 		</Card>
 
+		<!-- Links & Tech (Shared) -->
 		<Card>
-			<CardHeader><CardTitle>Links & Tech</CardTitle></CardHeader>
+			<CardHeader><CardTitle>Links & Tech Stack (Shared for both languages)</CardTitle></CardHeader>
 			<CardContent class="space-y-4">
 				<div class="space-y-2">
 					<Label for="tech_stack">Tech Stack</Label>
@@ -185,7 +255,7 @@
 
 		<div class="flex gap-3">
 			<Button type="submit" disabled={loading}>
-				{loading ? 'Saving...' : 'Create Project'}
+				{loading ? 'Creating both versions...' : 'Create EN & ID Projects'}
 			</Button>
 
 			<a href="/dashboard/projects">

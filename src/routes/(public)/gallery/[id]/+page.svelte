@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ArrowLeft } from '@lucide/svelte';
 	import { formatDate } from '$lib/utils';
+	import * as m from '$paraglide/messages';
 
 	let { data } = $props();
 	let post = $derived(data.post);
@@ -19,7 +20,7 @@
 	class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
 	>
 	<ArrowLeft class="size-4" />
-	Back to Gallery
+	{m.common_back_to_gallery()}
 	</a>
 
 	<!-- Main viewer -->

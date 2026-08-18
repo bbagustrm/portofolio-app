@@ -4,6 +4,7 @@
 	import { ArrowLeft, ArrowSquareOut, GithubLogo } from 'phosphor-svelte';
 	import { formatDate } from '$lib/utils';
 	import { reveal } from '$lib/actions/reveal';
+	import * as m from '$paraglide/messages';
 
 	let { data } = $props();
 	let project = $derived(data.project);
@@ -21,7 +22,7 @@
 		   class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10 transition-colors"
 		>
 			<ArrowLeft class="size-4" />
-			Back to Portfolio
+			{m.common_back_to_portfolio()}
 		</a>
 	</div>
 
@@ -47,7 +48,7 @@
 					<a href={project.demo_url} target="_blank" rel="noopener noreferrer">
 						<Button class="gap-2">
 							<ArrowSquareOut class="size-4" />
-							Live Demo
+							{m.project_live_demo()}
 						</Button>
 					</a>
 				{/if}
@@ -55,7 +56,7 @@
 					<a href={project.repo_url} target="_blank" rel="noopener noreferrer">
 						<Button variant="outline" class="gap-2">
 							<GithubLogo class="size-4" />
-							Source
+							{m.project_source()}
 						</Button>
 					</a>
 				{/if}
@@ -82,6 +83,6 @@
 	{/if}
 
 	<p class="text-xs text-muted-foreground mt-16 pt-8 border-t">
-		Published {formatDate(project.created_at)}
+		{m.common_published()} {formatDate(project.created_at)}
 	</p>
 </article>
