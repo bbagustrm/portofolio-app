@@ -1,10 +1,11 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { getAllProjects, deleteProject, updateProject } from '$lib/server/db/projects';
+import { unwrapOr } from '$lib/utils/result';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	const projects = await getAllProjects(locals.supabase);
-	return { projects };
+	const projectsResult = await getAllProjects(locals.supabase);
+	return { projects: unwrapOr(projectsResult, []) };
 };
 
 export const actions: Actions = {
@@ -13,10 +14,9 @@ export const actions: Actions = {
 		const id = form.get('id') as string;
 		if (!id) return fail(400, { error: 'Missing ID' });
 
-		try {
-			await deleteProject(locals.supabase, id);
-		} catch (e: any) {
-			return fail(500, { error: e.message });
+		const result = await deleteProject(locals.supabase, id);
+		if (!result.ok) {
+			return fail(500, { error: result.error.message });
 		}
 	},
 
@@ -26,10 +26,9 @@ export const actions: Actions = {
 		const current = form.get('current') === 'true';
 		if (!id) return fail(400, { error: 'Missing ID' });
 
-		try {
-			await updateProject(locals.supabase, id, { is_published: !current });
-		} catch (e: any) {
-			return fail(500, { error: e.message });
+		const result = await updateProject(locals.supabase, id, { is_published: !current });
+		if (!result.ok) {
+			return fail(500, { error: result.error.message });
 		}
 	},
 
@@ -39,10 +38,9 @@ export const actions: Actions = {
 		const current = form.get('current') === 'true';
 		if (!id) return fail(400, { error: 'Missing ID' });
 
-		try {
-			await updateProject(locals.supabase, id, { is_featured: !current });
-		} catch (e: any) {
-			return fail(500, { error: e.message });
+		const result = await updateProject(locals.supabase, id, { is_featured: !current });
+		if (!result.ok) {
+			return fail(500, { error: result.error.message });
 		}
 	}
 };

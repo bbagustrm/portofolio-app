@@ -5,35 +5,36 @@
 	import type { Post } from '$lib/types';
 	import { reveal } from '$lib/actions/reveal';
 	import { useInfiniteGallery } from '$lib/queries/gallery.svelte';
+	import * as m from '$paraglide/messages';
 
 	let { data } = $props();
 
 	const galleryQuery = useInfiniteGallery(8);
 
-	$: posts = $galleryQuery.data?.pages.flatMap(page => page.posts) ?? [];
-	$: hasMore = $galleryQuery.hasNextPage;
-	$: loading = $galleryQuery.isFetchingNextPage;
+	let posts = $derived(galleryQuery.data?.pages.flatMap((page: any) => page.posts) ?? []);
+	let hasMore = $derived(galleryQuery.hasNextPage);
+	let loading = $derived(galleryQuery.isFetchingNextPage);
 
 	function loadMore() {
 		if (hasMore && !loading) {
-			$galleryQuery.fetchNextPage();
+			galleryQuery.fetchNextPage();
 		}
 	}
 </script>
 
 <svelte:head>
 	<title>Gallery — Atmojo</title>
-	<meta name="description" content="A personal photo and video gallery." />
+	<meta name="description" content={m.meta_gallery_description()} />
 </svelte:head>
 
 <div class="container mx-auto max-w-2xl px-4 py-16">
 
 	<!-- Header -->
 	<div use:reveal={{ y: 20 }} class="mb-10">
-		<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Memories</p>
-		<h1 class="text-5xl font-bold mb-4">Gallery</h1>
+		<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">{m.gallery_title()}</p>
+		<h1 class="text-5xl font-bold mb-4">{m.gallery_title()}</h1>
 		<p class="text-muted-foreground text-lg">
-			A collection of moments captured in photos and videos.
+			{m.gallery_subtitle()}
 		</p>
 	</div>
 
@@ -41,8 +42,8 @@
 	{#if posts.length === 0}
 		<div class="text-center py-24 text-muted-foreground border rounded-2xl">
 			<p class="text-5xl mb-4">📷</p>
-			<p class="font-medium">No photos yet.</p>
-			<p class="text-sm mt-1">Check back soon!</p>
+			<p class="font-medium">{m.gallery_empty()}</p>
+			<p class="text-sm mt-1">{m.gallery_empty_subtitle()}</p>
 		</div>
 	{:else}
 		<div class="space-y-4">

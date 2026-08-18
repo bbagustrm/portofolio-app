@@ -8,6 +8,7 @@
 	"hero_badge": "Tersedia untuk peluang",
 	"hero_cta_portfolio": "Lihat Portofolio",
 	"hero_cta_blog": "Baca Blog",
+	"hero_cta_contact": "Hubungi Saya",
 	
 	"section_featured_projects": "Proyek Unggulan",
 	"section_latest_articles": "Artikel Terbaru",
@@ -98,6 +99,38 @@
 	"common_search": "Cari",
 	"common_filter": "Filter",
 	"common_sort": "Urutkan",
-	"common_more": "Lebih banyak",
-	"common_less": "Lebih sedikit"
+	"common_more": "Lebih Banyak",
+	"common_less": "Lebih Sedikit",
+	"common_published": "Dipublikasikan",
+	"common_back_to_blog": "Kembali ke Blog",
+	"common_back_to_portfolio": "Kembali ke Portofolio",
+	"common_back_to_gallery": "Kembali ke Galeri",
+	
+	"project_live_demo": "Demo Langsung",
+	"project_source": "Source Code",
+	
+	"hero_bio_fallback": "Full Stack Developer yang bersemangat membangun aplikasi web modern dengan kode yang bersih dan pengalaman pengguna yang luar biasa.",
+	"hero_email_send": "Kirim Email",
+	"hero_email_copy": "Salin Email",
+	
+	"cta_work_together": "Mari bekerja sama",
+	"cta_work_description": "Terbuka untuk proyek freelance, kolaborasi, dan peluang kerja penuh waktu.",
+	
+	"blog_showing_results": "Menampilkan hasil untuk",
+	"blog_filtered_by": "Difilter berdasarkan",
+	"blog_in": "di",
+	"blog_articles": "artikel",
+	"blog_article": "artikel",
+	"blog_no_results": "Tidak ada hasil",
+	"blog_no_results_subtitle": "Coba kata kunci lain atau hapus filter.",
+	"blog_single_post_message": "Artikel terbaru ditampilkan di sebelah kanan.",
+	"blog_coming_soon": "Artikel lainnya segera hadir!",
+	"blog_new_post": "Postingan Baru",
+	"blog_topics": "Topik",
+	"blog_total_articles": "Total Artikel",
+	
+	"meta_portfolio_description": "Proyek dan karya yang telah saya buat.",
+	"meta_blog_description": "Artikel tentang pengembangan web, pemrograman, dan teknologi.",
+	"meta_gallery_description": "Koleksi foto dan video pribadi.",
+	"meta_fallback_description": "Portofolio dan blog pribadi"
 }

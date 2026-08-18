@@ -8,6 +8,7 @@
 	"hero_badge": "Available for opportunities",
 	"hero_cta_portfolio": "View Portfolio",
 	"hero_cta_blog": "Read Blog",
+	"hero_cta_contact": "Get in touch",
 	
 	"section_featured_projects": "Featured Projects",
 	"section_latest_articles": "Latest Articles",
@@ -99,5 +100,37 @@
 	"common_filter": "Filter",
 	"common_sort": "Sort",
 	"common_more": "More",
-	"common_less": "Less"
+	"common_less": "Less",
+	"common_published": "Published",
+	"common_back_to_blog": "Back to Blog",
+	"common_back_to_portfolio": "Back to Portfolio",
+	"common_back_to_gallery": "Back to Gallery",
+	
+	"project_live_demo": "Live Demo",
+	"project_source": "Source",
+	
+	"hero_bio_fallback": "Full Stack Developer passionate about building modern web applications with clean code and great user experiences.",
+	"hero_email_send": "Send Email",
+	"hero_email_copy": "Copy Email",
+	
+	"cta_work_together": "Let's work together",
+	"cta_work_description": "Open to freelance projects, collaborations, and full-time opportunities.",
+	
+	"blog_showing_results": "Showing results for",
+	"blog_filtered_by": "Filtered by",
+	"blog_in": "in",
+	"blog_articles": "articles",
+	"blog_article": "article",
+	"blog_no_results": "No results found",
+	"blog_no_results_subtitle": "Try a different keyword or clear the filter.",
+	"blog_single_post_message": "The latest article is shown on the right.",
+	"blog_coming_soon": "More articles coming soon!",
+	"blog_new_post": "New Post",
+	"blog_topics": "Topics",
+	"blog_total_articles": "Total Articles",
+	
+	"meta_portfolio_description": "Projects and work I've built.",
+	"meta_blog_description": "Articles about web development, programming, and tech.",
+	"meta_gallery_description": "A personal photo and video gallery.",
+	"meta_fallback_description": "Personal portfolio and blog"
 }

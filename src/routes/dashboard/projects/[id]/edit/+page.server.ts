@@ -5,9 +5,11 @@ import { uploadFile } from '$lib/utils/upload';
 import { generateSlug } from '$lib/utils/slug';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-	const project = await getProjectById(locals.supabase, params.id);
-	if (!project) error(404, 'Project not found');
-	return { project };
+	const projectResult = await getProjectById(locals.supabase, params.id);
+	if (!projectResult.ok) {
+		error(404, 'Project not found');
+	}
+	return { project: projectResult.value };
 };
 
 export const actions: Actions = {
@@ -42,20 +44,19 @@ export const actions: Actions = {
 		};
 
 		if (coverFile && coverFile.size > 0) {
-			try {
-				const result = await uploadFile(locals.supabase, coverFile, 'portfolio', 'covers');
-				updateData.cover_url = result.url;
-			} catch (e: any) {
-				return fail(400, { error: `Upload failed: ${e.message}` });
-			}
-		}
-
 		try {
-			await updateProject(locals.supabase, params.id, updateData);
+			const result = await uploadFile(locals.supabase, coverFile, 'portfolio', 'covers');
+			updateData.cover_url = result.url;
 		} catch (e: any) {
-			return fail(500, { error: e.message });
+			return fail(400, { error: `Upload failed: ${e.message}` });
 		}
+	}
 
-		redirect(303, '/dashboard/projects');
+	const updateResult = await updateProject(locals.supabase, params.id, updateData);
+	if (!updateResult.ok) {
+		return fail(500, { error: updateResult.error.message });
+	}
+
+	redirect(303, '/dashboard/projects');
 	}
 };

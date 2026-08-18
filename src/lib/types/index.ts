@@ -31,6 +31,7 @@ export type Project = {
 	is_featured: boolean;
 	is_published: boolean;
 	order_index: number;
+	locale: string | null;
 	created_at: string;
 	updated_at: string;
 };
@@ -44,6 +45,7 @@ export type BlogPost = {
 	cover_url: string | null;
 	is_published: boolean;
 	published_at: string | null;
+	locale: string | null;
 	created_at: string;
 	updated_at: string;
 	tags?: Tag[];
@@ -61,6 +63,7 @@ export type Post = {
 	mood: string | null;
 	is_published: boolean;
 	is_archived: boolean;
+	locale: string | null;
 	created_at: string;
 	updated_at: string;
 	media?: Media[];

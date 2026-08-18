@@ -19,15 +19,24 @@
 	import ProjectCard from '$lib/components/portfolio/ProjectCard.svelte';
 	import { hoverLift } from '$lib/actions/hover';
 	import { useHeroAnimation } from '$lib/hooks/useHeroAnimation.svelte';
+	import * as m from '$paraglide/messages';
 
 	let { data } = $props();
 
 	const { elements } = useHeroAnimation();
+	
+	// Detect mobile vs desktop
+	let isMobile = $state(false);
+	
+	onMount(() => {
+		// Check if device has touch capability (mobile/tablet)
+		isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+	});
 </script>
 
 <svelte:head>
 	<title>Atmojo — Full Stack Developer</title>
-	<meta name="description" content={data.profile?.bio ?? 'Personal portfolio and blog'} />
+	<meta name="description" content={data.profile?.bio ?? m.meta_fallback_description()} />
 </svelte:head>
 
 <!-- ─── Hero ──────────────────────────────────────────── -->
@@ -45,7 +54,7 @@
 				<!-- Badge — mobile only -->
 				<div bind:this={elements.heroBadgeMobile} class="inline-flex lg:hidden w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
 					<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
-					Available for opportunities
+					{m.hero_badge()}
 				</div>
 
 				<h1 class="text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05]">
@@ -59,23 +68,23 @@
 				<!-- Badge — desktop only -->
 				<div bind:this={elements.heroBadgeDesktop} class="hidden lg:inline-flex w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
 					<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
-					Available for opportunities
+					{m.hero_badge()}
 				</div>
 
 				<p bind:this={elements.heroBio} class="text-lg text-muted-foreground mb-8 leading-relaxed">
-					{data.profile?.bio ?? 'Full Stack Developer passionate about building modern web applications with clean code and great user experiences.'}
+					{data.profile?.bio ?? m.hero_bio_fallback()}
 				</p>
 
 				<div bind:this={elements.heroButtons} class="flex flex-wrap gap-3 mb-10">
 					<a href="/portfolio">
 						<Button size="lg" class="gap-2 rounded-full px-6">
-							View Portfolio
+							{m.hero_cta_portfolio()}
 							<ArrowRight class="size-4" />
 						</Button>
 					</a>
 					<a href="/blog">
 						<Button size="lg" variant="outline" class="gap-2 rounded-full px-6">
-							Read Blog
+							{m.hero_cta_blog()}
 						</Button>
 					</a>
 				</div>
@@ -118,20 +127,33 @@
 								<Tooltip.Content side="bottom">LinkedIn</Tooltip.Content>
 							</Tooltip.Root>
 
-							<Tooltip.Root>
-								<Tooltip.Trigger>
-									{#snippet child({ props })}
-
-										<a {...props}
-										href="mailto:bbagustrm@gmail.com"
-										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-										>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								{#snippet child({ props })}
+									<button 
+										{...props}
+										onclick={() => {
+											if (isMobile) {
+												window.location.href = 'mailto:bbagustrm@gmail.com';
+											} else {
+												navigator.clipboard.writeText('bbagustrm@gmail.com');
+												alert('✓ Email copied to clipboard!\n\nbbagustrm@gmail.com');
+											}
+										}}
+										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+										aria-label="Email contact"
+									>
 										<Envelope class="size-5 md:size-7" />
-										</a>
-									{/snippet}
-								</Tooltip.Trigger>
-								<Tooltip.Content side="bottom">Email</Tooltip.Content>
-							</Tooltip.Root>
+									</button>
+								{/snippet}
+							</Tooltip.Trigger>
+							<Tooltip.Content side="bottom">
+								<div class="text-center">
+									<div class="font-medium">{isMobile ? m.hero_email_send() : m.hero_email_copy()}</div>
+									<div class="text-xs text-muted-foreground">bbagustrm@gmail.com</div>
+								</div>
+							</Tooltip.Content>
+						</Tooltip.Root>
 						</div>
 					</Tooltip.Provider>
 				</div>
@@ -147,7 +169,7 @@
 		<!-- Label — static, tidak ikut scroll -->
 		<div class="hidden md:flex shrink-0 items-center gap-2 px-6 py-4 border-r bg-muted/50 z-10">
 			<span class="text-sm font-medium text-muted-foreground whitespace-nowrap">
-				Tech I work with
+				{m.section_tech_stack()}
 			</span>
 		</div>
 
@@ -183,10 +205,10 @@
 			<p
 				class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider"
 			>
-				Portfolio
+				{m.portfolio_title()}
 			</p>
 
-			<h2 class="text-3xl font-bold">Featured Projects</h2>
+			<h2 class="text-3xl font-bold">{m.section_featured_projects()}</h2>
 		</div>
 
 		<!-- Cards stagger -->
@@ -205,7 +227,7 @@
 				class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
 			>
 				<Button variant="outline" size="lg">
-					View all
+					{m.section_view_all()}
 					<ArrowRight size={12} weight="regular" />
 				</Button>
 			</a>
@@ -219,11 +241,11 @@
 		<div class="container mx-auto max-w-6xl px-4 py-20">
 			<div use:reveal={{ y: 20 }} class="flex items-end justify-between mb-8">
 				<div>
-					<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Blog</p>
-					<h2 class="text-3xl font-bold">Latest Articles</h2>
+					<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">{m.blog_title()}</p>
+					<h2 class="text-3xl font-bold">{m.section_latest_articles()}</h2>
 				</div>
 				<a href="/blog" class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-					View all <ArrowRight class="size-3" />
+					{m.section_view_all()} <ArrowRight class="size-3" />
 				</a>
 			</div>
 
@@ -296,13 +318,25 @@
 		use:reveal={{ y: 30, duration: 0.6 }}
 		class="container mx-auto max-w-6xl px-4 py-24 text-center"
 	>
-		<h2 class="text-4xl font-bold mb-4">Let's work together</h2>
+		<h2 class="text-4xl font-bold mb-4">{m.cta_work_together()}</h2>
 		<p class="text-muted-foreground mb-8 max-w-md mx-auto text-lg">
-			Open to freelance projects, collaborations, and full-time opportunities.
+			{m.cta_work_description()}
 		</p>
-		<Button href="mailto:bbagustrm@gmail.com" size="lg" class="gap-2 rounded-full px-8">
+		
+		<Button 
+			size="lg" 
+			class="gap-2 rounded-full px-8"
+			onclick={() => {
+				if (isMobile) {
+					window.location.href = 'mailto:bbagustrm@gmail.com';
+				} else {
+					navigator.clipboard.writeText('bbagustrm@gmail.com');
+					alert('✓ Email copied to clipboard!\n\nbbagustrm@gmail.com');
+				}
+			}}
+		>
 			<Envelope class="size-4" />
-			Get in touch
+			{m.hero_cta_contact()}
 		</Button>
 	</div>
 </section>

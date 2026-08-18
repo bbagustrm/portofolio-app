@@ -4,9 +4,11 @@
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { Separator } from '$lib/components/ui/separator';
 	import ModeToggle from './ModeToggle.svelte';
+	import LanguageSwitcher from './LanguageSwitcher.svelte';
 	import { List } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { shouldAnimate } from '$lib/utils/animation';
+	import * as m from '$paraglide/messages';
 
 	let { user = null } = $props<{ user?: any }>();
 
@@ -14,12 +16,12 @@
 	let scrolled = $state(false);
 	let scrollY = $state(0);
 
-	const links = [
-		{ href: '/', label: 'Home' },
-		{ href: '/portfolio', label: 'Portfolio' },
-		{ href: '/blog', label: 'Blog' },
-		{ href: '/gallery', label: 'Gallery' }
-	];
+	let links = $derived([
+		{ href: '/', label: m.nav_home() },
+		{ href: '/portfolio', label: m.nav_portfolio() },
+		{ href: '/blog', label: m.nav_blog() },
+		{ href: '/gallery', label: m.nav_gallery() }
+	]);
 
 	function isActive(href: string): boolean {
 		if (href === '/') return page.url.pathname === '/';
@@ -86,10 +88,13 @@
 
 			{#if user}
 				<a href="/dashboard" class="ml-2">
-					<Button size="sm">Dashboard</Button>
+					<Button size="sm">{m.nav_dashboard()}</Button>
 				</a>
 			{/if}
 
+			<div class="ml-1">
+				<LanguageSwitcher />
+			</div>
 			<div class="ml-1">
 				<ModeToggle />
 			</div>
@@ -134,7 +139,7 @@
 						{#if user}
 							<Separator class="my-2" />
 							<a href="/dashboard" onclick={closeMenu}>
-								<Button size="sm" class="w-full">Dashboard</Button>
+								<Button size="sm" class="w-full">{m.nav_dashboard()}</Button>
 							</a>
 						{/if}
 					</nav>

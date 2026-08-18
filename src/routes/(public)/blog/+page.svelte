@@ -4,8 +4,14 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import type { BlogPost } from '$lib/types';
 	import { reveal } from '$lib/actions/reveal';
+	import * as m from '$paraglide/messages';
+	import { useBlogPosts } from '$lib/queries/blog.svelte';
 
 	let { data } = $props();
+
+	const postsQuery = useBlogPosts();
+	
+	const posts = $derived(postsQuery.data ?? data.posts);
 
 	let searchQuery = $state('');
 	let selectedTag = $state<string | null>(null);
@@ -15,11 +21,11 @@
 	);
 
 	// Latest post untuk sidebar kanan
-	let latestPost = $derived(data.posts[0] ?? null);
+	let latestPost = $derived(posts[0] ?? null);
 
 	// Filter ALL posts — dipakai saat search/filter aktif
 	let filteredAll = $derived(
-		data.posts.filter((post: BlogPost) => {
+		posts.filter((post: BlogPost) => {
 			const matchSearch = searchQuery.trim() === ''
 				? true
 				: post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -35,7 +41,7 @@
 
 	// Posts untuk left column saat normal (exclude latest agar tidak duplikat dengan sidebar)
 	let listPosts = $derived(
-		data.posts.length > 1 ? data.posts.slice(1) : data.posts
+		posts.length > 1 ? posts.slice(1) : posts
 	);
 
 	// Posts yang ditampilkan di left column
@@ -44,7 +50,7 @@
 
 <svelte:head>
 	<title>Blog — Atmojo</title>
-	<meta name="description" content="Articles about web development, programming, and tech." />
+	<meta name="description" content={m.meta_blog_description()} />
 </svelte:head>
 
 <div class="container mx-auto max-w-6xl px-4 py-16">
@@ -57,10 +63,10 @@
 
 			<!-- Header -->
 			<div use:reveal={{ y: 20 }} class="mb-10">
-				<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Writing</p>
-				<h1 class="text-5xl font-semibold mb-4">Blog</h1>
+				<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">{m.blog_title()}</p>
+				<h1 class="text-5xl font-semibold mb-4">{m.blog_title()}</h1>
 				<p class="text-muted-foreground max-w-xl text-lg">
-					Thoughts on web development, engineering, and things I find interesting.
+					{m.blog_subtitle()}
 				</p>
 			</div>
 
@@ -74,7 +80,7 @@
 						? 'bg-primary text-primary-foreground border-primary'
 						: 'border-border hover:bg-muted text-muted-foreground'}"
 					>
-						All
+						{m.portfolio_filter_all()}
 					</button>
 					{#each data.tags as tag}
 						<button
@@ -95,7 +101,7 @@
 				<Search class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
 				<input
 					type="text"
-					placeholder="Search articles..."
+					placeholder={m.common_search()}
 					bind:value={searchQuery}
 					class="w-full pl-9 pr-4 py-2.5 text-sm rounded-lg border bg-background
 						focus:outline-none focus:ring-2 focus:ring-ring transition-colors
@@ -107,17 +113,17 @@
 			{#if isFiltering}
 				<p class="text-sm text-muted-foreground mb-4">
 					{#if searchQuery.trim() !== ''}
-						Showing results for
+						{m.blog_showing_results()}
 						<span class="font-medium text-foreground">"{searchQuery}"</span>
 					{/if}
 					{#if selectedTag !== null}
-						{searchQuery.trim() !== '' ? ' in ' : 'Filtered by '}
+						{searchQuery.trim() !== '' ? m.blog_in() : m.blog_filtered_by()}
 						<span class="font-medium text-foreground">
 							{data.tags.find((t) => t.slug === selectedTag)?.name}
 						</span>
 					{/if}
 					— <span class="font-medium text-foreground">{filteredAll.length}</span>
-					article{filteredAll.length !== 1 ? 's' : ''}
+					{filteredAll.length !== 1 ? m.blog_articles() : m.blog_article()}
 				</p>
 			{/if}
 
@@ -125,22 +131,22 @@
 			{#if data.posts.length === 0}
 				<div class="text-center py-20 text-muted-foreground">
 					<p class="text-4xl mb-4">📝</p>
-					<p>No articles yet. Check back soon!</p>
+					<p>{m.blog_empty()}</p>
 				</div>
 
 			{:else if isFiltering && filteredAll.length === 0}
 				<div class="text-center py-16 text-muted-foreground">
 					<p class="text-3xl mb-3">🔍</p>
-					<p class="font-medium mb-1">No results found</p>
-					<p class="text-sm">Try a different keyword or clear the filter.</p>
+					<p class="font-medium mb-1">{m.blog_no_results()}</p>
+					<p class="text-sm">{m.blog_no_results_subtitle()}</p>
 				</div>
 
 			{:else if !isFiltering && listPosts.length === 0}
 				<!-- Hanya 1 post dan sudah tampil di sidebar kanan -->
 				<div class="text-center py-16 text-muted-foreground border rounded-xl">
 					<p class="text-3xl mb-3">📰</p>
-					<p class="text-sm">The latest article is shown on the right.</p>
-					<p class="text-sm mt-1">More articles coming soon!</p>
+					<p class="text-sm">{m.blog_single_post_message()}</p>
+					<p class="text-sm mt-1">{m.blog_coming_soon()}</p>
 				</div>
 
 			{:else}
@@ -159,7 +165,7 @@
 			{#if latestPost && !isFiltering}
 				<div>
 					<h2 class="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-3 font-sans">
-						New Post
+						{m.blog_new_post()}
 					</h2>
 					<PostCard post={latestPost} variant="featured" />
 				</div>
@@ -169,7 +175,7 @@
 			{#if data.tags.length > 0}
 				<div>
 					<h2 class="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-3 font-sans">
-						Topics
+						{m.blog_topics()}
 					</h2>
 					<div class="flex flex-wrap gap-2">
 						{#each data.tags as tag}
@@ -188,7 +194,7 @@
 
 			<!-- Article count -->
 			<div class="rounded-xl border bg-muted/30 p-4">
-				<p class="text-sm text-muted-foreground mb-1">Total Articles</p>
+				<p class="text-sm text-muted-foreground mb-1">{m.blog_total_articles()}</p>
 				<p class="text-3xl font-semibold text-primary">{data.posts.length}</p>
 			</div>
 		</div>

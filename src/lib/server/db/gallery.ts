@@ -10,6 +10,7 @@ const POST_SELECT = `
 
 export async function getPublishedPosts(
 	supabase: SupabaseClient,
+	locale = 'en',
 	cursor?: string,
 	limit = 12
 ): Promise<{ posts: Post[]; nextCursor: string | null }> {
@@ -18,10 +19,10 @@ export async function getPublishedPosts(
 		.select(POST_SELECT)
 		.eq('is_published', true)
 		.eq('is_archived', false)
+		.eq('locale', locale)
 		.order('created_at', { ascending: false })
-		.limit(limit + 1); // fetch 1 extra untuk cek apakah ada next page
+		.limit(limit + 1);
 
-	// Cursor-based pagination — ambil post yang lebih lama dari cursor
 	if (cursor) {
 		const { data: cursorPost } = await supabase
 			.from('posts')
@@ -39,7 +40,7 @@ export async function getPublishedPosts(
 
 	const posts = (data ?? []).map(normalizePost);
 	const hasMore = posts.length > limit;
-	if (hasMore) posts.pop(); // hapus item extra
+	if (hasMore) posts.pop();
 
 	return {
 		posts,

@@ -13,17 +13,24 @@
 	let { data, form } = $props();
 
 	let loading = $state(false);
-	let title = $state('');
-	let slug = $state('');
+	let titleEn = $state('');
+	let slugEn = $state('');
+	let titleId = $state('');
+	let slugId = $state('');
 	let coverPreview = $state<string | null>(null);
 
 	$effect(() => {
 		if (form?.error) toast.error(form.error);
 	});
 
-	function onTitleInput(e: Event) {
-		title = (e.target as HTMLInputElement).value;
-		slug = generateSlug(title);
+	function onTitleInputEn(e: Event) {
+		titleEn = (e.target as HTMLInputElement).value;
+		slugEn = generateSlug(titleEn);
+	}
+
+	function onTitleInputId(e: Event) {
+		titleId = (e.target as HTMLInputElement).value;
+		slugId = generateSlug(titleId) + '-id';
 	}
 
 	function onCoverChange(e: Event) {
@@ -34,14 +41,14 @@
 
 <svelte:head><title>New Post — Dashboard</title></svelte:head>
 
-<div class="max-w-3xl space-y-6">
+<div class="max-w-7xl mx-auto space-y-6">
 	<div class="flex items-center gap-3">
 		<a href="/dashboard/blog">
 			<Button variant="ghost" size="icon"><ArrowLeft class="size-4" /></Button>
 		</a>
 		<div>
-			<h1 class="text-2xl font-bold">New Post</h1>
-			<p class="text-muted-foreground text-sm">Write a new blog article.</p>
+			<h1 class="text-2xl font-bold">New Post (Bilingual)</h1>
+			<p class="text-muted-foreground text-sm">Write English and Indonesian articles simultaneously.</p>
 		</div>
 	</div>
 
@@ -57,33 +64,68 @@
 		}}
 		class="space-y-6"
 	>
-		<Card>
-			<CardHeader><CardTitle>Article Info</CardTitle></CardHeader>
-			<CardContent class="space-y-4">
-				<div class="space-y-2">
-					<Label for="title">Title *</Label>
-					<Input id="title" name="title" placeholder="My Article Title" required oninput={onTitleInput} />
-				</div>
+		<!-- Split Screen Layout: EN (Left) | ID (Right) -->
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<!-- ENGLISH VERSION -->
+			<Card>
+				<CardHeader><CardTitle class="flex items-center gap-2">🇬🇧 English Article</CardTitle></CardHeader>
+				<CardContent class="space-y-4">
+					<div class="space-y-2">
+						<Label for="title_en">Title (EN) *</Label>
+						<Input id="title_en" name="title_en" placeholder="My Article Title" required oninput={onTitleInputEn} />
+					</div>
 
-				<div class="space-y-2">
-					<Label>Slug (auto-generated)</Label>
-					<Input value={slug} readonly class="text-muted-foreground" />
-					<input type="hidden" name="slug" value={slug} />
-				</div>
+					<div class="space-y-2">
+						<Label>Slug (auto-generated)</Label>
+						<Input value={slugEn} readonly class="text-muted-foreground" />
+						<input type="hidden" name="slug_en" value={slugEn} />
+					</div>
 
-				<div class="space-y-2">
-					<Label for="excerpt">Excerpt (optional)</Label>
-					<Textarea id="excerpt" name="excerpt" placeholder="Short summary shown in blog list..." rows={2} />
-				</div>
-			</CardContent>
-		</Card>
+					<div class="space-y-2">
+						<Label for="excerpt_en">Excerpt (EN)</Label>
+						<Textarea id="excerpt_en" name="excerpt_en" placeholder="Short summary..." rows={2} />
+					</div>
+				</CardContent>
+			</Card>
 
-		<Card>
-			<CardHeader><CardTitle>Content</CardTitle></CardHeader>
-			<CardContent>
-				<RichTextEditor />
-			</CardContent>
-		</Card>
+			<!-- INDONESIAN VERSION -->
+			<Card>
+				<CardHeader><CardTitle class="flex items-center gap-2">🇮🇩 Artikel Indonesia</CardTitle></CardHeader>
+				<CardContent class="space-y-4">
+					<div class="space-y-2">
+						<Label for="title_id">Judul (ID) *</Label>
+						<Input id="title_id" name="title_id" placeholder="Judul Artikel Saya" required oninput={onTitleInputId} />
+					</div>
+
+					<div class="space-y-2">
+						<Label>Slug (auto-generated)</Label>
+						<Input value={slugId} readonly class="text-muted-foreground" />
+						<input type="hidden" name="slug_id" value={slugId} />
+					</div>
+
+					<div class="space-y-2">
+						<Label for="excerpt_id">Kutipan (ID)</Label>
+						<Textarea id="excerpt_id" name="excerpt_id" placeholder="Ringkasan singkat..." rows={2} />
+					</div>
+				</CardContent>
+			</Card>
+		</div>
+
+		<!-- Content (Split Screen) -->
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<Card>
+				<CardHeader><CardTitle>Content (EN)</CardTitle></CardHeader>
+				<CardContent>
+					<Textarea name="content_en" rows={12} placeholder="Write your English article content here..." class="font-mono text-sm" />
+				</CardContent>
+			</Card>
+			<Card>
+				<CardHeader><CardTitle>Konten (ID)</CardTitle></CardHeader>
+				<CardContent>
+					<Textarea name="content_id" rows={12} placeholder="Tulis konten artikel Indonesia di sini..." class="font-mono text-sm" />
+				</CardContent>
+			</Card>
+		</div>
 
 		<Card>
 			<CardHeader><CardTitle>Cover Image</CardTitle></CardHeader>
@@ -120,7 +162,7 @@
 
 		<div class="flex gap-3">
 			<Button type="submit" disabled={loading}>
-				{loading ? 'Saving...' : 'Create Post'}
+				{loading ? 'Creating both versions...' : 'Create EN & ID Posts'}
 			</Button>
 			<a href="/dashboard/blog">
 				<Button variant="outline" type="button">Cancel</Button>

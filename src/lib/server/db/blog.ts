@@ -17,7 +17,7 @@ export async function getAllPosts(supabase: SupabaseClient): Promise<BlogPost[]>
 	return normalizePosts(data ?? []);
 }
 
-export async function getPublishedPosts(supabase: SupabaseClient): Promise<BlogPost[]> {
+export async function getPublishedPosts(supabase: SupabaseClient, locale = 'en'): Promise<BlogPost[]> {
 	const { data, error } = await supabase
 		.from('blog_posts')
 		.select(`
@@ -27,6 +27,7 @@ export async function getPublishedPosts(supabase: SupabaseClient): Promise<BlogP
 			)
 		`)
 		.eq('is_published', true)
+		.eq('locale', locale)
 		.order('published_at', { ascending: false });
 
 	if (error) throw new Error(error.message);
@@ -35,7 +36,8 @@ export async function getPublishedPosts(supabase: SupabaseClient): Promise<BlogP
 
 export async function getPostBySlug(
 	supabase: SupabaseClient,
-	slug: string
+	slug: string,
+	locale = 'en'
 ): Promise<BlogPost | null> {
 	const { data, error } = await supabase
 		.from('blog_posts')
@@ -46,6 +48,7 @@ export async function getPostBySlug(
 			)
 		`)
 		.eq('slug', slug)
+		.eq('locale', locale)
 		.single();
 
 	if (error) return null;
