@@ -1,3 +1,23 @@
+import type { Database } from './database';
+
+export type Tables<T extends keyof Database['public']['Tables']> = 
+	Database['public']['Tables'][T]['Row'];
+
+export type Inserts<T extends keyof Database['public']['Tables']> = 
+	Database['public']['Tables'][T]['Insert'];
+
+export type Updates<T extends keyof Database['public']['Tables']> = 
+	Database['public']['Tables'][T]['Update'];
+
+export type DbProject = Tables<'projects'>;
+export type DbBlogPost = Tables<'blog_posts'>;
+export type DbPost = Tables<'posts'>;
+export type DbProfile = Tables<'profiles'>;
+export type DbMedia = Tables<'media'>;
+export type DbTag = Tables<'tags'>;
+
+// TODO: Migrate to generated types above
+// These manual types will be gradually replaced with DbProject, DbBlogPost, etc.
 export type Project = {
 	id: string;
 	title: string;

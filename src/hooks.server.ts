@@ -31,7 +31,17 @@ export const handle: Handle = async ({ event, resolve }) => {
 		admin.from('page_views').insert({
 			path: pathname,
 			referrer: event.request.headers.get('referer') ?? null
-		}).then(() => {});
+		}).then(({ error }) => {
+			if (error) {
+				console.error('[Analytics] Failed to track page view:', {
+					path: pathname,
+					error: error.message,
+					code: error.code,
+					hint: error.hint,
+					details: error.details
+				});
+			}
+		});
 	}
 
 	return resolve(event, {

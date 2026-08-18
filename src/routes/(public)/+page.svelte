@@ -18,132 +18,11 @@
 	import { reveal, revealStagger } from '$lib/actions/reveal';
 	import ProjectCard from '$lib/components/portfolio/ProjectCard.svelte';
 	import { hoverLift } from '$lib/actions/hover';
+	import { useHeroAnimation } from '$lib/hooks/useHeroAnimation.svelte';
 
 	let { data } = $props();
 
-	// ── Hero element refs ────────────────────────────────
-
-	let heroBadgeMobile = $state<HTMLElement | null>(null);
-	let heroBadgeDesktop = $state<HTMLElement | null>(null);
-	let heroBadge = $state<HTMLElement | null>(null);
-	let heroLine1 = $state<HTMLElement | null>(null);
-	let heroLine2 = $state<HTMLElement | null>(null);
-	let heroBio = $state<HTMLElement | null>(null);
-	let heroButtons = $state<HTMLElement | null>(null);
-	let heroSocials = $state<HTMLElement | null>(null);
-
-	onMount(async () => {
-		if (!shouldAnimate()) return;
-
-		const { animate, stagger } = await import('motion');
-
-		// Set initial state — semua invisible
-		const elements = [heroBadge, heroLine1, heroLine2, heroBio, heroButtons, heroSocials].filter(Boolean);
-		elements.forEach((el) => {
-			if (el) {
-				el.style.opacity = '0';
-				el.style.transform = 'translateY(32px)';
-			}
-		});
-
-		// Staggered entrance
-		const sequence: [HTMLElement, object, object][] = [
-			[heroBadge!, { opacity: [0, 1], y: [20, 0] }, { duration: DURATION.normal, easing: EASING.out }],
-			[heroLine1!, { opacity: [0, 1], y: [40, 0] }, { duration: DURATION.slow, easing: EASING.out }],
-			[heroLine2!, { opacity: [0, 1], y: [40, 0] }, { duration: DURATION.slow, easing: EASING.spring }],
-			[heroBio!, { opacity: [0, 1], y: [24, 0] }, { duration: DURATION.normal, easing: EASING.out }],
-			[heroButtons!, { opacity: [0, 1], y: [20, 0] }, { duration: DURATION.normal, easing: EASING.out }],
-			[heroSocials!, { opacity: [0, 1], y: [16, 0] }, { duration: DURATION.normal, easing: EASING.out }]
-		];
-
-		// Play dengan delay bertahap
-		const delays = [0, 0.1, 0.22, 0.42, 0.56, 0.68];
-
-		sequence.forEach(([el, keyframes, options], i) => {
-			if (!el) return;
-			setTimeout(() => {
-				animate(el, keyframes, options as any);
-			}, delays[i] * 1000);
-		});
-	});
-
-
-	onMount(async () => {
-		if (!shouldAnimate()) return;
-		const { animate } = await import('motion');
-
-		// Set initial
-		const allEls = [
-			heroBadgeMobile, heroBadgeDesktop,
-			heroLine1, heroLine2,
-			heroBio, heroButtons, heroSocials
-		].filter(Boolean) as HTMLElement[];
-
-		allEls.forEach((el) => {
-			el.style.opacity = '0';
-			el.style.transform = 'translateY(32px)';
-		});
-
-		const animateEl = (
-			el: HTMLElement | null,
-			delay: number,
-			y = 24,
-			easing: number[] = EASING.out
-		) => {
-			if (!el) return;
-			setTimeout(() => {
-				animate(
-					el,
-					{ opacity: [0, 1], y: [y, 0] },
-					{ duration: DURATION.slow, easing }
-				);
-			}, delay);
-		};
-
-		// Badge (mobile + desktop)
-		animateEl(heroBadgeMobile, 0, 16);
-		animateEl(heroBadgeDesktop, 0, 16);
-
-		// Name lines
-		animateEl(heroLine1, 120, 40);
-		animateEl(heroLine2, 240, 40, EASING.spring);
-
-		// Bio, buttons, socials
-		animateEl(heroBio, 420, 24);
-		animateEl(heroButtons, 540, 20);
-		animateEl(heroSocials, 660, 16);
-	});
-
-	onMount(async () => {
-		if (!shouldAnimate()) return;
-		const { animate } = await import('motion');
-
-		const allEls = [
-			heroBadgeMobile, heroBadgeDesktop,
-			heroLine1, heroLine2,
-			heroBio, heroButtons, heroSocials
-		].filter(Boolean) as HTMLElement[];
-
-		allEls.forEach((el) => {
-			el.style.opacity = '0';
-			el.style.transform = 'translateY(32px)';
-		});
-
-		const animateEl = (el: HTMLElement | null, delay: number, y = 24, easing = EASING.out) => {
-			if (!el) return;
-			setTimeout(() => {
-				animate(el, { opacity: [0, 1], y: [y, 0] }, { duration: DURATION.slow, easing });
-			}, delay);
-		};
-
-		animateEl(heroBadgeMobile, 0, 16);
-		animateEl(heroBadgeDesktop, 0, 16);
-		animateEl(heroLine1, 120, 40);
-		animateEl(heroLine2, 240, 40, EASING.spring);
-		animateEl(heroBio, 420, 24);
-		animateEl(heroButtons, 540, 20);
-		animateEl(heroSocials, 660, 16);
-	});
+	const { elements } = useHeroAnimation();
 </script>
 
 <svelte:head>
@@ -164,30 +43,30 @@
 			<!-- Left — Name -->
 			<div class="w-full lg:w-1/2">
 				<!-- Badge — mobile only -->
-				<div bind:this={heroBadgeMobile} class="inline-flex lg:hidden w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
+				<div bind:this={elements.heroBadgeMobile} class="inline-flex lg:hidden w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
 					<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
 					Available for opportunities
 				</div>
 
 				<h1 class="text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05]">
-					<span bind:this={heroLine1} class="block">Bagus Tri</span>
-					<span bind:this={heroLine2} class="block text-primary lg:text-9xl">Atmojo</span>
+					<span bind:this={elements.heroLine1} class="block">Bagus Tri</span>
+					<span bind:this={elements.heroLine2} class="block text-primary lg:text-9xl">Atmojo</span>
 				</h1>
 			</div>
 
 			<!-- Right — Bio + CTA + Socials -->
 			<div class="w-full lg:w-1/2 flex flex-col items-start">
 				<!-- Badge — desktop only -->
-				<div bind:this={heroBadgeDesktop} class="hidden lg:inline-flex w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
+				<div bind:this={elements.heroBadgeDesktop} class="hidden lg:inline-flex w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
 					<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
 					Available for opportunities
 				</div>
 
-				<p bind:this={heroBio} class="text-lg text-muted-foreground mb-8 leading-relaxed">
+				<p bind:this={elements.heroBio} class="text-lg text-muted-foreground mb-8 leading-relaxed">
 					{data.profile?.bio ?? 'Full Stack Developer passionate about building modern web applications with clean code and great user experiences.'}
 				</p>
 
-				<div bind:this={heroButtons} class="flex flex-wrap gap-3 mb-10">
+				<div bind:this={elements.heroButtons} class="flex flex-wrap gap-3 mb-10">
 					<a href="/portfolio">
 						<Button size="lg" class="gap-2 rounded-full px-6">
 							View Portfolio
@@ -202,7 +81,7 @@
 				</div>
 
 				<!-- Social links -->
-				<div bind:this={heroSocials}>
+				<div bind:this={elements.heroSocials}>
 					<Tooltip.Provider>
 						<div class="flex items-center gap-1">
 							<Tooltip.Root>

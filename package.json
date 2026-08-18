@@ -4,19 +4,22 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
+		"dev": "paraglide-js compile --project ./project.inlang && vite dev",
+		"build": "paraglide-js compile --project ./project.inlang && vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"types:generate": "supabase gen types typescript --linked > src/lib/types/database.ts",
+		"paraglide:compile": "paraglide-js compile --project ./project.inlang"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.4",
 		"@eslint/js": "^10.0.1",
 		"@fontsource-variable/inter": "^5.2.8",
+		"@inlang/paraglide-js-adapter-sveltekit": "^0.6.7",
 		"@internationalized/date": "^3.12.0",
 		"@lucide/svelte": "^1.14.0",
 		"@sveltejs/adapter-vercel": "^6.3.3",
@@ -38,6 +41,7 @@
 		"prettier-plugin-svelte": "^3.5.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"shadcn-svelte": "^1.2.7",
+		"supabase": "^2.114.0",
 		"svelte": "^5.55.2",
 		"svelte-check": "^4.4.6",
 		"tailwind-merge": "^3.5.0",
@@ -52,6 +56,7 @@
 	"dependencies": {
 		"@supabase/ssr": "^0.10.2",
 		"@supabase/supabase-js": "^2.103.0",
+		"@tanstack/svelte-query": "^6.1.38",
 		"@tiptap/core": "^3.22.3",
 		"@tiptap/extension-image": "^3.22.3",
 		"@tiptap/extension-link": "^3.22.3",

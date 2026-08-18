@@ -4,25 +4,19 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import type { Post } from '$lib/types';
 	import { reveal } from '$lib/actions/reveal';
+	import { useInfiniteGallery } from '$lib/queries/gallery.svelte';
 
 	let { data } = $props();
 
-	let posts = $state<Post[]>([...data.posts]);
-	let nextCursor = $state<string | null>(data.nextCursor);
-	let loading = $state(false);
+	const galleryQuery = useInfiniteGallery(8);
 
-	async function loadMore() {
-		if (!nextCursor || loading) return;
-		loading = true;
-		try {
-			const res = await fetch(`/api/gallery?cursor=${nextCursor}&limit=8`);
-			const result = await res.json();
-			posts = [...posts, ...result.posts];
-			nextCursor = result.nextCursor;
-		} catch (e) {
-			console.error('Failed to load more:', e);
-		} finally {
-			loading = false;
+	$: posts = $galleryQuery.data?.pages.flatMap(page => page.posts) ?? [];
+	$: hasMore = $galleryQuery.hasNextPage;
+	$: loading = $galleryQuery.isFetchingNextPage;
+
+	function loadMore() {
+		if (hasMore && !loading) {
+			$galleryQuery.fetchNextPage();
 		}
 	}
 </script>
@@ -77,7 +71,7 @@
 		</div>
 
 		<InfiniteScroll
-			hasMore={nextCursor !== null}
+			{hasMore}
 			{loading}
 			onLoadMore={loadMore}
 		/>

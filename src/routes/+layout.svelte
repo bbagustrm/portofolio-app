@@ -6,8 +6,22 @@
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabase';
 	import { shouldAnimate } from '$lib/utils/animation';
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import { browser } from '$app/environment';
 
 	let { data, children } = $props();
+
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				enabled: browser,
+				staleTime: 60 * 1000,
+				gcTime: 5 * 60 * 1000,
+				retry: 1,
+				refetchOnWindowFocus: false
+			}
+		}
+	});
 
 	// ── View Transitions API ─────────────────────────────
 	onNavigate((navigation) => {
@@ -37,4 +51,6 @@
 <ModeWatcher defaultMode="system" />
 <Toaster richColors position="top-right" />
 
-{@render children()}
+<QueryClientProvider client={queryClient}>
+	{@render children()}
+</QueryClientProvider>
