@@ -28,8 +28,8 @@ export type Project = {
 	tech_stack: string[] | null;
 	demo_url: string | null;
 	repo_url: string | null;
-	is_featured: boolean;
-	is_published: boolean;
+	is_featured: boolean | null;
+	is_published: boolean | null;
 	order_index: number;
 	locale: string | null;
 	created_at: string;
