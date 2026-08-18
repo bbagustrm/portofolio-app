@@ -8,6 +8,8 @@
 	import { shouldAnimate } from '$lib/utils/animation';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { browser } from '$app/environment';
+	import { initializeLanguage } from '$lib/i18n/init';
+	import { inject } from '@vercel/analytics';
 
 	let { data, children } = $props();
 
@@ -38,6 +40,13 @@
 
 	// ── Auth sync antar tab ──────────────────────────────
 	onMount(() => {
+		initializeLanguage();
+		
+		// Only inject Vercel Analytics in production (not localhost)
+		if (browser && window.location.hostname !== 'localhost') {
+			inject();
+		}
+		
 		const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
 			if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
 				invalidate('supabase:auth');
