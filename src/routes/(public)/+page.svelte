@@ -1,20 +1,16 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Card, CardContent } from '$lib/components/ui/card';
 	import {
 		ArrowRight,
 		GithubLogo,
 		LinkedinLogo,
 		Envelope,
-		ArrowSquareOut, Star
 	} from 'phosphor-svelte';
 	import { formatDateShort, estimateReadingTime, timeAgo } from '$lib/utils';
 	import { techStack } from '$lib/data/tech-stack';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Carousel from '$lib/components/ui/carousel';
-	import { onMount } from 'svelte';
-	import { shouldAnimate } from '$lib/utils/animation';
+
 	import { reveal, revealStagger } from '$lib/actions/reveal';
 	import ProjectCard from '$lib/components/portfolio/ProjectCard.svelte';
 	import { hoverLift } from '$lib/actions/hover';
