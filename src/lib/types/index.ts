@@ -25,7 +25,7 @@ export type Project = {
 	description: string | null;
 	content: string | null;
 	cover_url: string | null;
-	tech_stack: string[];
+	tech_stack: string[] | null;
 	demo_url: string | null;
 	repo_url: string | null;
 	is_featured: boolean;

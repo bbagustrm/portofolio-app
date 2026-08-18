@@ -14,10 +14,12 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Carousel from '$lib/components/ui/carousel';
 	import { onMount } from 'svelte';
-	import { shouldAnimate, EASING, DURATION } from '$lib/utils/animation';
+	import { shouldAnimate } from '$lib/utils/animation';
 	import { reveal, revealStagger } from '$lib/actions/reveal';
 	import ProjectCard from '$lib/components/portfolio/ProjectCard.svelte';
 	import { hoverLift } from '$lib/actions/hover';
+	import * as m from '$paraglide/messages';
+
 
 	let { data } = $props();
 
@@ -31,119 +33,6 @@
 	let heroBio = $state<HTMLElement | null>(null);
 	let heroButtons = $state<HTMLElement | null>(null);
 	let heroSocials = $state<HTMLElement | null>(null);
-
-	onMount(async () => {
-		if (!shouldAnimate()) return;
-
-		const { animate, stagger } = await import('motion');
-
-		// Set initial state — semua invisible
-		const elements = [heroBadge, heroLine1, heroLine2, heroBio, heroButtons, heroSocials].filter(Boolean);
-		elements.forEach((el) => {
-			if (el) {
-				el.style.opacity = '0';
-				el.style.transform = 'translateY(32px)';
-			}
-		});
-
-		// Staggered entrance
-		const sequence: [HTMLElement, object, object][] = [
-			[heroBadge!, { opacity: [0, 1], y: [20, 0] }, { duration: DURATION.normal, easing: EASING.out }],
-			[heroLine1!, { opacity: [0, 1], y: [40, 0] }, { duration: DURATION.slow, easing: EASING.out }],
-			[heroLine2!, { opacity: [0, 1], y: [40, 0] }, { duration: DURATION.slow, easing: EASING.spring }],
-			[heroBio!, { opacity: [0, 1], y: [24, 0] }, { duration: DURATION.normal, easing: EASING.out }],
-			[heroButtons!, { opacity: [0, 1], y: [20, 0] }, { duration: DURATION.normal, easing: EASING.out }],
-			[heroSocials!, { opacity: [0, 1], y: [16, 0] }, { duration: DURATION.normal, easing: EASING.out }]
-		];
-
-		// Play dengan delay bertahap
-		const delays = [0, 0.1, 0.22, 0.42, 0.56, 0.68];
-
-		sequence.forEach(([el, keyframes, options], i) => {
-			if (!el) return;
-			setTimeout(() => {
-				animate(el, keyframes, options as any);
-			}, delays[i] * 1000);
-		});
-	});
-
-
-	onMount(async () => {
-		if (!shouldAnimate()) return;
-		const { animate } = await import('motion');
-
-		// Set initial
-		const allEls = [
-			heroBadgeMobile, heroBadgeDesktop,
-			heroLine1, heroLine2,
-			heroBio, heroButtons, heroSocials
-		].filter(Boolean) as HTMLElement[];
-
-		allEls.forEach((el) => {
-			el.style.opacity = '0';
-			el.style.transform = 'translateY(32px)';
-		});
-
-		const animateEl = (
-			el: HTMLElement | null,
-			delay: number,
-			y = 24,
-			easing: number[] = EASING.out
-		) => {
-			if (!el) return;
-			setTimeout(() => {
-				animate(
-					el,
-					{ opacity: [0, 1], y: [y, 0] },
-					{ duration: DURATION.slow, easing }
-				);
-			}, delay);
-		};
-
-		// Badge (mobile + desktop)
-		animateEl(heroBadgeMobile, 0, 16);
-		animateEl(heroBadgeDesktop, 0, 16);
-
-		// Name lines
-		animateEl(heroLine1, 120, 40);
-		animateEl(heroLine2, 240, 40, EASING.spring);
-
-		// Bio, buttons, socials
-		animateEl(heroBio, 420, 24);
-		animateEl(heroButtons, 540, 20);
-		animateEl(heroSocials, 660, 16);
-	});
-
-	onMount(async () => {
-		if (!shouldAnimate()) return;
-		const { animate } = await import('motion');
-
-		const allEls = [
-			heroBadgeMobile, heroBadgeDesktop,
-			heroLine1, heroLine2,
-			heroBio, heroButtons, heroSocials
-		].filter(Boolean) as HTMLElement[];
-
-		allEls.forEach((el) => {
-			el.style.opacity = '0';
-			el.style.transform = 'translateY(32px)';
-		});
-
-		const animateEl = (el: HTMLElement | null, delay: number, y = 24, easing = EASING.out) => {
-			if (!el) return;
-			setTimeout(() => {
-				animate(el, { opacity: [0, 1], y: [y, 0] }, { duration: DURATION.slow, easing });
-			}, delay);
-		};
-
-		animateEl(heroBadgeMobile, 0, 16);
-		animateEl(heroBadgeDesktop, 0, 16);
-		animateEl(heroLine1, 120, 40);
-		animateEl(heroLine2, 240, 40, EASING.spring);
-		animateEl(heroBio, 420, 24);
-		animateEl(heroButtons, 540, 20);
-		animateEl(heroSocials, 660, 16);
-	});
 </script>
 
 <svelte:head>
