@@ -8,6 +8,7 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { ArrowLeft, Upload } from 'phosphor-svelte';
 	import { generateSlug } from '$lib/utils/slug';
+	import RichTextEditor from '$lib/components/blog/RichTextEditor.svelte';
 
 	let { form } = $props();
 
@@ -113,12 +114,7 @@
 
 					<div class="space-y-2">
 						<Label for="content_en">Detail Content (EN)</Label>
-						<Textarea
-							id="content_en"
-							name="content_en"
-							placeholder="Full description, features, challenges..."
-							rows={6}
-						/>
+						<RichTextEditor name="content_en" />
 					</div>
 				</CardContent>
 			</Card>
@@ -166,12 +162,7 @@
 
 					<div class="space-y-2">
 						<Label for="content_id">Konten Detail (ID)</Label>
-						<Textarea
-							id="content_id"
-							name="content_id"
-							placeholder="Deskripsi lengkap, fitur, tantangan..."
-							rows={6}
-						/>
+						<RichTextEditor name="content_id" />
 					</div>
 				</CardContent>
 			</Card>

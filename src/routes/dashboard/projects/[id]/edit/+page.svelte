@@ -7,6 +7,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { ArrowLeft, Upload } from 'phosphor-svelte';
+	import RichTextEditor from '$lib/components/blog/RichTextEditor.svelte';
 
 	let { data, form } = $props();
 	let project = $derived(data.project);
@@ -70,7 +71,7 @@
 
 				<div class="space-y-2">
 					<Label for="content">Detail Content</Label>
-					<Textarea id="content" name="content" value={project.content ?? ''} rows={6} />
+					<RichTextEditor name="content" content={project.content ?? ''} />
 				</div>
 			</CardContent>
 		</Card>

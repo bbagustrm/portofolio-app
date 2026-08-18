@@ -116,13 +116,13 @@
 			<Card>
 				<CardHeader><CardTitle>Content (EN)</CardTitle></CardHeader>
 				<CardContent>
-					<Textarea name="content_en" rows={12} placeholder="Write your English article content here..." class="font-mono text-sm" />
+					<RichTextEditor name="content_en" />
 				</CardContent>
 			</Card>
 			<Card>
 				<CardHeader><CardTitle>Konten (ID)</CardTitle></CardHeader>
 				<CardContent>
-					<Textarea name="content_id" rows={12} placeholder="Tulis konten artikel Indonesia di sini..." class="font-mono text-sm" />
+					<RichTextEditor name="content_id" />
 				</CardContent>
 			</Card>
 		</div>

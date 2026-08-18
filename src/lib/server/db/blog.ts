@@ -128,6 +128,7 @@ export async function getAllTags(supabase: SupabaseClient): Promise<Tag[]> {
 
 export async function upsertPostTags(
 	supabase: SupabaseClient,
+	adminClient: SupabaseClient,
 	postId: string,
 	tagNames: string[]
 ): Promise<void> {
@@ -141,13 +142,18 @@ export async function upsertPostTags(
 
 	if (tagNames.length === 0) return;
 
-	// 2. Upsert tags (buat kalau belum ada)
-	const tagsToUpsert = tagNames.map((name) => ({
-		name: name.trim(),
-		slug: generateSlug(name)
-	}));
+	// 2. Upsert tags (buat kalau belum ada) - pakai admin client untuk bypass RLS
+	// Deduplicate by slug to prevent "cannot affect row a second time" error
+	const uniqueTagsMap = new Map(
+		tagNames.map((name) => {
+			const trimmed = name.trim();
+			const slug = generateSlug(trimmed);
+			return [slug, { name: trimmed, slug }];
+		})
+	);
+	const tagsToUpsert = Array.from(uniqueTagsMap.values());
 
-	const { data: tags, error: tagError } = await supabase
+	const { data: tags, error: tagError } = await adminClient
 		.from('tags')
 		.upsert(tagsToUpsert, { onConflict: 'slug' })
 		.select();

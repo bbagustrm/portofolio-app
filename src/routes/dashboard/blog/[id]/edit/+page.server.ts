@@ -2,6 +2,7 @@ import { fail, redirect, error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { getPostById, updatePost, getAllTags, upsertPostTags } from '$lib/server/db/blog';
 import { uploadFile } from '$lib/utils/upload';
+import { createSupabaseAdminClient } from '$lib/server/supabase';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const [post, tags] = await Promise.all([
@@ -43,11 +44,13 @@ export const actions: Actions = {
 		}
 
 		try {
+			const admin = createSupabaseAdminClient();
+			
 			await updatePost(locals.supabase, params.id, updateData);
 			const tagNames = tags_raw
 				? tags_raw.split(',').map((t) => t.trim()).filter(Boolean)
 				: [];
-			await upsertPostTags(locals.supabase, params.id, tagNames);
+			await upsertPostTags(locals.supabase, admin, params.id, tagNames);
 		} catch (e: any) {
 			return fail(500, { error: e.message });
 		}

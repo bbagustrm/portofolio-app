@@ -20,7 +20,12 @@ export function useBlogPosts() {
 				.order('published_at', { ascending: false });
 			
 			if (error) throw error;
-			return data as BlogPost[];
+			
+			// Normalize nested tags structure to flat array
+			return (data ?? []).map((post: any) => ({
+				...post,
+				tags: (post.tags ?? []).map((t: any) => t.tag).filter(Boolean)
+			})) as BlogPost[];
 		}
 	}));
 }
@@ -42,7 +47,12 @@ export function useBlogPostBySlug(slug: string) {
 				.single();
 			
 			if (error) throw error;
-			return data as BlogPost;
+			
+			// Normalize nested tags structure to flat array
+			return {
+				...data,
+				tags: (data.tags ?? []).map((t: any) => t.tag).filter(Boolean)
+			} as BlogPost;
 		},
 		enabled: !!slug
 	}));

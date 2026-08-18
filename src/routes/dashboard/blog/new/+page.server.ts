@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { createPost, getAllTags, upsertPostTags } from '$lib/server/db/blog';
 import { uploadFile } from '$lib/utils/upload';
 import { generateSlug, ensureUniqueSlug } from '$lib/utils/slug';
+import { createSupabaseAdminClient } from '$lib/server/supabase';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const tags = await getAllTags(locals.supabase);
@@ -52,6 +53,8 @@ export const actions: Actions = {
 			: [];
 
 		try {
+			const admin = createSupabaseAdminClient();
+
 			// Create English post
 			const postEn = await createPost(locals.supabase, {
 				title: titleEn,
@@ -65,7 +68,7 @@ export const actions: Actions = {
 			});
 
 			if (tagNames.length > 0) {
-				await upsertPostTags(locals.supabase, postEn.id, tagNames);
+				await upsertPostTags(locals.supabase, admin, postEn.id, tagNames);
 			}
 
 			// Create Indonesian post
@@ -81,7 +84,7 @@ export const actions: Actions = {
 			});
 
 			if (tagNames.length > 0) {
-				await upsertPostTags(locals.supabase, postId.id, tagNames);
+				await upsertPostTags(locals.supabase, admin, postId.id, tagNames);
 			}
 		} catch (e: any) {
 			return fail(500, { error: e.message });

@@ -15,9 +15,11 @@
 	// Props
 	let {
 		content = '',
+		name = 'content',
 		onchange
 	} = $props<{
 		content?: string;
+		name?: string;
 		onchange?: (html: string) => void;
 	}>();
 
@@ -216,7 +218,7 @@
 </div>
 
 <!-- Hidden input -->
-<input type="hidden" name="content" bind:value={currentContent} />
+<input type="hidden" {name} bind:value={currentContent} />
 
 <style>
     :global(.ProseMirror p.is-editor-empty:first-child::before) {
