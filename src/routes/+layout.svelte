@@ -7,8 +7,17 @@
 	import { supabase } from '$lib/supabase';
 	import { shouldAnimate } from '$lib/utils/animation';
 	import { loadGsap } from '$lib/utils/gsap-client';
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 
 	let { data, children } = $props();
+
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				staleTime: 1000 * 60 * 5, // 5 minutes
+			},
+		},
+	});
 
 	// ── Page transitions (Task 9) ────────────────────────
 	// Three-branch handler driven by the spec's accessibility +
@@ -153,4 +162,6 @@
 <ModeWatcher defaultMode="system" />
 <Toaster richColors position="top-right" />
 
-{@render children()}
+<QueryClientProvider client={queryClient}>
+	{@render children()}
+</QueryClientProvider>
