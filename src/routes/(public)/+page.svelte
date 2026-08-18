@@ -148,7 +148,7 @@
 
 <svelte:head>
 	<title>Atmojo — Full Stack Developer</title>
-	<meta name="description" content={data.profile?.bio ?? 'Personal portfolio and blog'} />
+	<meta name="description" content={data.profile?.bio ?? m.meta_fallback_description()} />
 </svelte:head>
 
 <!-- ─── Hero ──────────────────────────────────────────── -->
@@ -163,11 +163,11 @@
 
 			<!-- Left — Name -->
 			<div class="w-full lg:w-1/2">
-				<!-- Badge — mobile only -->
-				<div bind:this={heroBadgeMobile} class="inline-flex lg:hidden w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
-					<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
-					Available for opportunities
-				</div>
+			<!-- Badge — mobile only -->
+			<div bind:this={heroBadgeMobile} class="inline-flex lg:hidden w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
+				<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
+				{m.hero_badge()}
+			</div>
 
 				<h1 class="text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05]">
 					<span bind:this={heroLine1} class="block">Bagus Tri</span>
@@ -177,15 +177,15 @@
 
 			<!-- Right — Bio + CTA + Socials -->
 			<div class="w-full lg:w-1/2 flex flex-col items-start">
-				<!-- Badge — desktop only -->
-				<div bind:this={heroBadgeDesktop} class="hidden lg:inline-flex w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
-					<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
-					Available for opportunities
-				</div>
+			<!-- Badge — desktop only -->
+			<div bind:this={heroBadgeDesktop} class="hidden lg:inline-flex w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
+				<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
+				{m.hero_badge()}
+			</div>
 
-				<p bind:this={heroBio} class="text-lg text-muted-foreground mb-8 leading-relaxed">
-					{data.profile?.bio ?? 'Full Stack Developer passionate about building modern web applications with clean code and great user experiences.'}
-				</p>
+			<p bind:this={heroBio} class="text-lg text-muted-foreground mb-8 leading-relaxed">
+				{data.profile?.bio ?? m.hero_bio_fallback()}
+			</p>
 
 				<div bind:this={heroButtons} class="flex flex-wrap gap-3 mb-10">
 					<a href="/portfolio">
@@ -417,13 +417,13 @@
 		use:reveal={{ y: 30, duration: 0.6 }}
 		class="container mx-auto max-w-6xl px-4 py-24 text-center"
 	>
-		<h2 class="text-4xl font-bold mb-4">Let's work together</h2>
+		<h2 class="text-4xl font-bold mb-4">{m.cta_work_together()}</h2>
 		<p class="text-muted-foreground mb-8 max-w-md mx-auto text-lg">
-			Open to freelance projects, collaborations, and full-time opportunities.
+			{m.cta_work_description()}
 		</p>
 		<Button href="mailto:bbagustrm@gmail.com" size="lg" class="gap-2 rounded-full px-8">
 			<Envelope class="size-4" />
-			Get in touch
+			{m.hero_cta_contact()}
 		</Button>
 	</div>
 </section>
