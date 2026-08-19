@@ -147,23 +147,6 @@
 									{#snippet child({ props })}
 
 										<a {...props}
-										href="https://dribbble.com/bbagustrm"
-										target="_blank"
-										rel="noopener noreferrer"
-										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-										>
-										<DribbbleLogo class="size-5 md:size-7" />
-										</a>
-									{/snippet}
-								</Tooltip.Trigger>
-								<Tooltip.Content side="bottom">Dribbble</Tooltip.Content>
-							</Tooltip.Root>
-
-							<Tooltip.Root>
-								<Tooltip.Trigger>
-									{#snippet child({ props })}
-
-										<a {...props}
 										href="mailto:bbagustrm@gmail.com"
 										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 										>
@@ -172,23 +155,6 @@
 									{/snippet}
 								</Tooltip.Trigger>
 								<Tooltip.Content side="bottom">Email</Tooltip.Content>
-							</Tooltip.Root>
-
-							<Tooltip.Root>
-								<Tooltip.Trigger>
-									{#snippet child({ props })}
-
-										<a {...props}
-										href="https://dribbble.com/bbagustrm"
-										target="_blank"
-										rel="noopener noreferrer"
-										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-										>
-										<DribbbleLogo class="size-5 md:size-7" />
-										</a>
-									{/snippet}
-								</Tooltip.Trigger>
-								<Tooltip.Content side="bottom">Dribbble</Tooltip.Content>
 							</Tooltip.Root>
 						</div>
 					</Tooltip.Provider>
