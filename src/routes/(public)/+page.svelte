@@ -1,12 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import {
-		ArrowRight,
-		GithubLogo,
-		LinkedinLogo,
-		DribbbleLogo,
-		Envelope,
-	} from 'phosphor-svelte';
+	import { ArrowRight, GithubLogo, LinkedinLogo, DribbbleLogo, Envelope } from 'phosphor-svelte';
 	import { formatDateShort, estimateReadingTime, timeAgo } from '$lib/utils';
 	import { techStack } from '$lib/data/tech-stack';
 	import * as Tooltip from '$lib/components/ui/tooltip';
@@ -16,9 +10,65 @@
 	import ProjectCard from '$lib/components/portfolio/ProjectCard.svelte';
 	import { hoverLift } from '$lib/actions/hover';
 	import * as m from '$paraglide/messages';
-
+	import { onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	let { data } = $props();
+
+	let isMobile = $state(false);
+
+	onMount(() => {
+		isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+	});
+
+	function copyEmail() {
+		const email = 'bbagustrm@gmail.com';
+
+		if (isMobile) {
+			window.location.href = `mailto:${email}`;
+			return;
+		}
+
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard
+				.writeText(email)
+				.then(() => {
+					toast.success('Email copied to clipboard!', {
+						description: email
+					});
+				})
+				.catch(() => {
+					fallbackCopy(email);
+				});
+		} else {
+			fallbackCopy(email);
+		}
+	}
+
+	function fallbackCopy(text: string) {
+		const textarea = document.createElement('textarea');
+		textarea.value = text;
+		textarea.style.position = 'fixed';
+		textarea.style.opacity = '0';
+		document.body.appendChild(textarea);
+		textarea.select();
+
+		try {
+			const success = document.execCommand('copy');
+			document.body.removeChild(textarea);
+
+			if (success) {
+				toast.success('Email copied to clipboard!', {
+					description: text
+				});
+			} else {
+				window.location.href = `mailto:${text}`;
+			}
+		} catch (err) {
+			document.body.removeChild(textarea);
+			window.location.href = `mailto:${text}`;
+		}
+	}
 
 	// ── Hero element refs ────────────────────────────────
 
@@ -39,41 +89,54 @@
 
 <!-- ─── Hero ──────────────────────────────────────────── -->
 <section class="relative overflow-hidden">
-	<div class="absolute inset-0 -z-10 pointer-events-none">
-		<div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-3xl"></div>
-		<div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl"></div>
+	<div class="pointer-events-none absolute inset-0 -z-10">
+		<div
+			class="absolute top-0 left-1/4 h-[500px] w-[500px] rounded-full bg-primary/8 blur-3xl"
+		></div>
+		<div
+			class="absolute right-1/4 bottom-0 h-[400px] w-[400px] rounded-full bg-primary/5 blur-3xl"
+		></div>
 	</div>
 
 	<div class="container mx-auto max-w-6xl px-4 py-24 md:py-36">
-		<div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between lg:items-start gap-12">
-
+		<div
+			class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-12 lg:flex-row lg:items-start"
+		>
 			<!-- Left — Name -->
 			<div class="w-full lg:w-1/2">
-			<!-- Badge — mobile only -->
-			<div bind:this={heroBadgeMobile} class="inline-flex lg:hidden w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
-				<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
-				{m.hero_badge()}
-			</div>
+				<!-- Badge — mobile only -->
+				<div
+					bind:this={heroBadgeMobile}
+					class="mb-6 inline-flex w-fit items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground lg:hidden"
+				>
+					<span class="size-2 animate-pulse rounded-full bg-[#ffd809]"></span>
+					{m.hero_badge()}
+				</div>
 
-				<h1 class="text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05]">
+				<h1
+					class="text-5xl leading-[1.05] font-semibold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl"
+				>
 					<span bind:this={heroLine1} class="block">Bagus Tri</span>
 					<span bind:this={heroLine2} class="block text-primary lg:text-9xl">Atmojo</span>
 				</h1>
 			</div>
 
 			<!-- Right — Bio + CTA + Socials -->
-			<div class="w-full lg:w-1/2 flex flex-col items-start">
-			<!-- Badge — desktop only -->
-			<div bind:this={heroBadgeDesktop} class="hidden lg:inline-flex w-fit mb-6 items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground">
-				<span class="size-2 rounded-full bg-[#ffd809] animate-pulse"></span>
-				{m.hero_badge()}
-			</div>
+			<div class="flex w-full flex-col items-start lg:w-1/2">
+				<!-- Badge — desktop only -->
+				<div
+					bind:this={heroBadgeDesktop}
+					class="mb-6 hidden w-fit items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground lg:inline-flex"
+				>
+					<span class="size-2 animate-pulse rounded-full bg-[#ffd809]"></span>
+					{m.hero_badge()}
+				</div>
 
-			<p bind:this={heroBio} class="text-lg text-muted-foreground mb-8 leading-relaxed">
-				{data.profile?.bio ?? m.hero_bio_fallback()}
-			</p>
+				<p bind:this={heroBio} class="mb-8 text-lg leading-relaxed text-muted-foreground">
+					{data.profile?.bio ?? m.hero_bio_fallback()}
+				</p>
 
-				<div bind:this={heroButtons} class="flex flex-wrap gap-3 mb-10">
+				<div bind:this={heroButtons} class="mb-10 flex flex-wrap gap-3">
 					<a href="/portfolio">
 						<Button size="lg" class="gap-2 rounded-full px-6">
 							View Portfolio
@@ -81,9 +144,7 @@
 						</Button>
 					</a>
 					<a href="/blog">
-						<Button size="lg" variant="outline" class="gap-2 rounded-full px-6">
-							Read Blog
-						</Button>
+						<Button size="lg" variant="outline" class="gap-2 rounded-full px-6">Read Blog</Button>
 					</a>
 				</div>
 
@@ -94,14 +155,14 @@
 							<Tooltip.Root>
 								<Tooltip.Trigger>
 									{#snippet child({ props })}
-
-										<a {...props}
-										href={data.profile?.github_url ?? 'https://github.com'}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+										<a
+											{...props}
+											href={data.profile?.github_url ?? 'https://github.com'}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="rounded-full p-2.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 										>
-										<GithubLogo class="size-5 md:size-7" />
+											<GithubLogo class="size-5 md:size-7" />
 										</a>
 									{/snippet}
 								</Tooltip.Trigger>
@@ -111,14 +172,14 @@
 							<Tooltip.Root>
 								<Tooltip.Trigger>
 									{#snippet child({ props })}
-
-										<a {...props}
-										href={data.profile?.linkedin_url ?? 'https://linkedin.com'}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+										<a
+											{...props}
+											href={data.profile?.linkedin_url ?? 'https://linkedin.com'}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="rounded-full p-2.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 										>
-										<LinkedinLogo class="size-5 md:size-7" />
+											<LinkedinLogo class="size-5 md:size-7" />
 										</a>
 									{/snippet}
 								</Tooltip.Trigger>
@@ -128,34 +189,27 @@
 							<Tooltip.Root>
 								<Tooltip.Trigger>
 									{#snippet child({ props })}
-
-										<a {...props}
-										href="https://dribbble.com/bbagustrm"
-										target="_blank"
-										rel="noopener noreferrer"
-										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+										<a
+											{...props}
+											href="https://dribbble.com/bbagustrm"
+											target="_blank"
+											rel="noopener noreferrer"
+											class="rounded-full p-2.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 										>
-										<DribbbleLogo class="size-5 md:size-7" />
+											<DribbbleLogo class="size-5 md:size-7" />
 										</a>
 									{/snippet}
 								</Tooltip.Trigger>
 								<Tooltip.Content side="bottom">Dribbble</Tooltip.Content>
 							</Tooltip.Root>
 
-							<Tooltip.Root>
-								<Tooltip.Trigger>
-									{#snippet child({ props })}
-
-										<a {...props}
-										href="mailto:bbagustrm@gmail.com"
-										class="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-										>
-										<Envelope class="size-5 md:size-7" />
-										</a>
-									{/snippet}
-								</Tooltip.Trigger>
-								<Tooltip.Content side="bottom">Email</Tooltip.Content>
-							</Tooltip.Root>
+							<button
+								onclick={copyEmail}
+								title="Email"
+								class="cursor-pointer rounded-full p-2.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+							>
+								<Envelope class="size-5 md:size-7" />
+							</button>
 						</div>
 					</Tooltip.Provider>
 				</div>
@@ -165,33 +219,29 @@
 </section>
 
 <!-- ─── Tech Stack Strip ──────────────────────────────── -->
-<section class="border-y bg-muted/30 overflow-hidden">
+<section class="overflow-hidden border-y bg-muted/30">
 	<div class="flex items-stretch">
-
 		<!-- Label — static, tidak ikut scroll -->
-		<div class="hidden md:flex shrink-0 items-center gap-2 px-6 py-4 border-r bg-muted/50 z-10">
-			<span class="text-sm font-medium text-muted-foreground whitespace-nowrap">
+		<div class="z-10 hidden shrink-0 items-center gap-2 border-r bg-muted/50 px-6 py-4 md:flex">
+			<span class="text-sm font-medium whitespace-nowrap text-muted-foreground">
 				Tech I work with
 			</span>
 		</div>
 
 		<!-- Marquee container -->
-		<div class="relative flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
-			<div class="flex w-max animate-marquee gap-10 py-4 pr-10">
-
+		<div
+			class="relative flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]"
+		>
+			<div class="animate-marquee flex w-max gap-10 py-4 pr-10">
 				<!-- Render dua kali untuk seamless loop -->
 				{#each [...techStack, ...techStack] as tech, i}
-					<div class="p-2 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors shrink-0">
-						<img
-							src={tech.logo}
-							alt={tech.name}
-							class="size-8 object-contain"
-							loading="lazy"
-						/>
+					<div
+						class="flex shrink-0 items-center gap-2 p-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+					>
+						<img src={tech.logo} alt={tech.name} class="size-8 object-contain" loading="lazy" />
 						<span class="whitespace-nowrap">{tech.name}</span>
 					</div>
 				{/each}
-
 			</div>
 		</div>
 	</div>
@@ -200,13 +250,8 @@
 {#if data.featuredProjects.length > 0}
 	<section class="container mx-auto max-w-6xl px-4 py-24 md:py-36">
 		<!-- Section header -->
-		<div
-			use:reveal={{ y: 20, duration: 0.5 }}
-			class="flex flex-col justify-between mb-10"
-		>
-			<p
-				class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider"
-			>
+		<div use:reveal={{ y: 20, duration: 0.5 }} class="mb-10 flex flex-col justify-between">
+			<p class="mb-2 font-sans text-sm font-medium tracking-wider text-primary uppercase">
 				Portfolio
 			</p>
 
@@ -216,17 +261,17 @@
 		<!-- Cards stagger -->
 		<div
 			use:revealStagger={{ stagger: 0.1, y: 32, delay: 0.1 }}
-			class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+			class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
 		>
 			{#each data.featuredProjects as project}
 				<ProjectCard {project} />
 			{/each}
 		</div>
 
-		<div class="flex justify-center items-center mt-16">
+		<div class="mt-16 flex items-center justify-center">
 			<a
 				href="/portfolio"
-				class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+				class="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
 			>
 				<Button variant="outline" size="lg">
 					View all
@@ -239,14 +284,19 @@
 
 <!-- ─── Blog Carousel ─────────────────────────────────── -->
 {#if data.latestPosts.length > 0}
-	<section class="bg-muted/20 border-t">
+	<section class="border-t bg-muted/20">
 		<div class="container mx-auto max-w-6xl px-4 py-20">
-			<div use:reveal={{ y: 20 }} class="flex items-end justify-between mb-8">
+			<div use:reveal={{ y: 20 }} class="mb-8 flex items-end justify-between">
 				<div>
-					<p class="text-sm text-primary font-medium font-sans mb-2 uppercase tracking-wider">Blog</p>
+					<p class="mb-2 font-sans text-sm font-medium tracking-wider text-primary uppercase">
+						Blog
+					</p>
 					<h2 class="text-3xl font-bold">Latest Articles</h2>
 				</div>
-				<a href="/blog" class="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+				<a
+					href="/blog"
+					class="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+				>
 					View all <ArrowRight class="size-3" />
 				</a>
 			</div>
@@ -255,41 +305,51 @@
 			<div use:reveal={{ y: 40, duration: 0.6, delay: 150 }}>
 				<Carousel.Root opts={{ align: 'start', loop: false }} class="group/carousel w-full">
 					<!-- Prev -->
-					<div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10
-						opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200">
-						<Carousel.Previous class="static translate-y-0 rounded-full shadow-md cursor-pointer" />
+					<div
+						class="absolute top-1/2 left-0 z-10 -translate-x-4 -translate-y-1/2
+						opacity-0 transition-opacity duration-200 group-hover/carousel:opacity-100"
+					>
+						<Carousel.Previous class="static translate-y-0 cursor-pointer rounded-full shadow-md" />
 					</div>
 					<Carousel.Content class="-ml-4">
 						{#each data.latestPosts as post}
-							<Carousel.Item class="pl-4 basis-[78%] md:basis-[43%] lg:basis-[30%]">
+							<Carousel.Item class="basis-[78%] pl-4 md:basis-[43%] lg:basis-[30%]">
 								<a href="/blog/{post.slug}" class="group block h-full">
-									<div use:hoverLift={{ y: -4, duration: 0.18 }} class="flex gap-4 rounded-xl border bg-card h-full
-											hover:border-primary/40 hover:bg-muted/30
-											transition-all duration-200 hover:shadow-sm"
+									<div
+										use:hoverLift={{ y: -4, duration: 0.18 }}
+										class="flex h-full gap-4 rounded-xl border bg-card
+											transition-all duration-200
+											hover:border-primary/40 hover:bg-muted/30 hover:shadow-sm"
 									>
 										<!-- Thumbnail -->
-										<div class="shrink-0 w-28 h-28 md:w-24 md:h-24 rounded-tl-lg rounded-bl-lg overflow-hidden bg-muted">
+										<div
+											class="h-28 w-28 shrink-0 overflow-hidden rounded-tl-lg rounded-bl-lg bg-muted md:h-24 md:w-24"
+										>
 											{#if post.cover_url}
 												<img
 													src={post.cover_url}
 													alt={post.title}
-													class="w-full h-full object-cover"
+													class="h-full w-full object-cover"
 													loading="lazy"
 												/>
 											{:else}
-												<div class="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+												<div
+													class="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5"
+												>
 													<span class="text-2xl">📝</span>
 												</div>
 											{/if}
 										</div>
 
 										<!-- Content -->
-										<div class="flex-1 min-w-0 flex flex-col justify-center py-3 pr-3">
-											<h3 class="font-medium text-xl md:text-lg leading-snug mb-1
-													group-hover:text-primary transition-colors line-clamp-1">
+										<div class="flex min-w-0 flex-1 flex-col justify-center py-3 pr-3">
+											<h3
+												class="mb-1 line-clamp-1 text-xl leading-snug font-medium
+													transition-colors group-hover:text-primary md:text-lg"
+											>
 												{post.title}
 											</h3>
-											<p class="text-xs text-muted-foreground line-clamp-2 hidden sm:block mb-2">
+											<p class="mb-2 line-clamp-2 hidden text-xs text-muted-foreground sm:block">
 												{post.excerpt ?? ''}
 											</p>
 											<div class="flex items-center gap-2 text-xs text-muted-foreground">
@@ -304,9 +364,11 @@
 						{/each}
 					</Carousel.Content>
 					<!-- Next -->
-					<div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10
-						opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200">
-						<Carousel.Next class="static translate-y-0 rounded-full shadow-md cursor-pointer" />
+					<div
+						class="absolute top-1/2 right-0 z-10 translate-x-4 -translate-y-1/2
+						opacity-0 transition-opacity duration-200 group-hover/carousel:opacity-100"
+					>
+						<Carousel.Next class="static translate-y-0 cursor-pointer rounded-full shadow-md" />
 					</div>
 				</Carousel.Root>
 			</div>
@@ -320,11 +382,11 @@
 		use:reveal={{ y: 30, duration: 0.6 }}
 		class="container mx-auto max-w-6xl px-4 py-24 text-center"
 	>
-		<h2 class="text-4xl font-bold mb-4">{m.cta_work_together()}</h2>
-		<p class="text-muted-foreground mb-8 max-w-md mx-auto text-lg">
+		<h2 class="mb-4 text-4xl font-bold">{m.cta_work_together()}</h2>`
+		<p class="mx-auto mb-8 max-w-md text-lg text-muted-foreground">
 			{m.cta_work_description()}
 		</p>
-		<Button href="mailto:bbagustrm@gmail.com" size="lg" class="gap-2 rounded-full px-8">
+		<Button onclick={copyEmail} size="lg" class="gap-2 rounded-full px-8">
 			<Envelope class="size-4" />
 			{m.hero_cta_contact()}
 		</Button>
