@@ -5,11 +5,23 @@
 	import Image from '@tiptap/extension-image';
 	import Link from '@tiptap/extension-link';
 	import Placeholder from '@tiptap/extension-placeholder';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import { Button } from '$lib/components/ui/button';
+	import * as m from '$paraglide/messages';
 
 	import {
-		Bold, Italic, Heading2, Heading3,
-		List, ListOrdered, Quote, Code,
-		Link as LinkIcon, Image as ImageIcon, Minus
+		Bold,
+		Italic,
+		Heading2,
+		Heading3,
+		List,
+		ListOrdered,
+		Quote,
+		Code,
+		Link as LinkIcon,
+		Image as ImageIcon,
+		Minus,
+		Upload
 	} from '@lucide/svelte';
 
 	// Props
@@ -23,11 +35,16 @@
 		onchange?: (html: string) => void;
 	}>();
 
-	// Local state (tidak tergantung langsung dari props)
+	// Local state
 	let currentContent = $state('');
 	let element = $state<HTMLDivElement | null>(null);
 	let editor = $state<Editor | null>(null);
 	let isFocused = $state(false);
+	let previewDialogOpen = $state(false);
+	let previewImage = $state<string | null>(null);
+	let uploading = $state(false);
+	let uploadError = $state<string | null>(null);
+	let fileInputRef = $state<HTMLInputElement | null>(null);
 
 	// Sync dari parent → local state + editor
 	$effect(() => {
@@ -65,6 +82,32 @@
 
 			onBlur() {
 				isFocused = false;
+			},
+
+			editorProps: {
+				handleDrop(view, event) {
+					const files = Array.from(event.dataTransfer?.files ?? []);
+					const imageFile = files.find((f) => f.type.startsWith('image/'));
+					if (imageFile) {
+						event.preventDefault();
+						handleImageFile(imageFile);
+						return true;
+					}
+					return false;
+				},
+				handlePaste(view, event) {
+					const items = Array.from(event.clipboardData?.items ?? []);
+					const imageItem = items.find((item) => item.type.startsWith('image/'));
+					if (imageItem) {
+						const file = imageItem.getAsFile();
+						if (file) {
+							event.preventDefault();
+							handleImageFile(file);
+							return true;
+						}
+					}
+					return false;
+				}
 			}
 		});
 	});
@@ -72,6 +115,60 @@
 	onDestroy(() => {
 		editor?.destroy();
 	});
+
+	// File validation
+	const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+	const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+	function validateFile(file: File): string | null {
+		if (!ALLOWED_TYPES.includes(file.type)) {
+			return m.editor_image_error_format();
+		}
+		if (file.size > MAX_FILE_SIZE) {
+			return m.editor_image_error_size();
+		}
+		return null;
+	}
+
+	// Convert file to base64
+	async function fileToBase64(file: File): Promise<string> {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => resolve(reader.result as string);
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
+	}
+
+	// Handle image upload
+	async function handleImageFile(file: File) {
+		uploadError = null;
+
+		const error = validateFile(file);
+		if (error) {
+			uploadError = error;
+			return;
+		}
+
+		uploading = true;
+		try {
+			const base64 = await fileToBase64(file);
+			previewImage = base64;
+			previewDialogOpen = true;
+		} catch (err) {
+			uploadError = 'Failed to process image.';
+		} finally {
+			uploading = false;
+		}
+	}
+
+	// Insert image into editor
+	function insertImage() {
+		if (!editor || !previewImage) return;
+		editor.chain().focus().setImage({ src: previewImage }).run();
+		previewDialogOpen = false;
+		previewImage = null;
+	}
 
 	function toggleLink() {
 		if (!editor) return;
@@ -159,12 +256,7 @@
 			},
 			{
 				type: 'button',
-				action: () => {
-					const url = window.prompt('Image URL:');
-					if (url) {
-						editor!.chain().focus().setImage({ src: url }).run();
-					}
-				},
+				action: () => fileInputRef?.click(),
 				active: () => false,
 				icon: ImageIcon,
 				title: 'Image'
@@ -181,24 +273,24 @@
 	}
 </script>
 
-<div class="border rounded-xl overflow-hidden {isFocused ? 'ring-2 ring-ring' : ''}">
+<div class="overflow-hidden rounded-xl border {isFocused ? 'ring-2 ring-ring' : ''}">
 	<!-- Toolbar -->
 	{#if editor}
 		{@const toolbar = getToolbar()}
-		<div class="flex flex-wrap items-center gap-0.5 p-2 border-b bg-muted/30">
+		<div class="flex flex-wrap items-center gap-0.5 border-b bg-muted/30 p-2">
 			{#each toolbar as item}
 				{#if item.type === 'separator'}
-					<div class="w-px h-5 bg-border mx-1"></div>
+					<div class="mx-1 h-5 w-px bg-border"></div>
 				{:else}
 					{@const Icon = item.icon}
 					<button
 						type="button"
 						onclick={item.action}
 						title={item.title}
-						class="p-1.5 rounded-md transition-colors text-sm
+						class="rounded-md p-1.5 text-sm transition-colors
 						{item.active()
 							? 'bg-primary text-primary-foreground'
-							: 'hover:bg-muted text-muted-foreground hover:text-foreground'}"
+							: 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
 					>
 						<Icon class="size-4" />
 					</button>
@@ -210,22 +302,75 @@
 	<!-- Editor -->
 	<div
 		bind:this={element}
-		class="prose prose-neutral dark:prose-invert max-w-none min-h-64 p-4
-		prose-headings:font-bold prose-a:text-primary
-		focus-within:outline-none [&_.ProseMirror]:outline-none
-		[&_.ProseMirror]:min-h-64"
+		class="prose min-h-64 max-w-none p-4 prose-neutral focus-within:outline-none
+		dark:prose-invert prose-headings:font-bold
+		prose-a:text-primary [&_.ProseMirror]:min-h-64
+		[&_.ProseMirror]:outline-none"
 	></div>
 </div>
+
+<!-- Hidden file input -->
+<input
+	bind:this={fileInputRef}
+	type="file"
+	accept="image/jpeg,image/png,image/webp,image/gif"
+	class="hidden"
+	onchange={(e) => {
+		const file = (e.target as HTMLInputElement).files?.[0];
+		if (file) handleImageFile(file);
+	}}
+/>
+
+<!-- Upload status -->
+{#if uploading}
+	<p class="mt-2 text-sm text-muted-foreground">{m.editor_image_uploading()}</p>
+{/if}
+{#if uploadError}
+	<p class="mt-2 text-sm text-destructive">{uploadError}</p>
+{/if}
+
+<!-- Preview Dialog -->
+<Dialog.Root bind:open={previewDialogOpen}>
+	<Dialog.Content class="max-w-2xl">
+		<Dialog.Header>
+			<Dialog.Title>{m.editor_image_preview_title()}</Dialog.Title>
+			<Dialog.Description>
+				{m.editor_image_preview_description()}
+			</Dialog.Description>
+		</Dialog.Header>
+
+		{#if previewImage}
+			<div class="mt-4">
+				<img src={previewImage} alt="Preview" class="w-full rounded-lg border" />
+			</div>
+		{/if}
+
+		<Dialog.Footer class="mt-6">
+			<Button
+				variant="outline"
+				onclick={() => {
+					previewDialogOpen = false;
+					previewImage = null;
+				}}
+			>
+				{m.editor_image_preview_cancel()}
+			</Button>
+			<Button onclick={insertImage}>
+				{m.editor_image_preview_confirm()}
+			</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>
 
 <!-- Hidden input -->
 <input type="hidden" {name} bind:value={currentContent} />
 
 <style>
-    :global(.ProseMirror p.is-editor-empty:first-child::before) {
-        content: attr(data-placeholder);
-        float: left;
-        color: var(--color-muted-foreground);
-        pointer-events: none;
-        height: 0;
-    }
+	:global(.ProseMirror p.is-editor-empty:first-child::before) {
+		content: attr(data-placeholder);
+		float: left;
+		color: var(--color-muted-foreground);
+		pointer-events: none;
+		height: 0;
+	}
 </style>

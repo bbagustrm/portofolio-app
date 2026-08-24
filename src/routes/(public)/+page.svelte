@@ -220,31 +220,47 @@
 
 <!-- ─── Tech Stack Strip ──────────────────────────────── -->
 <section class="overflow-hidden border-y bg-muted/30">
-	<div class="flex items-stretch">
-		<!-- Label — static, tidak ikut scroll -->
-		<div class="z-10 hidden shrink-0 items-center gap-2 border-r bg-muted/50 px-6 py-4 md:flex">
-			<span class="text-sm font-medium whitespace-nowrap text-muted-foreground">
-				Tech I work with
-			</span>
-		</div>
+	<Tooltip.Provider>
+		<Tooltip.Root>
+			<Tooltip.Trigger>
+				{#snippet child({ props })}
+					<a {...props} href="/skills" class="flex items-stretch">
+						<!-- Label — static, tidak ikut scroll -->
+						<div
+							class="z-10 hidden shrink-0 items-center gap-2 border-r bg-muted/50 px-6 py-4 md:flex"
+						>
+							<span class="text-sm font-medium whitespace-nowrap text-muted-foreground">
+								Tech I work with
+							</span>
+						</div>
 
-		<!-- Marquee container -->
-		<div
-			class="relative flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]"
-		>
-			<div class="animate-marquee flex w-max gap-10 py-4 pr-10">
-				<!-- Render dua kali untuk seamless loop -->
-				{#each [...techStack, ...techStack] as tech, i}
-					<div
-						class="flex shrink-0 items-center gap-2 p-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-					>
-						<img src={tech.logo} alt={tech.name} class="size-8 object-contain" loading="lazy" />
-						<span class="whitespace-nowrap">{tech.name}</span>
-					</div>
-				{/each}
-			</div>
-		</div>
-	</div>
+						<!-- Marquee container -->
+						<div
+							class="relative flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]"
+						>
+							<div class="animate-marquee flex w-max gap-10 py-4 pr-10">
+								<!-- Render dua kali untuk seamless loop -->
+								{#each [...techStack, ...techStack] as tech, i}
+									<div
+										class="flex shrink-0 items-center gap-2 p-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+									>
+										<img
+											src={tech.logo}
+											alt={tech.name}
+											class="size-8 object-contain"
+											loading="lazy"
+										/>
+										<span class="whitespace-nowrap">{tech.name}</span>
+									</div>
+								{/each}
+							</div>
+						</div>
+					</a>
+				{/snippet}
+			</Tooltip.Trigger>
+			<Tooltip.Content side="bottom">{m.tech_stack_tooltip()}</Tooltip.Content>
+		</Tooltip.Root>
+	</Tooltip.Provider>
 </section>
 
 {#if data.featuredProjects.length > 0}
@@ -382,7 +398,8 @@
 		use:reveal={{ y: 30, duration: 0.6 }}
 		class="container mx-auto max-w-6xl px-4 py-24 text-center"
 	>
-		<h2 class="mb-4 text-4xl font-bold">{m.cta_work_together()}</h2>`
+		<h2 class="mb-4 text-4xl font-bold">{m.cta_work_together()}</h2>
+		`
 		<p class="mx-auto mb-8 max-w-md text-lg text-muted-foreground">
 			{m.cta_work_description()}
 		</p>

@@ -6,6 +6,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '$lib/components/ui/card';
 	import { Eye, EyeSlash, SignIn } from 'phosphor-svelte';
+	import { reveal, revealStagger } from '$lib/actions/reveal';
 
 	let { form } = $props();
 
@@ -30,7 +31,8 @@
 			<p class="text-muted-foreground mt-2">Sign in to access your dashboard</p>
 		</div>
 
-		<Card class="shadow-lg">
+		<div use:reveal={{ y: 24, duration: 0.5 }}>
+			<Card class="shadow-lg">
 			<CardHeader>
 				<CardTitle>Sign In</CardTitle>
 				<CardDescription>Enter your credentials to continue</CardDescription>
@@ -46,6 +48,7 @@
 							loading = false;
 						};
 					}}
+					use:revealStagger={{ stagger: 0.08, y: 16 }}
 					class="space-y-4"
 				>
 					<div class="space-y-2">
@@ -98,5 +101,6 @@
 				</form>
 			</CardContent>
 		</Card>
+		</div>
 	</div>
 </div>

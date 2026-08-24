@@ -7,7 +7,8 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Camera, ArrowLeft } from '@lucide/svelte';
-
+	import { reveal, revealStagger } from '$lib/actions/reveal';
+	import { hoverLift } from '$lib/actions/hover';
 
 	let { data, form } = $props();
 	let profile = $derived(data.profile);
@@ -29,7 +30,7 @@
 <svelte:head><title>Profile — Dashboard</title></svelte:head>
 
 <div class="max-w-2xl space-y-6">
-	<div class="flex items-center gap-3 mb-6">
+	<div use:reveal={{ y: 16 }} class="flex items-center gap-3 mb-6">
 		<a href="/dashboard">
 			<Button variant="ghost" size="icon">
 				<ArrowLeft class="size-4" />
@@ -51,6 +52,7 @@
 				loading = false;
 			};
 		}}
+		use:revealStagger={{ stagger: 0.1, y: 20 }}
 		class="space-y-6"
 	>
 		<!-- Avatar -->
@@ -123,8 +125,10 @@
 			</CardContent>
 		</Card>
 
-		<Button type="submit" disabled={loading}>
-			{loading ? 'Saving...' : 'Save Profile'}
-		</Button>
+		<div use:hoverLift={{ y: -2, duration: 0.15 }} class="inline-block">
+			<Button type="submit" disabled={loading}>
+				{loading ? 'Saving...' : 'Save Profile'}
+			</Button>
+		</div>
 	</form>
 </div>

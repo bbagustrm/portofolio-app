@@ -6,8 +6,9 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { Plus, Pencil, Trash2, Globe, ArrowLeft } from '@lucide/svelte';
+	import { Plus, Pencil, Trash2, Star, ArrowLeft } from '@lucide/svelte';
 	import { formatDateShort, estimateReadingTime } from '$lib/utils';
+	import { reveal, revealStagger } from '$lib/actions/reveal';
 
 	let { data } = $props();
 	let posts = $derived(data.posts);
@@ -20,7 +21,7 @@
 <svelte:head><title>Blog — Dashboard</title></svelte:head>
 
 <div class="space-y-6">
-	<div class="flex items-center justify-between">
+	<div use:reveal={{ y: 16 }} class="flex items-center justify-between">
 		<div class="flex items-center gap-3">
 			<a href="/dashboard">
 				<Button variant="ghost" size="icon"><ArrowLeft class="size-4" /></Button>
