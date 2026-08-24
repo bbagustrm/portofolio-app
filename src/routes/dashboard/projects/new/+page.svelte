@@ -9,6 +9,7 @@
 	import { ArrowLeft, Upload } from 'phosphor-svelte';
 	import { generateSlug } from '$lib/utils/slug';
 	import RichTextEditor from '$lib/components/blog/RichTextEditor.svelte';
+	import { reveal, revealStagger } from '$lib/actions/reveal';
 
 	let { form } = $props();
 
@@ -45,7 +46,7 @@
 </svelte:head>
 
 <div class="max-w-7xl mx-auto space-y-6">
-	<div class="flex items-center gap-3">
+	<div use:reveal={{ y: 16 }} class="flex items-center gap-3">
 		<a href="/dashboard/projects">
 			<Button variant="ghost" size="icon">
 				<ArrowLeft size={16} />
@@ -67,6 +68,7 @@
 				loading = false;
 			};
 		}}
+		use:revealStagger={{ stagger: 0.1, y: 20 }}
 		class="space-y-6"
 	>
 		<!-- Split Screen Layout: EN (Left) | ID (Right) -->

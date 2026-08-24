@@ -4,33 +4,39 @@
 	"nav_blog": "Blog",
 	"nav_gallery": "Galeri",
 	"nav_dashboard": "Dashboard",
-	
+
 	"hero_badge": "Tersedia untuk peluang",
 	"hero_cta_portfolio": "Lihat Portofolio",
 	"hero_cta_blog": "Baca Blog",
 	"hero_cta_contact": "Hubungi Saya",
-	
+
 	"section_featured_projects": "Proyek Unggulan",
 	"section_latest_articles": "Artikel Terbaru",
 	"section_view_all": "Lihat semua",
 	"section_tech_stack": "Teknologi yang saya gunakan",
-	
+	"tech_stack_tooltip": "Klik untuk lihat semua keterampilan saya",
+
 	"portfolio_title": "Portofolio",
 	"portfolio_subtitle": "Koleksi proyek dan karya saya",
 	"portfolio_filter_all": "Semua",
 	"portfolio_empty": "Belum ada proyek",
-	
+
 	"blog_title": "Blog",
 	"blog_subtitle": "Pemikiran, tutorial, dan wawasan",
 	"blog_read_more": "Baca selengkapnya",
 	"blog_reading_time": "{minutes} menit baca",
 	"blog_empty": "Belum ada postingan",
-	
+
 	"gallery_title": "Galeri",
 	"gallery_subtitle": "Koleksi momen yang tertangkap dalam foto dan video",
 	"gallery_empty": "Belum ada foto",
 	"gallery_empty_subtitle": "Segera hadir!",
-	
+
+	"skills_page_title": "Keterampilan & Alat",
+	"skills_page_subtitle": "Teknologi dan alat yang saya gunakan",
+	"skills_category_software_dev": "Pengembangan Perangkat Lunak",
+	"skills_category_graphic_design": "Desain Grafis",
+
 	"dashboard_title": "Dashboard",
 	"dashboard_overview": "Ringkasan",
 	"dashboard_total_views": "Total Tampilan",
@@ -44,7 +50,7 @@
 	"dashboard_blog_posts": "Postingan Blog",
 	"dashboard_gallery": "Galeri",
 	"dashboard_profile": "Profil",
-	
+
 	"form_title": "Judul",
 	"form_slug": "Slug",
 	"form_description": "Deskripsi",
@@ -60,38 +66,38 @@
 	"form_delete": "Hapus",
 	"form_edit": "Edit",
 	"form_create": "Buat",
-	
+
 	"action_loading": "Memuat...",
 	"action_saving": "Menyimpan...",
 	"action_deleting": "Menghapus...",
 	"action_success": "Berhasil!",
 	"action_error": "Terjadi kesalahan",
-	
+
 	"time_just_now": "Baru saja",
 	"time_minutes_ago": "{minutes} menit yang lalu",
 	"time_hours_ago": "{hours} jam yang lalu",
 	"time_days_ago": "{days} hari yang lalu",
 	"time_weeks_ago": "{weeks} minggu yang lalu",
-	
+
 	"footer_built_with": "Dibuat dengan",
 	"footer_by": "oleh",
 	"footer_rights": "Hak cipta dilindungi",
-	
+
 	"error_404_title": "Halaman Tidak Ditemukan",
 	"error_404_message": "Halaman yang Anda cari tidak ada",
 	"error_404_cta": "Kembali ke Beranda",
 	"error_500_title": "Kesalahan Server",
 	"error_500_message": "Terjadi kesalahan di sisi kami",
 	"error_500_cta": "Coba Lagi",
-	
+
 	"meta_title": "Atmojo — Full Stack Developer",
 	"meta_description": "Portofolio dan blog pribadi seorang Full Stack Developer",
-	
+
 	"auth_login": "Masuk",
 	"auth_logout": "Keluar",
 	"auth_email": "Email",
 	"auth_password": "Kata Sandi",
-	
+
 	"common_home": "Beranda",
 	"common_back": "Kembali",
 	"common_next": "Selanjutnya",
@@ -105,17 +111,17 @@
 	"common_back_to_blog": "Kembali ke Blog",
 	"common_back_to_portfolio": "Kembali ke Portofolio",
 	"common_back_to_gallery": "Kembali ke Galeri",
-	
+
 	"project_live_demo": "Demo Langsung",
 	"project_source": "Source Code",
-	
+
 	"hero_bio_fallback": "Full Stack Developer yang bersemangat membangun aplikasi web modern dengan kode yang bersih dan pengalaman pengguna yang luar biasa.",
 	"hero_email_send": "Kirim Email",
 	"hero_email_copy": "Salin Email",
-	
+
 	"cta_work_together": "Mari bekerja sama",
 	"cta_work_description": "Terbuka untuk proyek freelance, kolaborasi, dan peluang kerja penuh waktu.",
-	
+
 	"blog_showing_results": "Menampilkan hasil untuk",
 	"blog_filtered_by": "Difilter berdasarkan",
 	"blog_in": "di",
@@ -128,9 +134,17 @@
 	"blog_new_post": "Postingan Baru",
 	"blog_topics": "Topik",
 	"blog_total_articles": "Total Artikel",
-	
+
 	"meta_portfolio_description": "Proyek dan karya yang telah saya buat.",
 	"meta_blog_description": "Artikel tentang pengembangan web, pemrograman, dan teknologi.",
 	"meta_gallery_description": "Koleksi foto dan video pribadi.",
-	"meta_fallback_description": "Portofolio dan blog pribadi"
+	"meta_fallback_description": "Portofolio dan blog pribadi",
+
+	"editor_image_uploading": "Memproses gambar...",
+	"editor_image_error_size": "Gambar terlalu besar. Ukuran maksimum 5MB.",
+	"editor_image_error_format": "Format tidak valid. Gunakan JPEG, PNG, WebP, atau GIF.",
+	"editor_image_preview_title": "Sisipkan Gambar",
+	"editor_image_preview_description": "Pratinjau gambar Anda sebelum menyisipkannya ke artikel.",
+	"editor_image_preview_confirm": "Sisipkan",
+	"editor_image_preview_cancel": "Batal"
 }

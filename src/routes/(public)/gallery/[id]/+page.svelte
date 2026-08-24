@@ -2,6 +2,7 @@
 	import { ArrowLeft } from '@lucide/svelte';
 	import { formatDate } from '$lib/utils';
 	import * as m from '$paraglide/messages';
+	import { reveal, revealStagger } from '$lib/actions/reveal';
 
 	let { data } = $props();
 	let post = $derived(data.post);
@@ -24,7 +25,10 @@
 	</a>
 
 	<!-- Main viewer -->
-	<div class="rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5 mb-4 border">
+	<div
+		use:reveal={{ y: 20, scale: 0.98 }}
+		class="rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5 mb-4 border"
+	>
 		{#if active?.type === 'image'}
 			<img
 				src={active.url}
@@ -45,7 +49,7 @@
 
 	<!-- Thumbnails -->
 	{#if media.length > 1}
-		<div class="flex gap-2 overflow-x-auto pb-2 mb-6">
+		<div use:revealStagger={{ stagger: 0.05 }} class="flex gap-2 overflow-x-auto pb-2 mb-6">
 			{#each media as item, i}
 				<button
 					onclick={() => (activeIndex = i)}

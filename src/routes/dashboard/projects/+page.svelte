@@ -8,6 +8,8 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { Plus, Pencil, Trash2, Star, Globe, ArrowLeft } from '@lucide/svelte';
 	import { formatDateShort } from '$lib/utils';
+	import { reveal, revealStagger } from '$lib/actions/reveal';
+	import { hoverLift } from '$lib/actions/hover';
 
 	let { data } = $props();
 	let projects = $derived(data.projects);
@@ -20,7 +22,7 @@
 <svelte:head><title>Projects — Dashboard</title></svelte:head>
 
 <div class="space-y-6">
-	<div class="flex items-center justify-between">
+	<div use:reveal={{ y: 16 }} class="flex items-center justify-between">
 		<div class="flex items-center gap-3">
 			<a href="/dashboard">
 				<Button variant="ghost" size="icon"><ArrowLeft class="size-4" /></Button>

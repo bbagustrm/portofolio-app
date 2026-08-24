@@ -1,29 +1,34 @@
 <script lang="ts">
-	import { GithubLogo, LinkedinLogo, Envelope } from 'phosphor-svelte';
+	import { GithubLogo, LinkedinLogo, DribbbleLogo, Envelope } from 'phosphor-svelte';
 	import * as m from '$paraglide/messages';
 	import { onMount } from 'svelte';
 
 	const year = new Date().getFullYear();
-	
+
 	let isMobile = $state(false);
-	
+
 	onMount(() => {
 		isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 	});
 
 	const socials = [
 		{ href: 'https://github.com/bbagustrm', label: 'GitHub', icon: GithubLogo, type: 'link' },
-		{ href: 'https://linkedin.com/in/bagus-tri-atmojo', label: 'LinkedIn', icon: LinkedinLogo, type: 'link' },
+		{
+			href: 'https://linkedin.com/in/bagus-tri-atmojo',
+			label: 'LinkedIn',
+			icon: LinkedinLogo,
+			type: 'link'
+		},
+		{ href: 'https://dribbble.com/bbagustrm', label: 'Dribbble', icon: DribbbleLogo, type: 'link' },
 		{ href: 'mailto:bbagustrm@gmail.com', label: 'Email', icon: Envelope, type: 'email' }
 	];
-
 </script>
 
 <footer class="border-t bg-background">
 	<div class="container mx-auto max-w-6xl px-4 py-8">
 		<div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
 			<p class="text-sm text-muted-foreground">
-				© {year} atmojo<span class="text-primary font-bold">.</span>pro — {m.footer_rights()}
+				© {year} atmojo<span class="font-bold text-primary">.</span>pro — {m.footer_rights()}
 			</p>
 
 			<div class="flex items-center gap-2">
@@ -41,7 +46,7 @@
 								}
 							}}
 							aria-label={social.label}
-							class="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+							class="cursor-pointer rounded-md p-2 text-muted-foreground transition-all hover:scale-110 hover:bg-muted hover:text-foreground"
 						>
 							<Icon size={18} weight="fill" />
 						</button>
@@ -51,7 +56,7 @@
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label={social.label}
-							class="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+							class="rounded-md p-2 text-muted-foreground transition-all hover:scale-110 hover:bg-muted hover:text-foreground"
 						>
 							<Icon size={18} weight="fill" />
 						</a>

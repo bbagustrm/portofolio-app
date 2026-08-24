@@ -9,6 +9,7 @@
 	import { onMount } from 'svelte';
 	import { shouldAnimate } from '$lib/utils/animation';
 	import * as m from '$paraglide/messages';
+	import { revealStagger } from '$lib/actions/reveal';
 
 	let { user = null } = $props<{ user?: any }>();
 
@@ -122,7 +123,7 @@
 
 					<Separator class="my-4" />
 
-					<nav class="flex flex-col gap-1">
+					<nav use:revealStagger={{ stagger: 0.08, y: 16 }} class="flex flex-col gap-1">
 						{#each links as link}
 
 							<a href={link.href}

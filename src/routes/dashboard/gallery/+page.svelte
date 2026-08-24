@@ -9,6 +9,7 @@
 	import { Plus, Trash2, Eye, EyeOff, ArrowLeft, LayoutGrid, List } from '@lucide/svelte';
 	import { formatDateShort } from '$lib/utils';
 	import type { Post } from '$lib/types';
+	import { reveal, revealStagger } from '$lib/actions/reveal';
 
 	let { data } = $props();
 	let posts = $derived(data.posts);
@@ -43,7 +44,7 @@
 <svelte:head><title>Gallery — Dashboard</title></svelte:head>
 
 <div class="space-y-6">
-	<div class="flex items-center justify-between">
+	<div use:reveal={{ y: 16 }} class="flex items-center justify-between">
 		<div class="flex items-center gap-3">
 			<a href="/dashboard">
 				<Button variant="ghost" size="icon"><ArrowLeft class="size-4" /></Button>
@@ -108,7 +109,7 @@
 		</div>
 
 	{:else if viewMode === 'grid'}
-		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+		<div use:revealStagger={{ stagger: 0.04, y: 12 }} class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
 			{#each filtered as post (post.id)}
 				{@const firstMedia = post.media?.[0]}
 				<div class="group relative rounded-xl overflow-hidden aspect-square bg-muted">
